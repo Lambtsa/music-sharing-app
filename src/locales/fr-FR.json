@@ -1,0 +1,10 @@
+{
+  "home.cta": "Share it!",
+  "home.title": "Share it!",
+  "home.subtitle": "Share your favourite songs with all your friends!",
+  "label.artist": "Artiste",
+  "label.copyLink": "Copy Link",
+  "label.title": "Titre",
+  "label.invalidArtist": "Veuillez fournir un artiste valide",
+  "label.invalidTitle": "Veuillez fournir un titre valide"
+}
