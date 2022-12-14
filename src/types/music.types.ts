@@ -4,3 +4,12 @@ export interface GetMusicLinksInput {
 }
 
 export type MusicProviders = "spotify" | "youtube" | "deezer";
+
+export interface ResponseMusicData {
+  links: MusicData[];
+}
+
+export interface MusicData {
+  name: MusicProviders;
+  url: string;
+}

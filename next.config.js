@@ -1,30 +1,25 @@
-const withPlugins = require("next-compose-plugins");
+module.exports = (phase, { defaultConfig }) => {
+  /**
+   * @type {import('next').NextConfig}
+   */
+  const nextConfig = {
+    // const configPath = path.resolve(
+    //   "src/config/env",
+    //   `${process.env.BUILD_ENV}.json`
+    // );
+    // Enable <React.StrictMode> in application
+    reactStrictMode: true,
 
-// const configPath = path.resolve(
-//   "src/config/env",
-//   `${process.env.BUILD_ENV}.json`
-// );
+    // fileExtensions: ["jpg", "jpeg", "png", "gif"],
 
-const config = withPlugins([], {
-  // Enable <React.StrictMode> in application
-  reactStrictMode: true,
+    webpack(config) {
+      config.module.rules.push({
+        test: /\.svg$/,
+        use: ["@svgr/webpack", "url-loader"],
+      });
 
-  fileExtensions: ["jpg", "jpeg", "png", "gif"],
-
-  webpack(config) {
-    // config.resolve.alias["config/env"] = configPath;
-
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ["@svgr/webpack", "url-loader"],
-    });
-
-    // config.env = {
-    //   gaTrackingId: ""
-    // }
-
-    return config;
-  },
-});
-
-module.exports = config;
+      return config;
+    },
+  };
+  return nextConfig;
+};

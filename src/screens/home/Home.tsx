@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useEffect, useMemo } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { TypeOf, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -16,29 +16,15 @@ import {
 } from "./Home.styles";
 import { InputText } from "@components/Inputs/InputText";
 import { Button } from "@components/Button";
-import { MusicProviders } from "@customTypes";
+import { MusicData, ResponseMusicData } from "@customTypes";
 import { MusicLink } from "@components/Link";
+import { Loader } from "@components/Loader";
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
   const { isLight } = useLightOrDarkTheme();
-
-  const mockData: { name: MusicProviders; url: string }[] = useMemo(() => {
-    return [
-      {
-        name: "spotify",
-        url: "https://open.spotify.com/track/2SGBEDwsOAOAHrrdAd304i",
-      },
-      {
-        name: "deezer",
-        url: "https://www.deezer.com/track/3112219",
-      },
-      {
-        name: "youtube",
-        url: "https://www.youtube.com/watch?v=pquhYpGHrlw",
-      },
-    ];
-  }, []);
+  const [links, setLinks] = useState<MusicData[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   /* ################################################## */
   /* Forms */
@@ -75,7 +61,7 @@ export const HomeScreen = (): JSX.Element => {
    */
   const { control, formState, handleSubmit, reset } = useForm({
     defaultValues,
-    mode: "onChange",
+    mode: "onSubmit",
     shouldFocusError: true,
     /* All errors from each field will be gathered */
     criteriaMode: "all",
@@ -96,30 +82,36 @@ export const HomeScreen = (): JSX.Element => {
   const onSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      setIsLoading(true);
       console.log("submitted");
 
       handleSubmit(
         async (formFields) => {
-          // const response = await fetch("/api/music", {
-          //   method: "POST",
-          //   headers: {
-          //     "Content-type": "application/json",
-          //   },
-          //   body: JSON.stringify(formFields)
-          // });
+          const response = await fetch("/api/music", {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify(formFields),
+          });
 
-          // const data = await response.json();
-          console.log({ formFields });
+          if (response.ok) {
+            const data: ResponseMusicData = await response.json();
+            console.log({ data: data.links });
+            setLinks(data.links);
+            setIsLoading(false);
+          }
         },
         (error) => {
           console.log("error", error);
+          setIsLoading(false);
         }
       )();
     },
     [handleSubmit]
   );
 
-  const hasLinks = !!mockData.length;
+  const hasLinks = !!links.length;
 
   return (
     <Main>
@@ -151,8 +143,10 @@ export const HomeScreen = (): JSX.Element => {
           </Button>
         </Form>
         <LinksWrapper>
-          {hasLinks &&
-            mockData.map(({ name, url }) => (
+          {isLoading && <Loader isLight={isLight} />}
+          {!isLoading &&
+            hasLinks &&
+            links.map(({ name, url }) => (
               <MusicLink key={name} service={name} serviceUrl={url} />
             ))}
         </LinksWrapper>

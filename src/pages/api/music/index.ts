@@ -1,16 +1,11 @@
 import { CustomApiErrorMessages } from "@constants/errors";
+import { MusicData, ResponseMusicData } from "@customTypes";
 import { searchDeezer } from "@helpers/deezer";
 import { sanitiseData } from "@helpers/sanitise";
 import { searchSpotify } from "@helpers/spotify";
 import { searchYoutube } from "@helpers/youtube";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
-
-interface ResponseData {
-  spotifyUri: string;
-  deezerUri: string;
-  youtubeUri: string;
-}
 
 interface ResponseError {
   message: string;
@@ -24,7 +19,7 @@ const inputSchema = z.object({
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData | ResponseError>
+  res: NextApiResponse<ResponseMusicData | ResponseError>
 ) => {
   /* TODO: Add authentication for the API */
   try {
@@ -58,10 +53,23 @@ const handler = async (
     /* ######################################## */
     const youtubeUri = await searchYoutube(input);
 
+    const response: MusicData[] = [
+      {
+        name: "spotify",
+        url: spotifyUri,
+      },
+      {
+        name: "deezer",
+        url: deezerUri,
+      },
+      {
+        name: "youtube",
+        url: youtubeUri,
+      },
+    ];
+
     res.status(200).json({
-      spotifyUri,
-      deezerUri,
-      youtubeUri,
+      links: response,
     });
   } catch (err) {
     console.log("Here", err);
