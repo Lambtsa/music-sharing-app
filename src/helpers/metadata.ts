@@ -19,15 +19,15 @@ const buildUrl = (path: string): string => {
 
 export const pageData: Pages = {
   default: {
-    title:
-      "Charlie's Closet | Habillez votre enfant sans déshabiller la planète",
-    description: "Habillez votre enfant sans déshabiller la planète",
+    title: "Audio Linx | Share your favourite songs with all your friends!",
+    description:
+      "Enter an artist's name, a song title and generate links for that song for all the most popular music streaming platforms. Click and share your favourite songs with all your friends!",
     url: buildUrl(routes.index()),
   },
   index: {
-    title:
-      "Charlie's Closet | Habillez votre enfant sans déshabiller la planète",
-    description: "Habillez votre enfant sans déshabiller la planète",
+    title: "Audio Linx | Share your favourite songs with all your friends!",
+    description:
+      "Enter an artist's name, a song title and generate links for that song for all the most popular music streaming platforms. Click and share your favourite songs with all your friends!",
     url: buildUrl(routes.index()),
   },
 };

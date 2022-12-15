@@ -1,7 +1,10 @@
 {
+  "error.message.noTitle": "Please try again making sure that the artist or title is written correctly",
+  "error.message.requiredArtist": "Please provide an artists' name",
+  "error.message.requiredTitle": "Please provide a song title",
   "home.cta": "Get your links!",
   "home.title": "Share it!",
-  "home.subtitle": "Share your favourite songs with all your friends!",
+  "home.subtitle": "Enter details on any song and generate links for the most popular music streaming platforms. Give it a go!",
   "label.artist": "Artist",
   "label.copyLink": "Copy Link",
   "label.title": "Title",

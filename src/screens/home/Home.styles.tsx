@@ -35,7 +35,7 @@ export const Subtitle = styled.p<{
   font-weight: ${(props) => props.theme.fontWeights.regular};
   text-align: center;
   font-size: 16px;
-  line-height: 24px;
+  line-height: 20px;
 `;
 
 export const LinksWrapper = styled.div`
@@ -53,4 +53,13 @@ export const Form = styled.form`
   width: 100%;
   max-width: ${CONTAINER.MOBILE}px;
   gap: 4px;
+`;
+
+export const LogoContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 16px;
+  top: 0;
 `;

@@ -1,18 +1,19 @@
 import "styled-components";
 
 interface Colors {
-  blueMunsell: string;
   chelseaCucumber: string;
   eerieBlack: string;
   eerieBlack20: string;
   eerieBlack70: string;
+  ivory: string;
+  ivory20: string;
+  ivory70: string;
   newYorkPink: string;
   oldRose: string;
   onyx: string;
   pastelPink: string;
-  ivory: string;
-  ivory20: string;
-  ivory70: string;
+  tiffanyBlue: string;
+  viridianGreen: string;
 }
 
 interface Fonts {

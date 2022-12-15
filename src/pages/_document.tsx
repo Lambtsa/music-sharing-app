@@ -49,10 +49,10 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
             rel="stylesheet"
           />
+          <link rel="icon" href="/favicon.ico" />
           <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
           <link rel="apple-touch-icon" href="/logo192.png" />
           <link rel="canonical" href="" />
-          <link rel="icon" href="/favicon.ico" />
           <link rel="apple-touch-icon" href="/logo192.png" />
           {/* enable google analytics script */}
           {/* TODO: add preconnect to google.tagmanager.com */}
