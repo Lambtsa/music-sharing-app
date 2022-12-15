@@ -107,6 +107,9 @@ export const HomeScreen = (): JSX.Element => {
             setLinks(data.links);
             setErrorMessage(undefined);
             setIsLoading(false);
+          } else {
+            // TODO: make specific error messages
+            throw new Error("No title");
           }
         },
         (error) => {
