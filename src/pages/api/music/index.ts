@@ -36,7 +36,6 @@ const handler = async (
       throw new Error(CustomApiErrorMessages.IncorrectInput);
     }
     const sanitisedInput = sanitiseData({ artist, title }, inputSchema);
-    console.log({ sanitisedInput });
     /* ######################################## */
     /* SPOTIFY */
     /* Use spotify to find other titles
@@ -72,7 +71,7 @@ const handler = async (
       links: response,
     });
   } catch (err) {
-    console.log("Here", err);
+    console.log({ err });
     res.status(400).send({
       message: "",
       statusCode: 400,

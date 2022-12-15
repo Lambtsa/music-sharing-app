@@ -90,10 +90,10 @@ export const HomeScreen = (): JSX.Element => {
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       setIsLoading(true);
+      let timeOut: NodeJS.Timeout;
 
       handleSubmit(
         async (formFields) => {
-          // TODO: add settimeout for fetch for ux
           const response = await fetch("/api/music", {
             method: "POST",
             headers: {
@@ -102,18 +102,24 @@ export const HomeScreen = (): JSX.Element => {
             body: JSON.stringify(formFields),
           });
 
-          if (response.ok) {
-            const data: ResponseMusicData = await response.json();
-            setLinks(data.links);
-            setErrorMessage(undefined);
-            setIsLoading(false);
-          } else {
-            // TODO: make specific error messages
-            throw new Error("No title");
-          }
+          const data: ResponseMusicData = await response.json();
+
+          timeOut = setTimeout(() => {
+            if (response.ok) {
+              setLinks(data.links);
+              setErrorMessage(undefined);
+              setIsLoading(false);
+            } else {
+              // TODO: make specific error messages
+              setErrorMessage("error.message.noTitle");
+              setIsLoading(false);
+            }
+          }, 2000);
+
+          return () => clearTimeout(timeOut);
         },
         (error) => {
-          console.log("error", error);
+          console.log({ error });
           // TODO: make specific error messages
           setErrorMessage("error.message.noTitle");
           setIsLoading(false);

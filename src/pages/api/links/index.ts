@@ -61,7 +61,7 @@ const handler = async (
       youtubeUri: "test3",
     });
   } catch (err) {
-    console.log("Here", err);
+    console.log({ err });
     res.status(400).send({
       message: "",
       statusCode: 400,

@@ -28,6 +28,7 @@ export const MusicLink = ({
   const [state, copyToClipboard] = useCopyToClipboard();
 
   useEffect(() => {
+    // TODO: deal with copy to clipboard errors
     console.log({ state });
   }, [state]);
 
