@@ -4,11 +4,12 @@ export interface MetaData {
   title: string;
   description: string;
   url: string;
+  production: boolean;
 }
 
 interface Pages {
-  default: MetaData;
-  index: MetaData;
+  default: Omit<MetaData, "production">;
+  index: Omit<MetaData, "production">;
 }
 
 const buildUrl = (path: string): string => {

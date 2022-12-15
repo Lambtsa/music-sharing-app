@@ -1,12 +1,11 @@
 import Head from "next/head";
 import type { MetaData as MetaDataProps } from "@helpers/metadata";
 
-/* TODO: Figure out a way to automate robots and bots */
-
 export const MetaData = ({
   title,
   description,
   url,
+  production,
 }: MetaDataProps): JSX.Element => {
   return (
     <Head>
@@ -19,8 +18,12 @@ export const MetaData = ({
       <meta property="og:image" content="/og-image.png" />
       <meta property="og:url" content={url} />
       <meta property="og:site_name" content={title} />
-      {/* <meta name="robots" content="index, follow" /> */}
-      {/* <meta name="googlebot" content="index, follow" /> */}
+      {production && (
+        <>
+          <meta name="robots" content="index, follow" />
+          <meta name="googlebot" content="index, follow" />
+        </>
+      )}
     </Head>
   );
 };

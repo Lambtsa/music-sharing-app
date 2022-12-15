@@ -33,7 +33,6 @@ export const buildYoutubeVideoUrl = (id: string) => {
  * @example 'https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=artist:"aloe blacc" track:"i need a dollar"'
  */
 export const searchYoutube = async (input: GetMusicLinksInput) => {
-  /* TODO: Figure out how to deal with not exact title or artist */
   const youtubeUri = buildYoutubeApiUrl(input);
 
   const response = await fetch(youtubeUri.toString(), {

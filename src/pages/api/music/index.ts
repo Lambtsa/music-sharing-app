@@ -21,7 +21,6 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseMusicData | ResponseError>
 ) => {
-  /* TODO: Add authentication for the API */
   try {
     if (req.method !== "POST") {
       throw new Error(CustomApiErrorMessages.IncorrectMethod);

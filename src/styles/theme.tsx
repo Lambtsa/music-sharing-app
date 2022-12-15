@@ -1,5 +1,8 @@
 import type { DefaultTheme } from "styled-components";
 
+/**
+ * @see https://coolors.co/38393d-262626-dd9f93-fffeed-329a91
+ */
 const colors = {
   chelseaCucumber: "#75B068",
   eerieBlack: "#262626",

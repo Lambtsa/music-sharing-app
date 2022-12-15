@@ -23,6 +23,7 @@ import { MusicData, ResponseMusicData } from "@customTypes";
 import { MusicLink } from "@components/Link";
 import { Loader } from "@components/Loader";
 import { MessageBox } from "@components/MessageBox";
+import { Footer } from "@components/Footer";
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
@@ -36,7 +37,6 @@ export const HomeScreen = (): JSX.Element => {
   /* ################################################## */
   /* Forms */
   /* ################################################## */
-  /* TODO: add the email error message in french @see https://github.com/colinhacks/zod/blob/master/ERROR_HANDLING.md */
   const validationSchema = z.object({
     artist: z
       .string({
@@ -174,6 +174,7 @@ export const HomeScreen = (): JSX.Element => {
           )}
         </LinksWrapper>
       </Container>
+      <Footer isLight={isLight} />
     </Main>
   );
 };

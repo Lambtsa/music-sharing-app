@@ -13,12 +13,12 @@ export const buildDeezerApiUrl = ({ artist, title }: GetMusicLinksInput) => {
 };
 
 /**
- * Deezer - Given an artist and title, this helper will return the deezer uri
+ * Deezer - Given an artist and title, this helper will return the deezer uri.
+ * Deezer struggles currently to find titles that are not exact.
  * @see https://developers.deezer.com/api/search
  * @example 'https://api.deezer.com/search?q=artist:"aloe blacc" track:"i need a dollar"'
  */
 export const searchDeezer = async (input: GetMusicLinksInput) => {
-  /* TODO: Figure out how to deal with not exact title or artist */
   const deezerUri = buildDeezerApiUrl(input);
 
   const response = await fetch(deezerUri.toString(), {
