@@ -52,5 +52,5 @@ export const Form = styled.form`
   justify-content: center;
   width: 100%;
   max-width: ${CONTAINER.MOBILE}px;
-  gap: 16px;
+  gap: 4px;
 `;

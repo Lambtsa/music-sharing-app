@@ -47,5 +47,6 @@ export const MessageWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  height: 16px;
   gap: 4px;
 `;

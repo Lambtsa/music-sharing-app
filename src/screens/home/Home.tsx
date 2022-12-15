@@ -83,10 +83,10 @@ export const HomeScreen = (): JSX.Element => {
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       setIsLoading(true);
-      console.log("submitted");
 
       handleSubmit(
         async (formFields) => {
+          // TODO: add settimeout for fetch for ux
           const response = await fetch("/api/music", {
             method: "POST",
             headers: {
@@ -97,7 +97,6 @@ export const HomeScreen = (): JSX.Element => {
 
           if (response.ok) {
             const data: ResponseMusicData = await response.json();
-            console.log({ data: data.links });
             setLinks(data.links);
             setIsLoading(false);
           }

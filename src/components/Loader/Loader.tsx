@@ -1,4 +1,4 @@
-import { LoaderContainer, StyledLoader } from "./Loader.styles";
+import { InnerContainer, InnerLoader, LoaderContainer } from "./Loader.styles";
 
 interface LoaderProps {
   isLight: boolean;
@@ -7,9 +7,13 @@ interface LoaderProps {
 export const Loader = ({ isLight }: LoaderProps): JSX.Element => {
   return (
     <LoaderContainer>
-      <StyledLoader isLight={isLight}>
-        <div></div>
-      </StyledLoader>
+      <InnerContainer>
+        <InnerLoader isLight={isLight} />
+        <InnerLoader isLight={isLight} />
+        <InnerLoader isLight={isLight} />
+        <InnerLoader isLight={isLight} />
+        <InnerLoader isLight={isLight} />
+      </InnerContainer>
     </LoaderContainer>
   );
 };

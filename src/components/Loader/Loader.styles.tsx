@@ -7,61 +7,61 @@ export const LoaderContainer = styled.div`
   width: 100%;
 `;
 
+export const InnerContainer = styled.div`
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+`;
+
 const LoaderAnimation = keyframes`
   0% {
-    top: 36px;
-    left: 36px;
-    width: 0;
-    height: 0;
-    opacity: 0;
+    top: 8px;
+    height: 64px;
   }
-  4.9% {
-    top: 36px;
-    left: 36px;
-    width: 0;
-    height: 0;
-    opacity: 0;
-  }
-  5% {
-    top: 36px;
-    left: 36px;
-    width: 0;
-    height: 0;
-    opacity: 1;
-  }
-  100% {
-    top: 0px;
-    left: 0px;
-    width: 72px;
-    height: 72px;
-    opacity: 0;
+  50%, 100% {
+    top: 24px;
+    height: 32px;
   }
 `;
 
-export const StyledLoader = styled.div<{
+export const InnerLoader = styled.div<{
   isLight: boolean;
 }>`
   display: inline-block;
-  position: relative;
-  width: 60px;
-  height: 60px;
+  position: absolute;
+  left: 8px;
+  width: 8px;
+  background: ${(props) =>
+    props.isLight ? props.theme.colors.pastelPink : props.theme.colors.ivory20};
 
-  div {
-    position: absolute;
-    border: 4px solid
-      ${(props) =>
-        props.isLight
-          ? props.theme.colors.pastelPink
-          : props.theme.colors.ivory};
-    opacity: 1;
-    border-radius: 50%;
-    animation-name: ${LoaderAnimation};
-    animation-duration: 1s;
-    animation-timing-function: cubic-bezier(0, 0.2, 0.8, 1);
-    animation-iteration-count: infinite;
+  animation-name: ${LoaderAnimation};
+  animation-duration: 1.2s;
+  animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+  animation-iteration-count: infinite;
+
+  :nth-child(1) {
+    left: 8px;
+    animation-delay: -0.48s;
   }
 
-  div:nth-child(2) {
-    animation-delay: -0.5s;
+  :nth-child(2) {
+    left: 20px;
+    animation-delay: -0.36s;
+  }
+
+  :nth-child(3) {
+    left: 32px;
+    animation-delay: -0.24s;
+  }
+
+  :nth-child(4) {
+    left: 44px;
+    animation-delay: -0.12s;
+  }
+
+  :nth-child(5) {
+    left: 56px;
+    animation-delay: 0;
   }
 `;
