@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
-export const FooterContainer = styled.div`
-  position: absolute;
+export const FooterContainer = styled.div<{
+  isLight: boolean;
+}>`
   bottom: 0;
   left: 0;
   right: 0;
@@ -10,6 +11,8 @@ export const FooterContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 16px;
+  background-color: ${(props) =>
+    props.isLight ? props.theme.colors.ivory : props.theme.colors.eerieBlack};
 `;
 
 export const FooterText = styled.p<{

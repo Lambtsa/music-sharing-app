@@ -24,6 +24,7 @@ import { MusicLink } from "@components/Link";
 import { Loader } from "@components/Loader";
 import { MessageBox } from "@components/MessageBox";
 import { Footer } from "@components/Footer";
+import { Selector } from "@components/Selector";
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
@@ -38,17 +39,11 @@ export const HomeScreen = (): JSX.Element => {
   /* Forms */
   /* ################################################## */
   const validationSchema = z.object({
-    artist: z
+    search: z
       .string({
         required_error: t({ id: "error.message.requiredArtist" }),
       })
       .min(1, { message: t({ id: "error.message.requiredArtist" }) })
-      .trim(),
-    title: z
-      .string({
-        required_error: t({ id: "error.message.requiredTitle" }),
-      })
-      .min(1, { message: t({ id: "error.message.requiredTitle" }) })
       .trim(),
   });
 
@@ -56,8 +51,7 @@ export const HomeScreen = (): JSX.Element => {
 
   const defaultValues: FormFields = useMemo(
     () => ({
-      artist: "",
-      title: "",
+      search: "",
     }),
     []
   );
@@ -133,48 +127,45 @@ export const HomeScreen = (): JSX.Element => {
   const hasErrorMessage = !!errorMessage;
 
   return (
-    <Main>
-      <Container size="mobile">
-        <LogoContainer>{isLight ? <DarkLogo /> : <LightLogo />}</LogoContainer>
-        <Toggle />
-        <HeaderWrapper>
-          <Title isLight={isLight}>{t({ id: "home.title" })}</Title>
-          <Subtitle isLight={isLight}>{t({ id: "home.subtitle" })}</Subtitle>
-        </HeaderWrapper>
-        <Form onSubmit={onSubmit}>
-          <InputText
-            isLight={isLight}
-            type="text"
-            control={control}
-            name="artist"
-            placeholder={t({ id: "label.artist" })}
-            error={formErrors.artist}
-          />
-          <InputText
-            isLight={isLight}
-            type="text"
-            control={control}
-            name="title"
-            placeholder={t({ id: "label.title" })}
-            error={formErrors.title}
-          />
-          <Button type="submit" isLight={isLight}>
-            {t({ id: "home.cta" })}
-          </Button>
-        </Form>
-        <LinksWrapper>
-          {isLoading && <Loader isLight={isLight} />}
-          {!isLoading &&
-            hasLinks &&
-            links.map(({ name, url }) => (
-              <MusicLink key={name} service={name} serviceUrl={url} />
-            ))}
-          {!isLoading && hasErrorMessage && (
-            <MessageBox message={errorMessage} />
-          )}
-        </LinksWrapper>
-      </Container>
+    <>
+      <Main>
+        <Container size="mobile">
+          <LogoContainer>
+            {isLight ? <DarkLogo /> : <LightLogo />}
+          </LogoContainer>
+          <Toggle />
+          <HeaderWrapper>
+            <Title isLight={isLight}>{t({ id: "home.title" })}</Title>
+            <Subtitle isLight={isLight}>{t({ id: "home.subtitle" })}</Subtitle>
+          </HeaderWrapper>
+          <Form onSubmit={onSubmit}>
+            <InputText
+              isLight={isLight}
+              type="text"
+              control={control}
+              name="search"
+              placeholder={t({ id: "label.search" })}
+              error={formErrors.search}
+            />
+            <Selector isLight={isLight} />
+            <Button type="submit" isLight={isLight}>
+              {t({ id: "home.cta" })}
+            </Button>
+          </Form>
+          <LinksWrapper>
+            {isLoading && <Loader isLight={isLight} />}
+            {!isLoading &&
+              hasLinks &&
+              links.map(({ name, url }) => (
+                <MusicLink key={name} service={name} serviceUrl={url} />
+              ))}
+            {!isLoading && hasErrorMessage && (
+              <MessageBox message={errorMessage} />
+            )}
+          </LinksWrapper>
+        </Container>
+      </Main>
       <Footer isLight={isLight} />
-    </Main>
+    </>
   );
 };

@@ -4,7 +4,7 @@ import { FooterContainer, FooterText } from "./Footer.styles";
 export const Footer = ({ isLight }: { isLight: boolean }): JSX.Element => {
   const { t } = useTranslation();
   return (
-    <FooterContainer>
+    <FooterContainer isLight={isLight}>
       <FooterText isLight={isLight}>
         {t({ id: "footer.copyright" }, { date: new Date().getFullYear() })}
       </FooterText>
