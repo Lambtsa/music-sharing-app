@@ -30,23 +30,25 @@ interface DeezerAlbum {
   type: DeezerDataType.Album;
 }
 
+export interface DeezerTrack {
+  id: number;
+  readable: boolean;
+  title: string;
+  title_short: string;
+  title_version: string;
+  link: string;
+  duration: number;
+  rank: number;
+  explicit_lyrics: boolean;
+  explicit_content_lyrics: boolean;
+  explicit_content_cover: boolean;
+  preview: string;
+  md5_image: string;
+  artist: DeezerArtist;
+  album: DeezerAlbum;
+  type: DeezerDataType.Track;
+}
+
 export interface DeezerApiResponse {
-  data: {
-    id: number;
-    readable: boolean;
-    title: string;
-    title_short: string;
-    title_version: string;
-    link: string;
-    duration: number;
-    rank: number;
-    explicit_lyrics: boolean;
-    explicit_content_lyrics: boolean;
-    explicit_content_cover: boolean;
-    preview: string;
-    md5_image: string;
-    artist: DeezerArtist;
-    album: DeezerAlbum;
-    type: DeezerDataType.Track;
-  }[];
+  data: DeezerTrack[];
 }

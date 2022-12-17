@@ -9,6 +9,7 @@ import { useTranslation } from "@hooks/useTranslation";
 import { useLightOrDarkTheme } from "@context/ThemeContext";
 import { ReactComponent as LightLogo } from "@assets/lightLogo.svg";
 import { ReactComponent as DarkLogo } from "@assets/darkLogo.svg";
+import { v4 as uuid } from "uuid";
 import {
   Form,
   HeaderWrapper,
@@ -27,6 +28,7 @@ import { Footer } from "@components/Footer";
 import { Selector } from "@components/Selector";
 import { InputSelection } from "@constants/input";
 import { isValidInput } from "@helpers/url";
+import { TrackBtn } from "@components/TrackBtn";
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
@@ -111,6 +113,7 @@ export const HomeScreen = (): JSX.Element => {
       e.preventDefault();
       setIsLoading(true);
       setLinks([]);
+      setTracks([]);
       let timeOut: NodeJS.Timeout;
 
       handleSubmit(
@@ -118,7 +121,7 @@ export const HomeScreen = (): JSX.Element => {
           switch (selected) {
             case InputSelection.Artist:
             case InputSelection.Track: {
-              const response = await fetch("/api/music", {
+              const response = await fetch("/api/tracks", {
                 method: "POST",
                 headers: {
                   "Content-type": "application/json",
@@ -223,12 +226,8 @@ export const HomeScreen = (): JSX.Element => {
               ))}
             {!isLoading &&
               hasTracks &&
-              tracks.map((track, index) => (
-                <div key={index}>
-                  <p>{track.artist}</p>
-                  <p>{track.track}</p>
-                  <p>{track.album}</p>
-                </div>
+              tracks.map((track) => (
+                <TrackBtn key={`${uuid()}=${track.track}`} track={track} />
               ))}
             {!isLoading && hasErrorMessage && (
               <MessageBox message={errorMessage} />

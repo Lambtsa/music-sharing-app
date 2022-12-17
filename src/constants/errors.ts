@@ -4,4 +4,5 @@ export enum CustomApiErrorMessages {
   ExternalApiIssue = "Issue with the Spotify API",
   NoTrack = "No track available",
   IncorrectMethod = "Only POST method is available",
+  UnsupportedUrl = "Unfortunately Youtube is unsupported currently",
 }

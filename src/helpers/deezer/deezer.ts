@@ -1,6 +1,6 @@
 import { CustomApiErrorMessages } from "@constants/errors";
 import { GetMusicLinksInput } from "@customTypes";
-import { DeezerApiResponse } from "./deezer.types";
+import { DeezerApiResponse, DeezerTrack } from "./deezer.types";
 
 /**
  * Builds spotify URL using base, artist and track
@@ -43,4 +43,31 @@ export const searchDeezer = async (input: GetMusicLinksInput) => {
   }
 
   return track.link;
+};
+
+/**
+ * Helper function to get the song details from deezer API given a track id
+ * @see https://developers.deezer.com/api/track
+ */
+export const getTrackDetailsByDeezerId = async (
+  id: string
+): Promise<GetMusicLinksInput> => {
+  const deezerUri = `https://api.deezer.com/track/${id}`;
+
+  const response = await fetch(deezerUri, {
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(CustomApiErrorMessages.ExternalApiIssue);
+  }
+
+  const data = (await response.json()) as DeezerTrack;
+
+  return {
+    artist: data.artist.name,
+    track: data.title,
+  };
 };

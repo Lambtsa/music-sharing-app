@@ -1,5 +1,6 @@
 import { CustomApiErrorMessages } from "@constants/errors";
 import { SpotifyDataType } from "@customTypes";
+import { sanitiseData } from "@helpers/sanitise";
 import { getListOfSongs } from "@helpers/spotify";
 import { ListOfTracksReturnType as ResponseMusicApi } from "@helpers/spotify/spotify.types";
 import { NextApiRequest, NextApiResponse } from "next/types";
@@ -21,19 +22,29 @@ const handler = async (
     /* DATA */
     /* ######################################## */
     const {
-      body: { artist, track },
+      body: { artist: rawArtist, track: rawTrack },
     } = req;
-    if (!artist && !track) {
+    if (!rawArtist && !rawTrack) {
       throw new Error(CustomApiErrorMessages.IncorrectInput);
     }
 
+    /* We sanitise before checking to make sure that we have accurate data */
+    const artist = sanitiseData(rawArtist || "");
+    const track = sanitiseData(rawTrack || "");
+
     if (!!artist) {
-      const response = await getListOfSongs(artist, SpotifyDataType.Artist);
+      const response = await getListOfSongs(
+        sanitiseData(rawArtist),
+        SpotifyDataType.Artist
+      );
       return res.status(200).json(response);
     }
 
     if (!!track) {
-      const response = await getListOfSongs(track, SpotifyDataType.Track);
+      const response = await getListOfSongs(
+        sanitiseData(rawTrack),
+        SpotifyDataType.Track
+      );
       return res.status(200).json(response);
     }
   } catch (err) {

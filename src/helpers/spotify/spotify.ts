@@ -1,5 +1,6 @@
 import {
   GetMusicLinksInput,
+  TrackItem,
   TrackResponse as SpotifyApiResponse,
 } from "@customTypes";
 import {
@@ -73,14 +74,6 @@ export const buildSpotifyListApiUrl = (
   return url;
 };
 
-/* 
-  artist | title | url
-
-  get list of titles for specific artist or per title => track api 
-  if url then need to parse type of url
-
-*/
-
 /**
  * Given an artist and title, this helper will return the spotify uri, artist and title
  * We use the spotify API to get stable artist and title because it seems to be the best search so far
@@ -128,6 +121,35 @@ export const searchSpotify = async (
 };
 
 /**
+ * Helper function to get the song details from spotify API given a track id
+ * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/get-track
+ */
+export const getTrackDetailsBySpotifyId = async (
+  id: string
+): Promise<GetMusicLinksInput> => {
+  const accessToken = await getAccessToken();
+  const spotifyUrl = `https://api.spotify.com/v1/tracks/${id}`;
+
+  const response = await fetch(spotifyUrl, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(CustomApiErrorMessages.ExternalApiIssue);
+  }
+
+  const data = (await response.json()) as TrackItem;
+
+  return {
+    artist: data.artists[0]?.name || "No artist",
+    track: data.name,
+  };
+};
+
+/**
  * Given an artist or a track this helper will return a list of the songs
  * @returns spotify uri and input
  * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/search
@@ -138,7 +160,6 @@ export const getListOfSongs = async (
 ): Promise<ListOfTracksReturnType> => {
   const accessToken = await getAccessToken();
 
-  console.log({ accessToken });
   let spotifyUrl: URL;
 
   switch (type) {
@@ -179,6 +200,7 @@ export const getListOfSongs = async (
       artist: item.album.artists[0]?.name || "Artist unknown",
       track: item.name,
       album: item.album.name,
+      imageUrl: item.album.images.find((image) => image.height === 300)?.url,
     })),
   };
 };

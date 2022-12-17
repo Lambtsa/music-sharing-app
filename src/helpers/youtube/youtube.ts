@@ -56,3 +56,28 @@ export const searchYoutube = async (input: GetMusicLinksInput) => {
 
   return buildYoutubeVideoUrl(track).toString();
 };
+
+/**
+ * Helper function to get the song details from youtube API given a track id
+ * @see https://developers.google.com/youtube/v3/docs/videos/list
+ */
+// export const getTrackDetailsByYoutubeId = async (id: string): Promise<GetMusicLinksInput> => {
+//   const youtubeUri = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet&id=${id}&key=${process.env.YOUTUBE_API_KEY}`;
+
+//   const response = await fetch(youtubeUri, {
+//     headers: {
+//       "Content-Type": "application/json; charset=UTF-8",
+//     },
+//   });
+
+//   if (!response.ok) {
+//     throw new Error(CustomApiErrorMessages.ExternalApiIssue);
+//   }
+
+//   const data = (await response.json()) as YoutubeTrackApiResponse;
+
+//   return {
+//     artist: data.artist.name,
+//     track: data.title
+//   }
+// }

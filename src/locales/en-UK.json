@@ -10,6 +10,7 @@
   "label.artist": "Artist",
   "label.copyLink": "Copy Link",
   "label.search": "Artist, title or streaming url",
+  "label.select": "Select",
   "label.track": "Track",
   "label.url": "Url",
   "label.invalidArtist": "Please provide an artist name",

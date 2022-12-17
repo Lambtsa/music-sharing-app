@@ -1,5 +1,5 @@
 import { InputSelection } from "@constants/input";
-import { isValidInput } from "./url";
+import { isValidInput, determineUrlType, getTrackId } from "./url";
 
 describe("isValidInput helper input", () => {
   test("A correct spotify link should return true", () => {
@@ -74,5 +74,92 @@ describe("isValidInput helper input", () => {
   });
   test("An empty string should return false", () => {
     expect(isValidInput("", InputSelection.Track)).toBe(false);
+  });
+});
+
+describe("determineUrlType helper function", () => {
+  test("should return 'spotify' for valid spotify url", () => {
+    expect(
+      determineUrlType("https://open.spotify.com/track/2SGBEDwsOAOAHrrdAd304i")
+    ).toBe("spotify");
+  });
+  test("should return null for invalid spotify url", () => {
+    expect(
+      determineUrlType("https://open.spotify.com/dasdsa/2SGBEDwsOAOAHrrdAd304i")
+    ).toBe(null);
+    expect(
+      determineUrlType("https://www.random.com/dasdsa/2SGBEDwsOAOAHrrdAd304i")
+    ).toBe(null);
+  });
+
+  test("should return 'deezer' for valid deezer url", () => {
+    expect(
+      determineUrlType("https://www.deezer.com/track/2SGBEDwsOAOAHrrdAd304i")
+    ).toBe("deezer");
+  });
+  test("should return null for invalid deezer url", () => {
+    expect(
+      determineUrlType("https://www.deezer.com/dasdsa/2SGBEDwsOAOAHrrdAd304i")
+    ).toBe(null);
+    expect(
+      determineUrlType("https://www.random.com/dasdsa/2SGBEDwsOAOAHrrdAd304i")
+    ).toBe(null);
+  });
+
+  test("should return 'youtube' for valid youtube url", () => {
+    expect(
+      determineUrlType("https://www.youtube.com/watch?v=2SGBEDwsOAOAHrrdAd304i")
+    ).toBe("youtube");
+  });
+  test("should return null for invalid youtube url", () => {
+    expect(
+      determineUrlType("https://www.youtube.com/watch?t=2SGBEDwsOAOAHrrdAd304i")
+    ).toBe(null);
+    expect(
+      determineUrlType("https://www.random.com/dasdsa/2SGBEDwsOAOAHrrdAd304i")
+    ).toBe(null);
+  });
+});
+
+describe("getTrackId helper function", () => {
+  test("should return valid id given valid spotify url", () => {
+    expect(
+      getTrackId(
+        "https://open.spotify.com/track/2SGBEDwsOAOAHrrdAd304i",
+        "spotify"
+      )
+    ).toBe("2SGBEDwsOAOAHrrdAd304i");
+  });
+  test("should return null given invalid spotify url", () => {
+    expect(getTrackId("https://open.spotify.com/dasdsa", "spotify")).toBe(null);
+  });
+
+  test("should return valid id given valid deezer url", () => {
+    expect(
+      getTrackId(
+        "https://www.deezer.com/track/2SGBEDwsOAOAHrrdAd304i",
+        "deezer"
+      )
+    ).toBe("2SGBEDwsOAOAHrrdAd304i");
+  });
+  test("should return null given invalid deezer url", () => {
+    expect(getTrackId("https://www.deezer.com/dasdsa", "spotify")).toBe(null);
+  });
+
+  test("should return valid id given valid youtube url", () => {
+    expect(
+      getTrackId(
+        "https://www.youtube.com/watch?v=2SGBEDwsOAOAHrrdAd304i",
+        "youtube"
+      )
+    ).toBe("2SGBEDwsOAOAHrrdAd304i");
+  });
+  test("should return null given invalid youtube url", () => {
+    expect(
+      getTrackId(
+        "https://www.youtube.com/watch?t=2SGBEDwsOAOAHrrdAd304i",
+        "spotify"
+      )
+    ).toBe(null);
   });
 });

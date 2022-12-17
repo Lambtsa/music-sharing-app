@@ -1,8 +1,9 @@
 import { CustomApiErrorMessages } from "@constants/errors";
-import { MusicData, ResponseLinksApi } from "@customTypes";
-import { searchDeezer } from "@helpers/deezer";
-import { sanitiseData } from "@helpers/sanitise";
-import { searchSpotify } from "@helpers/spotify";
+import { GetMusicLinksInput, MusicData, ResponseLinksApi } from "@customTypes";
+import { getTrackDetailsByDeezerId, searchDeezer } from "@helpers/deezer";
+import { isValidData } from "@helpers/sanitise";
+import { getTrackDetailsBySpotifyId, searchSpotify } from "@helpers/spotify";
+import { determineUrlType, getTrackId } from "@helpers/url";
 import { searchYoutube } from "@helpers/youtube";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
@@ -12,9 +13,13 @@ interface ResponseError {
   statusCode: number;
 }
 
-const inputSchema = z.object({
+const trackSchema = z.object({
   artist: z.string().min(1),
   track: z.string().min(1),
+});
+
+const urlSchema = z.object({
+  url: z.string().url(),
 });
 
 const handler = async (
@@ -29,46 +34,118 @@ const handler = async (
     /* DATA */
     /* ######################################## */
     const {
-      body: { artist, track },
+      body: { artist, track, url },
     } = req;
-    if (!artist || !track) {
+    if (!url && (!artist || !track)) {
       throw new Error(CustomApiErrorMessages.IncorrectInput);
     }
-    const sanitisedInput = sanitiseData({ artist, track }, inputSchema);
-    /* ######################################## */
-    /* SPOTIFY */
-    /* Use spotify to find other titles
-    /* ######################################## */
-    const { url: spotifyUri, input } = await searchSpotify(sanitisedInput);
 
-    /* ######################################## */
-    /* DEEZER */
-    /* ######################################## */
-    const deezerUri = await searchDeezer(input);
+    if (!!url) {
+      const { url: sanitisedUrlInput } = isValidData(
+        { url } as { url: string },
+        urlSchema
+      );
+      const urlType = determineUrlType(sanitisedUrlInput);
 
-    /* ######################################## */
-    /* YOUTUBE */
-    /* ######################################## */
-    const youtubeUri = await searchYoutube(input);
+      if (!urlType) {
+        throw new Error(CustomApiErrorMessages.IncorrectInput);
+      }
 
-    const response: MusicData[] = [
-      {
-        name: "spotify",
-        url: spotifyUri,
-      },
-      {
-        name: "deezer",
-        url: deezerUri,
-      },
-      {
-        name: "youtube",
-        url: youtubeUri,
-      },
-    ];
+      const trackId = getTrackId(sanitisedUrlInput, urlType);
 
-    res.status(200).json({
-      links: response,
-    });
+      if (!trackId) {
+        throw new Error(CustomApiErrorMessages.IncorrectInput);
+      }
+
+      let details: GetMusicLinksInput;
+
+      switch (urlType) {
+        case "spotify": {
+          details = await getTrackDetailsBySpotifyId(trackId);
+          break;
+        }
+        case "deezer": {
+          details = await getTrackDetailsByDeezerId(trackId);
+          break;
+        }
+        case "youtube": {
+          throw new Error(CustomApiErrorMessages.UnsupportedUrl);
+        }
+      }
+
+      /* ######################################## */
+      /* SPOTIFY */
+      /* Use spotify to find other titles
+      /* ######################################## */
+      const { url: spotifyUri } = await searchSpotify(details);
+
+      /* ######################################## */
+      /* DEEZER */
+      /* ######################################## */
+      const deezerUri = await searchDeezer(details);
+
+      /* ######################################## */
+      /* YOUTUBE */
+      /* ######################################## */
+      const youtubeUri = await searchYoutube(details);
+
+      const response: MusicData[] = [
+        {
+          name: "spotify",
+          url: spotifyUri,
+        },
+        {
+          name: "deezer",
+          url: deezerUri,
+        },
+        {
+          name: "youtube",
+          url: youtubeUri,
+        },
+      ];
+
+      res.status(200).json({
+        links: response,
+      });
+    } else {
+      const sanitisedTrackInput = isValidData({ artist, track }, trackSchema);
+      /* ######################################## */
+      /* SPOTIFY */
+      /* Use spotify to find other titles
+      /* ######################################## */
+      const { url: spotifyUri, input } = await searchSpotify(
+        sanitisedTrackInput
+      );
+
+      /* ######################################## */
+      /* DEEZER */
+      /* ######################################## */
+      const deezerUri = await searchDeezer(input);
+
+      /* ######################################## */
+      /* YOUTUBE */
+      /* ######################################## */
+      const youtubeUri = await searchYoutube(input);
+
+      const response: MusicData[] = [
+        {
+          name: "spotify",
+          url: spotifyUri,
+        },
+        {
+          name: "deezer",
+          url: deezerUri,
+        },
+        {
+          name: "youtube",
+          url: youtubeUri,
+        },
+      ];
+
+      res.status(200).json({
+        links: response,
+      });
+    }
   } catch (err) {
     console.log({ err });
     res.status(400).send({

@@ -4,6 +4,7 @@ import {
   spotifyUrlRegex,
   youtubeUrlRegex,
 } from "@constants/regex";
+import { MusicProviders } from "@customTypes";
 
 /**
  * Validates url input against expected url formats, and validates title/artist string length
@@ -30,6 +31,50 @@ export const isValidInput = (
         deezerUrlRegex.test(input) ||
         youtubeUrlRegex.test(input)
       );
+    }
+  }
+};
+
+/**
+ * Helper for determining which type of url has been passed into endpoint
+ * @returns MusicProviders | null
+ */
+export const determineUrlType = (url: string): MusicProviders | null => {
+  switch (true) {
+    case spotifyUrlRegex.test(url): {
+      return "spotify";
+    }
+    case deezerUrlRegex.test(url): {
+      return "deezer";
+    }
+    case youtubeUrlRegex.test(url): {
+      return "youtube";
+    }
+    default: {
+      return null;
+    }
+  }
+};
+/**
+ * Helper function to get id from the different supported urls
+ * @returns string | null
+ */
+export const getTrackId = (
+  url: string,
+  type: MusicProviders
+): string | null => {
+  const urlObj = new URL(url);
+  switch (type) {
+    case "spotify": {
+      const pathnameArray = urlObj.pathname.split("/");
+      return pathnameArray[2] || null;
+    }
+    case "deezer": {
+      const pathnameArray = urlObj.pathname.split("/");
+      return pathnameArray[2] || null;
+    }
+    case "youtube": {
+      return urlObj.searchParams.get("v");
     }
   }
 };

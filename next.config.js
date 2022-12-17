@@ -10,6 +10,17 @@ module.exports = (phase, { defaultConfig }) => {
     // Enable <React.StrictMode> in application
     reactStrictMode: true,
 
+    images: {
+      remotePatterns: [
+        {
+          protocol: "https",
+          hostname: "i.scdn.co",
+          port: "",
+          pathname: "/image/**",
+        },
+      ],
+    },
+
     // fileExtensions: ["jpg", "jpeg", "png", "gif"],
 
     webpack(config) {
