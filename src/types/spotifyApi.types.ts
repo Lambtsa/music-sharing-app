@@ -1,4 +1,4 @@
-enum SpotifyDataType {
+export enum SpotifyDataType {
   Album = "album",
   Artist = "artist",
   Track = "track",

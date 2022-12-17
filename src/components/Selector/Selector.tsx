@@ -1,5 +1,5 @@
+import { InputSelection } from "@constants/input";
 import { useTranslation } from "@hooks/useTranslation";
-import { InputSelection } from "@screens/home/Home.types";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import {
   ButtonText,

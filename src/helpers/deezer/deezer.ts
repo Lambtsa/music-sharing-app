@@ -6,9 +6,9 @@ import { DeezerApiResponse } from "./deezer.types";
  * Builds spotify URL using base, artist and track
  * @returns Deezer API URL
  */
-export const buildDeezerApiUrl = ({ artist, title }: GetMusicLinksInput) => {
+export const buildDeezerApiUrl = ({ artist, track }: GetMusicLinksInput) => {
   const url = new URL("https://api.deezer.com/search");
-  url.searchParams.append("q", `artist:"${artist}" track:"${title}"`);
+  url.searchParams.append("q", `artist:"${artist}" track:"${track}"`);
   return url;
 };
 
@@ -35,7 +35,7 @@ export const searchDeezer = async (input: GetMusicLinksInput) => {
 
   /* TODO: This will need optimising because currently only returns the first element found + need better searching */
   const track = data.find((item) =>
-    item.title.toLowerCase().includes(input.title.toLowerCase())
+    item.title.toLowerCase().includes(input.track.toLowerCase())
   );
 
   if (!track) {

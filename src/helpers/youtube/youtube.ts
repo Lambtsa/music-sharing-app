@@ -8,11 +8,11 @@ import { YoutubeApiResponse } from "./youtube.types";
  */
 export const buildYoutubeApiUrl = ({
   artist,
-  title,
+  track,
 }: GetMusicLinksInput): URL => {
   const url = new URL("https://www.googleapis.com/youtube/v3/search");
   url.searchParams.append("key", process.env.YOUTUBE_API_KEY);
-  url.searchParams.append("q", `artist:"${artist}" track:"${title}"`);
+  url.searchParams.append("q", `artist:"${artist}" track:"${track}"`);
   return url;
 };
 

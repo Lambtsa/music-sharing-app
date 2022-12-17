@@ -1,5 +1,5 @@
 export enum InputSelection {
   Artist = "artist",
-  Title = "title",
+  Track = "track",
   Url = "url",
 }

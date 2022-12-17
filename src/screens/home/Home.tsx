@@ -19,18 +19,14 @@ import {
 } from "./Home.styles";
 import { InputText } from "@components/Inputs/InputText";
 import { Button } from "@components/Button";
-import { MusicData, ResponseMusicData } from "@customTypes";
+import { MusicData, ResponseLinksApi, ResponseMusicApi } from "@customTypes";
 import { MusicLink } from "@components/Link";
 import { Loader } from "@components/Loader";
 import { MessageBox } from "@components/MessageBox";
 import { Footer } from "@components/Footer";
 import { Selector } from "@components/Selector";
-import { InputSelection } from "./Home.types";
-import {
-  deezerUrlRegex,
-  spotifyUrlRegex,
-  youtubeUrlRegex,
-} from "@constants/regex";
+import { InputSelection } from "@constants/input";
+import { isValidInput } from "@helpers/url";
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
@@ -40,6 +36,7 @@ export const HomeScreen = (): JSX.Element => {
   /* ################################################## */
   const { isLight } = useLightOrDarkTheme();
   const [links, setLinks] = useState<MusicData[]>([]);
+  const [tracks, setTracks] = useState<ResponseMusicApi["tracks"]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<
     FormatjsIntl.Message["ids"] | undefined
@@ -48,30 +45,12 @@ export const HomeScreen = (): JSX.Element => {
     InputSelection.Artist
   );
 
-  const isValidInput = (input: string): boolean => {
-    switch (selected) {
-      case InputSelection.Artist:
-      case InputSelection.Title: {
-        // TODO: valid string to avoid urls, js,...
-        return input.length >= 1;
-      }
-      case InputSelection.Url: {
-        /* If one of these is a correct url then it will return true otherwise false */
-        return (
-          spotifyUrlRegex.test(input) ||
-          deezerUrlRegex.test(input) ||
-          youtubeUrlRegex.test(input)
-        );
-      }
-    }
-  };
-
   const createErrorMessage = (selected: InputSelection): string => {
     switch (selected) {
       case InputSelection.Artist: {
         return t({ id: "error.message.requiredArtist" });
       }
-      case InputSelection.Title: {
+      case InputSelection.Track: {
         return t({ id: "error.message.requiredTitle" });
       }
       case InputSelection.Url: {
@@ -89,7 +68,7 @@ export const HomeScreen = (): JSX.Element => {
         required_error: t({ id: "error.message.requiredArtist" }),
       })
       .trim()
-      .refine(isValidInput, {
+      .refine((val) => isValidInput(val, selected), {
         message: createErrorMessage(selected),
       }),
   });
@@ -136,29 +115,59 @@ export const HomeScreen = (): JSX.Element => {
 
       handleSubmit(
         async (formFields) => {
-          const response = await fetch("/api/music", {
-            method: "POST",
-            headers: {
-              "Content-type": "application/json",
-            },
-            body: JSON.stringify(formFields),
-          });
+          switch (selected) {
+            case InputSelection.Artist:
+            case InputSelection.Track: {
+              const response = await fetch("/api/music", {
+                method: "POST",
+                headers: {
+                  "Content-type": "application/json",
+                },
+                body: JSON.stringify({
+                  [selected]: formFields.search,
+                }),
+              });
+              const data: ResponseMusicApi = await response.json();
 
-          const data: ResponseMusicData = await response.json();
+              timeOut = setTimeout(() => {
+                if (response.ok) {
+                  setTracks(data.tracks);
+                  setErrorMessage(undefined);
+                  setIsLoading(false);
+                } else {
+                  // TODO: make specific error messages
+                  setErrorMessage("error.message.noTitle");
+                  setIsLoading(false);
+                }
+              }, 2000);
 
-          timeOut = setTimeout(() => {
-            if (response.ok) {
-              setLinks(data.links);
-              setErrorMessage(undefined);
-              setIsLoading(false);
-            } else {
-              // TODO: make specific error messages
-              setErrorMessage("error.message.noTitle");
-              setIsLoading(false);
+              return () => clearTimeout(timeOut);
             }
-          }, 2000);
+            case InputSelection.Url: {
+              const response = await fetch("/api/links", {
+                method: "POST",
+                headers: {
+                  "Content-type": "application/json",
+                },
+                body: JSON.stringify(formFields),
+              });
+              const data: ResponseLinksApi = await response.json();
 
-          return () => clearTimeout(timeOut);
+              timeOut = setTimeout(() => {
+                if (response.ok) {
+                  setLinks(data.links);
+                  setErrorMessage(undefined);
+                  setIsLoading(false);
+                } else {
+                  // TODO: make specific error messages
+                  setErrorMessage("error.message.noTitle");
+                  setIsLoading(false);
+                }
+              }, 2000);
+
+              return () => clearTimeout(timeOut);
+            }
+          }
         },
         (error) => {
           console.log({ error });
@@ -168,10 +177,11 @@ export const HomeScreen = (): JSX.Element => {
         }
       )();
     },
-    [handleSubmit]
+    [handleSubmit, selected]
   );
 
   const hasLinks = !!links.length;
+  const hasTracks = !!tracks.length;
   const hasErrorMessage = !!errorMessage;
 
   return (
@@ -210,6 +220,15 @@ export const HomeScreen = (): JSX.Element => {
               hasLinks &&
               links.map(({ name, url }) => (
                 <MusicLink key={name} service={name} serviceUrl={url} />
+              ))}
+            {!isLoading &&
+              hasTracks &&
+              tracks.map((track, index) => (
+                <div key={index}>
+                  <p>{track.artist}</p>
+                  <p>{track.track}</p>
+                  <p>{track.album}</p>
+                </div>
               ))}
             {!isLoading && hasErrorMessage && (
               <MessageBox message={errorMessage} />

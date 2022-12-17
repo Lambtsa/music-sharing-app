@@ -1,25 +1,17 @@
 import { CustomApiErrorMessages } from "@constants/errors";
-import { MusicData, ResponseMusicData } from "@customTypes";
-import { searchDeezer } from "@helpers/deezer";
-import { sanitiseData } from "@helpers/sanitise";
-import { searchSpotify } from "@helpers/spotify";
-import { searchYoutube } from "@helpers/youtube";
-import type { NextApiRequest, NextApiResponse } from "next";
-import { z } from "zod";
+import { SpotifyDataType } from "@customTypes";
+import { getListOfSongs } from "@helpers/spotify";
+import { ListOfTracksReturnType as ResponseMusicApi } from "@helpers/spotify/spotify.types";
+import { NextApiRequest, NextApiResponse } from "next/types";
 
 interface ResponseError {
   message: string;
   statusCode: number;
 }
 
-const inputSchema = z.object({
-  artist: z.string().min(1),
-  title: z.string().min(1),
-});
-
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<ResponseMusicData | ResponseError>
+  res: NextApiResponse<ResponseMusicApi | ResponseError>
 ) => {
   try {
     if (req.method !== "POST") {
@@ -29,46 +21,21 @@ const handler = async (
     /* DATA */
     /* ######################################## */
     const {
-      body: { artist, title },
+      body: { artist, track },
     } = req;
-    if (!artist || !title) {
+    if (!artist && !track) {
       throw new Error(CustomApiErrorMessages.IncorrectInput);
     }
-    const sanitisedInput = sanitiseData({ artist, title }, inputSchema);
-    /* ######################################## */
-    /* SPOTIFY */
-    /* Use spotify to find other titles
-    /* ######################################## */
-    const { uri: spotifyUri, input } = await searchSpotify(sanitisedInput);
 
-    /* ######################################## */
-    /* DEEZER */
-    /* ######################################## */
-    const deezerUri = await searchDeezer(input);
+    if (!!artist) {
+      const response = await getListOfSongs(artist, SpotifyDataType.Artist);
+      return res.status(200).json(response);
+    }
 
-    /* ######################################## */
-    /* YOUTUBE */
-    /* ######################################## */
-    const youtubeUri = await searchYoutube(input);
-
-    const response: MusicData[] = [
-      {
-        name: "spotify",
-        url: spotifyUri,
-      },
-      {
-        name: "deezer",
-        url: deezerUri,
-      },
-      {
-        name: "youtube",
-        url: youtubeUri,
-      },
-    ];
-
-    res.status(200).json({
-      links: response,
-    });
+    if (!!track) {
+      const response = await getListOfSongs(track, SpotifyDataType.Track);
+      return res.status(200).json(response);
+    }
   } catch (err) {
     console.log({ err });
     res.status(400).send({
