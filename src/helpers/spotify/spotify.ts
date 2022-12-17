@@ -1,5 +1,8 @@
-import { GetMusicLinksInput } from "@customTypes";
-import { AccessTokenBody, SpotifyApiResponse } from "./spotify.types";
+import {
+  GetMusicLinksInput,
+  TrackResponse as SpotifyApiResponse,
+} from "@customTypes";
+import { AccessTokenBody } from "./spotify.types";
 import { CustomApiErrorMessages } from "@constants/errors";
 
 /**
@@ -18,6 +21,7 @@ export const encodeAuth = (): string => {
  * @see https://developer.spotify.com/documentation/general/guides/authorization/client-credentials/
  */
 export const getAccessToken = async (): Promise<string> => {
+  // TODO: figure out a way to only ping token API if needed
   const auth = encodeAuth();
   const spotifyUrl = "https://accounts.spotify.com/api/token";
 
@@ -58,6 +62,8 @@ export const buildSpotifyApiUrl = ({ artist, title }: GetMusicLinksInput) => {
  */
 export const searchSpotify = async (input: GetMusicLinksInput) => {
   const accessToken = await getAccessToken();
+
+  console.log({ accessToken });
 
   const spotifyUrl = buildSpotifyApiUrl(input);
 

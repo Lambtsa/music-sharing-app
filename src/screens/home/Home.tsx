@@ -25,15 +25,60 @@ import { Loader } from "@components/Loader";
 import { MessageBox } from "@components/MessageBox";
 import { Footer } from "@components/Footer";
 import { Selector } from "@components/Selector";
+import { InputSelection } from "./Home.types";
+import {
+  deezerUrlRegex,
+  spotifyUrlRegex,
+  youtubeUrlRegex,
+} from "@constants/regex";
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
+
+  /* ################################################## */
+  /* State */
+  /* ################################################## */
   const { isLight } = useLightOrDarkTheme();
   const [links, setLinks] = useState<MusicData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<
     FormatjsIntl.Message["ids"] | undefined
   >(undefined);
+  const [selected, setSelected] = useState<InputSelection>(
+    InputSelection.Artist
+  );
+
+  const isValidInput = (input: string): boolean => {
+    switch (selected) {
+      case InputSelection.Artist:
+      case InputSelection.Title: {
+        // TODO: valid string to avoid urls, js,...
+        return input.length >= 1;
+      }
+      case InputSelection.Url: {
+        /* If one of these is a correct url then it will return true otherwise false */
+        return (
+          spotifyUrlRegex.test(input) ||
+          deezerUrlRegex.test(input) ||
+          youtubeUrlRegex.test(input)
+        );
+      }
+    }
+  };
+
+  const createErrorMessage = (selected: InputSelection): string => {
+    switch (selected) {
+      case InputSelection.Artist: {
+        return t({ id: "error.message.requiredArtist" });
+      }
+      case InputSelection.Title: {
+        return t({ id: "error.message.requiredTitle" });
+      }
+      case InputSelection.Url: {
+        return t({ id: "error.message.requiredUrl" });
+      }
+    }
+  };
 
   /* ################################################## */
   /* Forms */
@@ -43,8 +88,10 @@ export const HomeScreen = (): JSX.Element => {
       .string({
         required_error: t({ id: "error.message.requiredArtist" }),
       })
-      .min(1, { message: t({ id: "error.message.requiredArtist" }) })
-      .trim(),
+      .trim()
+      .refine(isValidInput, {
+        message: createErrorMessage(selected),
+      }),
   });
 
   type FormFields = TypeOf<typeof validationSchema>;
@@ -84,6 +131,7 @@ export const HomeScreen = (): JSX.Element => {
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       setIsLoading(true);
+      setLinks([]);
       let timeOut: NodeJS.Timeout;
 
       handleSubmit(
@@ -147,7 +195,11 @@ export const HomeScreen = (): JSX.Element => {
               placeholder={t({ id: "label.search" })}
               error={formErrors.search}
             />
-            <Selector isLight={isLight} />
+            <Selector
+              isLight={isLight}
+              selected={selected}
+              setSelected={setSelected}
+            />
             <Button type="submit" isLight={isLight}>
               {t({ id: "home.cta" })}
             </Button>

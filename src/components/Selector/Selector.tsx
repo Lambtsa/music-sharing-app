@@ -1,17 +1,24 @@
 import { useTranslation } from "@hooks/useTranslation";
-import { useMemo, useState } from "react";
+import { InputSelection } from "@screens/home/Home.types";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import {
   ButtonText,
   SelectorButton,
   SelectorContainer,
 } from "./Selector.styles";
-import { InputSelection, SelectorProps } from "./Selector.types";
 
-export const Selector = ({ isLight }: SelectorProps): JSX.Element => {
+interface SelectorProps {
+  isLight: boolean;
+  selected: InputSelection;
+  setSelected: Dispatch<SetStateAction<InputSelection>>;
+}
+
+export const Selector = ({
+  isLight,
+  selected,
+  setSelected,
+}: SelectorProps): JSX.Element => {
   const { t } = useTranslation();
-  const [selected, setSelected] = useState<InputSelection>(
-    InputSelection.Artist
-  );
 
   const options = useMemo(() => {
     return Object.values(InputSelection);
