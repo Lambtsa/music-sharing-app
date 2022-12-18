@@ -9,7 +9,11 @@ import {
   SearchSpotifyReturnType,
   SpotifyInputType,
 } from "./spotify.types";
-import { CustomApiErrorMessages } from "@constants/errors";
+import {
+  ExternalApiError,
+  BadGatewayError,
+  NotFoundError,
+} from "@constants/errors";
 
 /**
  * Encodes in base64 the clientId:clientSecret for use with spotify API
@@ -41,7 +45,7 @@ export const getAccessToken = async (): Promise<string> => {
   });
 
   if (!response.ok) {
-    throw new Error(CustomApiErrorMessages.NoAccessToken);
+    throw new BadGatewayError();
   }
 
   const body = (await response.json()) as AccessTokenBody;
@@ -97,7 +101,7 @@ export const searchSpotify = async (
   });
 
   if (!response.ok) {
-    throw new Error(CustomApiErrorMessages.ExternalApiIssue);
+    throw new ExternalApiError();
   }
 
   const data = (await response.json()) as SpotifyApiResponse;
@@ -108,7 +112,7 @@ export const searchSpotify = async (
   );
 
   if (!track || !track.artists[0]) {
-    throw new Error(CustomApiErrorMessages.NoTrack);
+    throw new NotFoundError();
   }
 
   return {
@@ -138,7 +142,7 @@ export const getTrackDetailsBySpotifyId = async (
   });
 
   if (!response.ok) {
-    throw new Error(CustomApiErrorMessages.ExternalApiIssue);
+    throw new ExternalApiError();
   }
 
   const data = (await response.json()) as TrackItem;
@@ -175,7 +179,7 @@ export const getListOfSongs = async (
 
   if (!spotifyUrl) {
     // TODO: is this possible?
-    throw new Error("Issue with spotify url");
+    throw new ExternalApiError("Issue with spotify url");
   }
 
   const response = await fetch(spotifyUrl.toString(), {
@@ -186,13 +190,13 @@ export const getListOfSongs = async (
   });
 
   if (!response.ok) {
-    throw new Error(CustomApiErrorMessages.ExternalApiIssue);
+    throw new ExternalApiError();
   }
 
   const data = (await response.json()) as SpotifyApiResponse;
 
   if (!data.tracks.items.length) {
-    throw new Error(CustomApiErrorMessages.NoTrack);
+    throw new NotFoundError();
   }
 
   return {

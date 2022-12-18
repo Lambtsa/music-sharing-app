@@ -1,4 +1,4 @@
-import { CustomApiErrorMessages } from "@constants/errors";
+import { ExternalApiError, NotFoundError } from "@constants/errors";
 import { GetMusicLinksInput } from "@customTypes";
 import { YoutubeApiResponse } from "./youtube.types";
 
@@ -42,7 +42,7 @@ export const searchYoutube = async (input: GetMusicLinksInput) => {
   });
 
   if (!response.ok) {
-    throw new Error(CustomApiErrorMessages.ExternalApiIssue);
+    throw new ExternalApiError();
   }
 
   const data = (await response.json()) as YoutubeApiResponse;
@@ -51,7 +51,7 @@ export const searchYoutube = async (input: GetMusicLinksInput) => {
   const track = data.items[0]?.id.videoId;
 
   if (!track) {
-    throw new Error(CustomApiErrorMessages.NoTrack);
+    throw new NotFoundError();
   }
 
   return buildYoutubeVideoUrl(track).toString();

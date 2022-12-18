@@ -1,4 +1,4 @@
-import { CustomApiErrorMessages } from "@constants/errors";
+import { BadRequestError } from "@constants/errors";
 import { isValidData, sanitiseData } from "./sanitise";
 import { z } from "zod";
 
@@ -16,17 +16,17 @@ describe("isValidData helper for object", () => {
   test("Empty string for both artist and title should throw an error", () => {
     expect(() => {
       isValidData({ artist: "", title: "" }, testSchema);
-    }).toThrowError(CustomApiErrorMessages.IncorrectInput);
+    }).toThrow(new BadRequestError());
   });
   test("Empty string for artist should throw an error", () => {
     expect(() => {
       isValidData({ artist: "", title: "Fragile" }, testSchema);
-    }).toThrowError(CustomApiErrorMessages.IncorrectInput);
+    }).toThrow(new BadRequestError());
   });
   test("Empty string for title should throw an error", () => {
     expect(() => {
       isValidData({ artist: "Last Train", title: "" }, testSchema);
-    }).toThrowError(CustomApiErrorMessages.IncorrectInput);
+    }).toThrow(new BadRequestError());
   });
 
   test("Input that has whitespace should be returned without", () => {

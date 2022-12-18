@@ -1,4 +1,8 @@
-import { CustomApiErrorMessages } from "@constants/errors";
+import {
+  MethodNotAllowedError,
+  BadRequestError,
+  UnsupportedUrlError,
+} from "@constants/errors";
 import { GetMusicLinksInput, MusicData, ResponseLinksApi } from "@customTypes";
 import { getTrackDetailsByDeezerId, searchDeezer } from "@helpers/deezer";
 import { isValidData } from "@helpers/sanitise";
@@ -28,7 +32,7 @@ const handler = async (
 ) => {
   try {
     if (req.method !== "POST") {
-      throw new Error(CustomApiErrorMessages.IncorrectMethod);
+      throw new MethodNotAllowedError();
     }
     /* ######################################## */
     /* DATA */
@@ -37,7 +41,7 @@ const handler = async (
       body: { artist, track, url },
     } = req;
     if (!url && (!artist || !track)) {
-      throw new Error(CustomApiErrorMessages.IncorrectInput);
+      throw new BadRequestError();
     }
 
     if (!!url) {
@@ -48,13 +52,13 @@ const handler = async (
       const urlType = determineUrlType(sanitisedUrlInput);
 
       if (!urlType) {
-        throw new Error(CustomApiErrorMessages.IncorrectInput);
+        throw new BadRequestError();
       }
 
       const trackId = getTrackId(sanitisedUrlInput, urlType);
 
       if (!trackId) {
-        throw new Error(CustomApiErrorMessages.IncorrectInput);
+        throw new BadRequestError();
       }
 
       let details: GetMusicLinksInput;
@@ -69,7 +73,7 @@ const handler = async (
           break;
         }
         case "youtube": {
-          throw new Error(CustomApiErrorMessages.UnsupportedUrl);
+          throw new UnsupportedUrlError();
         }
       }
 
@@ -106,6 +110,7 @@ const handler = async (
 
       res.status(200).json({
         links: response,
+        details,
       });
     } else {
       const sanitisedTrackInput = isValidData({ artist, track }, trackSchema);
@@ -116,16 +121,19 @@ const handler = async (
       const { url: spotifyUri, input } = await searchSpotify(
         sanitisedTrackInput
       );
+      console.log({ spotifyUri, input });
 
       /* ######################################## */
       /* DEEZER */
       /* ######################################## */
       const deezerUri = await searchDeezer(input);
+      console.log({ deezerUri, input });
 
       /* ######################################## */
       /* YOUTUBE */
       /* ######################################## */
       const youtubeUri = await searchYoutube(input);
+      console.log({ youtubeUri, input });
 
       const response: MusicData[] = [
         {
@@ -144,6 +152,7 @@ const handler = async (
 
       res.status(200).json({
         links: response,
+        details: { artist, track },
       });
     }
   } catch (err) {

@@ -1,4 +1,4 @@
-import { CustomApiErrorMessages } from "@constants/errors";
+import { BadRequestError } from "@constants/errors";
 import { z } from "zod";
 
 /**
@@ -32,7 +32,7 @@ export const isValidData = <T extends Record<string, string>>(
 
   const isValid = schema.safeParse(newInput);
   if (!isValid.success) {
-    throw new Error(CustomApiErrorMessages.IncorrectInput);
+    throw new BadRequestError();
   }
   return newInput as T;
 };

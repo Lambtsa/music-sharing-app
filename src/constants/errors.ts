@@ -6,3 +6,75 @@ export enum CustomApiErrorMessages {
   IncorrectMethod = "Only POST method is available",
   UnsupportedUrl = "Unfortunately Youtube is unsupported currently",
 }
+
+export class BadGatewayError extends Error {
+  statusCode = 502;
+  message = CustomApiErrorMessages.NoAccessToken;
+
+  constructor(message?: string) {
+    super(message);
+
+    // 👇️ because we are extending a built-in class
+    Object.setPrototypeOf(this, BadGatewayError.prototype);
+  }
+}
+
+export class BadRequestError extends Error {
+  statusCode = 400;
+  message = CustomApiErrorMessages.IncorrectInput;
+
+  constructor(message?: string) {
+    super(message);
+
+    // 👇️ because we are extending a built-in class
+    Object.setPrototypeOf(this, BadRequestError.prototype);
+  }
+}
+
+export class UnsupportedUrlError extends Error {
+  statusCode = 400;
+  message = CustomApiErrorMessages.UnsupportedUrl;
+
+  constructor(message?: string) {
+    super(message);
+
+    // 👇️ because we are extending a built-in class
+    Object.setPrototypeOf(this, UnsupportedUrlError.prototype);
+  }
+}
+
+export class ExternalApiError extends Error {
+  statusCode = 500;
+  message = CustomApiErrorMessages.ExternalApiIssue;
+
+  constructor(message?: string) {
+    super(message);
+
+    // 👇️ because we are extending a built-in class
+    Object.setPrototypeOf(this, ExternalApiError.prototype);
+  }
+}
+
+export class NotFoundError extends Error {
+  statusCode = 404;
+  message = CustomApiErrorMessages.NoTrack;
+
+  constructor(message?: string) {
+    super(message);
+
+    // 👇️ because we are extending a built-in class
+    Object.setPrototypeOf(this, NotFoundError.prototype);
+  }
+}
+
+export class MethodNotAllowedError extends Error {
+  statusCode = 405;
+  message = CustomApiErrorMessages.IncorrectMethod;
+
+  constructor(message?: string) {
+    super(message);
+
+    // 👇️ because we are extending a built-in class
+    Object.setPrototypeOf(this, MethodNotAllowedError.prototype);
+  }
+}

@@ -1,4 +1,4 @@
-import { CustomApiErrorMessages } from "@constants/errors";
+import { BadRequestError, MethodNotAllowedError } from "@constants/errors";
 import { SpotifyDataType } from "@customTypes";
 import { sanitiseData } from "@helpers/sanitise";
 import { getListOfSongs } from "@helpers/spotify";
@@ -16,7 +16,7 @@ const handler = async (
 ) => {
   try {
     if (req.method !== "POST") {
-      throw new Error(CustomApiErrorMessages.IncorrectMethod);
+      throw new MethodNotAllowedError();
     }
     /* ######################################## */
     /* DATA */
@@ -25,7 +25,7 @@ const handler = async (
       body: { artist: rawArtist, track: rawTrack },
     } = req;
     if (!rawArtist && !rawTrack) {
-      throw new Error(CustomApiErrorMessages.IncorrectInput);
+      throw new BadRequestError();
     }
 
     /* We sanitise before checking to make sure that we have accurate data */

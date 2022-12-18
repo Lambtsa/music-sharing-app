@@ -137,6 +137,7 @@ export const HomeScreen = (): JSX.Element => {
                   setTracks(data.tracks);
                   setErrorMessage(undefined);
                   setIsLoading(false);
+                  reset(defaultValues, { keepDefaultValues: true });
                 } else {
                   // TODO: make specific error messages
                   setErrorMessage("error.message.noTitle");
@@ -152,7 +153,9 @@ export const HomeScreen = (): JSX.Element => {
                 headers: {
                   "Content-type": "application/json",
                 },
-                body: JSON.stringify(formFields),
+                body: JSON.stringify({
+                  url: formFields.search,
+                }),
               });
               const data: ResponseLinksApi = await response.json();
 
@@ -161,6 +164,7 @@ export const HomeScreen = (): JSX.Element => {
                   setLinks(data.links);
                   setErrorMessage(undefined);
                   setIsLoading(false);
+                  reset(defaultValues, { keepDefaultValues: true });
                 } else {
                   // TODO: make specific error messages
                   setErrorMessage("error.message.noTitle");
@@ -180,7 +184,38 @@ export const HomeScreen = (): JSX.Element => {
         }
       )();
     },
-    [handleSubmit, selected]
+    [defaultValues, handleSubmit, reset, selected]
+  );
+
+  const handleOnClick = useCallback(
+    async ({ artist, track }: { artist: string; track: string }) => {
+      setIsLoading(true);
+      setTracks([]);
+      const response = await fetch("/api/links", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ artist, track }),
+      });
+      const data: ResponseLinksApi = await response.json();
+
+      const timeOut = setTimeout(() => {
+        if (response.ok) {
+          setLinks(data.links);
+          setErrorMessage(undefined);
+          setIsLoading(false);
+          reset(defaultValues, { keepDefaultValues: true });
+        } else {
+          // TODO: make specific error messages
+          setErrorMessage("error.message.noTitle");
+          setIsLoading(false);
+        }
+      }, 2000);
+
+      return () => clearTimeout(timeOut);
+    },
+    [defaultValues, reset]
   );
 
   const hasLinks = !!links.length;
@@ -227,7 +262,11 @@ export const HomeScreen = (): JSX.Element => {
             {!isLoading &&
               hasTracks &&
               tracks.map((track) => (
-                <TrackBtn key={`${uuid()}=${track.track}`} track={track} />
+                <TrackBtn
+                  key={`${uuid()}=${track.track}`}
+                  track={track}
+                  handleOnClick={handleOnClick}
+                />
               ))}
             {!isLoading && hasErrorMessage && (
               <MessageBox message={errorMessage} />

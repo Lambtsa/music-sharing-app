@@ -1,5 +1,4 @@
 import { useTranslation } from "@hooks/useTranslation";
-import { useCallback } from "react";
 import {
   Img,
   TrackBtnBtn,
@@ -10,12 +9,11 @@ import {
 } from "./TrackBtn.styles";
 import { TrackBtnProps } from "./TrackBtn.types";
 
-export const TrackBtn = ({ track }: TrackBtnProps): JSX.Element => {
+export const TrackBtn = ({
+  track,
+  handleOnClick,
+}: TrackBtnProps): JSX.Element => {
   const { t } = useTranslation();
-
-  const handleOnClick = useCallback(() => {
-    console.log("clicked");
-  }, []);
 
   return (
     <TrackBtnContainer>
@@ -31,7 +29,12 @@ export const TrackBtn = ({ track }: TrackBtnProps): JSX.Element => {
         <TrackBtnText>{track.track}</TrackBtnText>
         <TrackBtnText>{track.album}</TrackBtnText>
       </TrackInfoContainer>
-      <TrackBtnBtn type="button" onClick={handleOnClick}>
+      <TrackBtnBtn
+        type="button"
+        onClick={() =>
+          handleOnClick({ artist: track.artist, track: track.track })
+        }
+      >
         {t({ id: "label.select" })}
       </TrackBtnBtn>
     </TrackBtnContainer>

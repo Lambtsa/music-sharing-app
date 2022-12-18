@@ -9,6 +9,7 @@ export type MusicProviders = "spotify" | "youtube" | "deezer";
 
 export interface ResponseLinksApi {
   links: MusicData[];
+  details: GetMusicLinksInput;
 }
 
 export type ResponseMusicApi = ListOfTracksReturnType;
