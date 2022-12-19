@@ -2,8 +2,10 @@ import {
   MethodNotAllowedError,
   BadRequestError,
   UnsupportedUrlError,
+  CustomBaseError,
 } from "@constants/errors";
 import { GetMusicLinksInput, MusicData, ResponseLinksApi } from "@customTypes";
+import { ResponseError } from "@helpers/api";
 import { getTrackDetailsByDeezerId, searchDeezer } from "@helpers/deezer";
 import { isValidData } from "@helpers/sanitise";
 import { getTrackDetailsBySpotifyId, searchSpotify } from "@helpers/spotify";
@@ -11,11 +13,6 @@ import { determineUrlType, getTrackId } from "@helpers/url";
 import { searchYoutube } from "@helpers/youtube";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
-
-interface ResponseError {
-  message: string;
-  statusCode: number;
-}
 
 const trackSchema = z.object({
   artist: z.string().min(1),
@@ -121,19 +118,16 @@ const handler = async (
       const { url: spotifyUri, input } = await searchSpotify(
         sanitisedTrackInput
       );
-      console.log({ spotifyUri, input });
 
       /* ######################################## */
       /* DEEZER */
       /* ######################################## */
       const deezerUri = await searchDeezer(input);
-      console.log({ deezerUri, input });
 
       /* ######################################## */
       /* YOUTUBE */
       /* ######################################## */
       const youtubeUri = await searchYoutube(input);
-      console.log({ youtubeUri, input });
 
       const response: MusicData[] = [
         {
@@ -157,10 +151,11 @@ const handler = async (
     }
   } catch (err) {
     console.log({ err });
-    res.status(400).send({
-      message: "",
-      statusCode: 400,
-    });
+    if (err instanceof CustomBaseError) {
+      res.status(err.statusCode).send(err);
+    } else {
+      res.status(500).send(err as any);
+    }
   }
 };
 

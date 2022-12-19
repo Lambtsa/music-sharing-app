@@ -97,7 +97,7 @@ export const HomeScreen = (): JSX.Element => {
    * Options chosen
    * https://react-hook-form.com/api/useform/
    */
-  const { control, formState, handleSubmit, reset, watch } = useForm({
+  const { control, formState, handleSubmit, reset, watch, setError } = useForm({
     defaultValues,
     mode: "onSubmit",
     shouldFocusError: true,
@@ -128,7 +128,9 @@ export const HomeScreen = (): JSX.Element => {
   const onSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      /* Reset states */
       setIsLoading(true);
+      setErrorMessage(undefined);
       setLinks([]);
       setTracks([]);
       let timeOut: NodeJS.Timeout;
@@ -147,19 +149,31 @@ export const HomeScreen = (): JSX.Element => {
                   [selected]: formFields.search,
                 }),
               });
+
               const data: ResponseMusicApi = await response.json();
 
               timeOut = setTimeout(() => {
                 if (response.ok) {
                   setTracks(data.tracks);
-                  setErrorMessage(undefined);
-                  setIsLoading(false);
                   reset(defaultValues, { keepDefaultValues: true });
                 } else {
-                  // TODO: make specific error messages
+                  if (response.status === 400) {
+                    setError("search", {
+                      type: "server",
+                      message: t({ id: "error.message.requiredUrl" }),
+                    });
+                  } else if (response.status === 404) {
+                    setError("search", {
+                      type: "server",
+                      message:
+                        selected === InputSelection.Artist
+                          ? t({ id: "error.message.requiredArtist" })
+                          : t({ id: "error.message.requiredTitle" }),
+                    });
+                  }
                   setErrorMessage("error.message.noTitle");
-                  setIsLoading(false);
                 }
+                setIsLoading(false);
               }, 2000);
 
               return () => clearTimeout(timeOut);
@@ -174,20 +188,30 @@ export const HomeScreen = (): JSX.Element => {
                   url: formFields.search,
                 }),
               });
+
               const data: ResponseLinksApi = await response.json();
 
               timeOut = setTimeout(() => {
                 if (response.ok) {
                   setLinks(data.links);
                   setDetails(data.details);
-                  setErrorMessage(undefined);
-                  setIsLoading(false);
                   reset(defaultValues, { keepDefaultValues: true });
                 } else {
                   // TODO: make specific error messages
-                  setErrorMessage("error.message.noTitle");
-                  setIsLoading(false);
+                  if (response.status === 400) {
+                    setError("search", {
+                      type: "server",
+                      message: t({ id: "error.message.requiredUrl" }),
+                    });
+                  } else if (response.status === 404) {
+                    setError("search", {
+                      type: "server",
+                      message: t({ id: "error.message.requiredUrl" }),
+                    });
+                  }
+                  setErrorMessage("error.message.incorrectUrl");
                 }
+                setIsLoading(false);
               }, 2000);
 
               return () => clearTimeout(timeOut);
@@ -195,20 +219,19 @@ export const HomeScreen = (): JSX.Element => {
           }
         },
         (error) => {
-          console.log({ error });
-          // TODO: make specific error messages
-          setErrorMessage("error.message.noTitle");
-          setIsLoading(false);
+          console.log({ error: error.search });
         }
       )();
     },
-    [defaultValues, handleSubmit, reset, selected]
+    [defaultValues, handleSubmit, reset, selected, setError, t]
   );
 
   const handleOnClick = useCallback(
     async ({ artist, track }: { artist: string; track: string }) => {
       setIsLoading(true);
+      setErrorMessage(undefined);
       setTracks([]);
+
       const response = await fetch("/api/links", {
         method: "POST",
         headers: {
@@ -216,25 +239,41 @@ export const HomeScreen = (): JSX.Element => {
         },
         body: JSON.stringify({ artist, track }),
       });
+
+      if (!response.ok) {
+        if (response.status === 400) {
+          setError("search", {
+            type: "server",
+            message: t({ id: "error.message.requiredUrl" }),
+          });
+        } else if (response.status === 404) {
+          setError("search", {
+            type: "server",
+            message:
+              selected === InputSelection.Artist
+                ? t({ id: "error.message.requiredArtist" })
+                : t({ id: "error.message.requiredTitle" }),
+          });
+        }
+      }
+
       const data: ResponseLinksApi = await response.json();
 
       const timeOut = setTimeout(() => {
         if (response.ok) {
           setLinks(data.links);
           setDetails(data.details);
-          setErrorMessage(undefined);
-          setIsLoading(false);
           reset(defaultValues, { keepDefaultValues: true });
         } else {
           // TODO: make specific error messages
           setErrorMessage("error.message.noTitle");
-          setIsLoading(false);
         }
+        setIsLoading(false);
       }, 2000);
 
       return () => clearTimeout(timeOut);
     },
-    [defaultValues, reset]
+    [defaultValues, reset, selected, setError, t]
   );
 
   const hasLinks = !!links.length;

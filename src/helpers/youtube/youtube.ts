@@ -1,4 +1,4 @@
-import { ExternalApiError, NotFoundError } from "@constants/errors";
+import { CustomApiErrorMessages, ExternalApiError } from "@constants/errors";
 import { GetMusicLinksInput } from "@customTypes";
 import { YoutubeApiResponse } from "./youtube.types";
 
@@ -50,11 +50,13 @@ export const searchYoutube = async (input: GetMusicLinksInput) => {
   /* TODO: This will need optimising because currently only returns the first element found + need better searching */
   const track = data.items[0]?.id.videoId;
 
-  if (!track) {
-    throw new NotFoundError();
-  }
+  // if (!track) {
+  //   throw new NotFoundError();
+  // }
 
-  return buildYoutubeVideoUrl(track).toString();
+  return !!track
+    ? buildYoutubeVideoUrl(track).toString()
+    : CustomApiErrorMessages.NoTrack;
 };
 
 /**

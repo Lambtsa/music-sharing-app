@@ -13,6 +13,7 @@ import {
   ExternalApiError,
   BadGatewayError,
   NotFoundError,
+  BadRequestError,
 } from "@constants/errors";
 
 /**
@@ -89,8 +90,6 @@ export const searchSpotify = async (
 ): Promise<SearchSpotifyReturnType> => {
   const accessToken = await getAccessToken();
 
-  console.log({ accessToken });
-
   const spotifyUrl = buildSpotifyApiUrl(input);
 
   const response = await fetch(spotifyUrl.toString(), {
@@ -142,7 +141,17 @@ export const getTrackDetailsBySpotifyId = async (
   });
 
   if (!response.ok) {
-    throw new ExternalApiError();
+    switch (response.status) {
+      case 500: {
+        throw new ExternalApiError();
+      }
+      case 400: {
+        throw new BadRequestError();
+      }
+      case 404: {
+        throw new NotFoundError();
+      }
+    }
   }
 
   const data = (await response.json()) as TrackItem;

@@ -1,5 +1,6 @@
 {
   "error.message.noTitle": "Please try again making sure that the artist or title is written correctly",
+  "error.message.incorrectUrl": "Please try again making sure that the url is written correctly",
   "error.message.requiredArtist": "Please provide an artists' name",
   "error.message.requiredTitle": "Please provide a song title",
   "error.message.requiredUrl": "Please provide a valid url",

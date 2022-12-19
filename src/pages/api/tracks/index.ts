@@ -1,4 +1,8 @@
-import { BadRequestError, MethodNotAllowedError } from "@constants/errors";
+import {
+  BadRequestError,
+  CustomBaseError,
+  MethodNotAllowedError,
+} from "@constants/errors";
 import { SpotifyDataType } from "@customTypes";
 import { sanitiseData } from "@helpers/sanitise";
 import { getListOfSongs } from "@helpers/spotify";
@@ -49,10 +53,11 @@ const handler = async (
     }
   } catch (err) {
     console.log({ err });
-    res.status(400).send({
-      message: "",
-      statusCode: 400,
-    });
+    if (err instanceof CustomBaseError) {
+      res.status(err.statusCode).send(err);
+    } else {
+      res.status(500).send(err as any);
+    }
   }
 };
 

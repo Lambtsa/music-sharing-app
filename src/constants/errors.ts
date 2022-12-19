@@ -7,7 +7,18 @@ export enum CustomApiErrorMessages {
   UnsupportedUrl = "Unfortunately Youtube is unsupported currently",
 }
 
-export class BadGatewayError extends Error {
+export class CustomBaseError extends Error {
+  statusCode = 500;
+
+  constructor(message?: string) {
+    super(message);
+
+    // 👇️ because we are extending a built-in class
+    Object.setPrototypeOf(this, CustomBaseError.prototype);
+  }
+}
+
+export class BadGatewayError extends CustomBaseError {
   statusCode = 502;
   message = CustomApiErrorMessages.NoAccessToken;
 
@@ -19,7 +30,7 @@ export class BadGatewayError extends Error {
   }
 }
 
-export class BadRequestError extends Error {
+export class BadRequestError extends CustomBaseError {
   statusCode = 400;
   message = CustomApiErrorMessages.IncorrectInput;
 
@@ -31,7 +42,7 @@ export class BadRequestError extends Error {
   }
 }
 
-export class UnsupportedUrlError extends Error {
+export class UnsupportedUrlError extends CustomBaseError {
   statusCode = 400;
   message = CustomApiErrorMessages.UnsupportedUrl;
 
@@ -43,7 +54,7 @@ export class UnsupportedUrlError extends Error {
   }
 }
 
-export class ExternalApiError extends Error {
+export class ExternalApiError extends CustomBaseError {
   statusCode = 500;
   message = CustomApiErrorMessages.ExternalApiIssue;
 
@@ -55,7 +66,7 @@ export class ExternalApiError extends Error {
   }
 }
 
-export class NotFoundError extends Error {
+export class NotFoundError extends CustomBaseError {
   statusCode = 404;
   message = CustomApiErrorMessages.NoTrack;
 
@@ -67,7 +78,7 @@ export class NotFoundError extends Error {
   }
 }
 
-export class MethodNotAllowedError extends Error {
+export class MethodNotAllowedError extends CustomBaseError {
   statusCode = 405;
   message = CustomApiErrorMessages.IncorrectMethod;
 

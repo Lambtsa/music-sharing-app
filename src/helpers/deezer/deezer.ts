@@ -1,4 +1,4 @@
-import { ExternalApiError, NotFoundError } from "@constants/errors";
+import { CustomApiErrorMessages, ExternalApiError } from "@constants/errors";
 import { GetMusicLinksInput } from "@customTypes";
 import { DeezerApiResponse, DeezerTrack } from "./deezer.types";
 
@@ -38,11 +38,11 @@ export const searchDeezer = async (input: GetMusicLinksInput) => {
     item.title.toLowerCase().includes(input.track.toLowerCase())
   );
 
-  if (!track) {
-    throw new NotFoundError();
-  }
+  // if (!track) {
+  //   throw new NotFoundError();
+  // }
 
-  return track.link;
+  return track?.link || CustomApiErrorMessages.NoTrack;
 };
 
 /**
