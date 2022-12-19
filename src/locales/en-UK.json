@@ -4,7 +4,7 @@
   "error.message.requiredArtist": "Please provide an artists' name",
   "error.message.requiredTitle": "Please provide a song title",
   "error.message.requiredUrl": "Please provide a valid url",
-  "footer.copyright": "© {date} Tom Lamb. All rights reserved",
+  "footer.copyright": "© {date} AudioLinx. All rights reserved",
   "home.cta": "Get your links!",
   "home.title": "Share it!",
   "home.subtitle": "Enter details on any song and generate links for the most popular music streaming platforms. Give it a go!",
