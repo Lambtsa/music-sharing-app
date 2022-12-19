@@ -1,14 +1,20 @@
 {
-  "error.message.noTitle": "Please try again making sure that the artist or title is written correctly",
+  "error.message.noTitle": "Please try again making sure that the artist or title is written correctly.",
+  "error.message.incorrectUrl": "Please try again making sure that the url is written correctly.",
   "error.message.requiredArtist": "Please provide an artists' name",
   "error.message.requiredTitle": "Please provide a song title",
+  "error.message.requiredUrl": "Please provide a valid url",
   "footer.copyright": "© {date} Tom Lamb. All rights reserved",
   "home.cta": "Get your links!",
   "home.title": "Share it!",
   "home.subtitle": "Enter details on any song and generate links for the most popular music streaming platforms. Give it a go!",
+  "home.showingResults": "Showing results for {artist} - {track}...",
   "label.artist": "Artist",
   "label.copyLink": "Copy Link",
-  "label.title": "Title",
+  "label.search": "Artist, title or streaming url",
+  "label.select": "Select",
+  "label.track": "Track",
+  "label.url": "Url",
   "label.invalidArtist": "Please provide an artist name",
   "label.invalidTitle": "Please provide a title"
 }

@@ -8,7 +8,7 @@ export const Wrap = styled.div<{ size: WrapSize }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 16px;
   width: 100%;
   height: 100%;
@@ -18,26 +18,26 @@ export const Wrap = styled.div<{ size: WrapSize }>`
       case "mobile":
         return css`
           max-width: ${CONTAINER.MOBILE}px;
-          padding: 0 16px;
+          padding: 96px 16px;
         `;
       case "tablet":
         return css`
           max-width: ${CONTAINER.TABLET}px;
-          padding: 0 16px;
+          padding: 96px 16px;
         `;
       case "pc":
         return css`
           max-width: ${CONTAINER.PC}px;
-          padding: 0 16px;
+          padding: 96px 16px;
         `;
       case "tv":
         return css`
           max-width: ${CONTAINER.TV}px;
-          padding: 0 16px;
+          padding: 96px 16px;
         `;
       case "full":
         return css`
-          padding: 0 48px;
+          padding: 96px 48px;
         `;
     }
   }};

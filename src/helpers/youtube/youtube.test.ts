@@ -8,7 +8,7 @@ import { buildYoutubeApiUrl, buildYoutubeVideoUrl } from "./youtube";
 describe("buildYoutubeApiUrl helper", () => {
   const inputData: GetMusicLinksInput = {
     artist: "Last Train",
-    title: "Fragile",
+    track: "Fragile",
   };
   test("Should return valid URL Object", () => {
     expect(buildYoutubeApiUrl(inputData)).toBeInstanceOf(URL);

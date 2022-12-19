@@ -25,12 +25,8 @@ export const MusicLink = ({
 }: MusicLinkProps): JSX.Element => {
   const { t } = useTranslation();
   const [isCopied, setIsCopied] = useState(false);
-  const [state, copyToClipboard] = useCopyToClipboard();
-
-  useEffect(() => {
-    // TODO: deal with copy to clipboard errors
-    console.log({ state });
-  }, [state]);
+  // TODO: deal with copy to clipboard errors
+  const [_state, copyToClipboard] = useCopyToClipboard();
 
   useEffect(() => {
     if (!isCopied) {

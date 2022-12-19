@@ -51,7 +51,6 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   #__next {
-    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;

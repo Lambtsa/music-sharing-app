@@ -9,55 +9,86 @@ import { useTranslation } from "@hooks/useTranslation";
 import { useLightOrDarkTheme } from "@context/ThemeContext";
 import { ReactComponent as LightLogo } from "@assets/lightLogo.svg";
 import { ReactComponent as DarkLogo } from "@assets/darkLogo.svg";
+import { v4 as uuid } from "uuid";
 import {
   Form,
   HeaderWrapper,
   LinksWrapper,
   LogoContainer,
+  ShowingDetailsText,
   Subtitle,
   Title,
 } from "./Home.styles";
 import { InputText } from "@components/Inputs/InputText";
 import { Button } from "@components/Button";
-import { MusicData, ResponseMusicData } from "@customTypes";
+import {
+  GetMusicLinksInput,
+  MusicData,
+  ResponseLinksApi,
+  ResponseMusicApi,
+} from "@customTypes";
 import { MusicLink } from "@components/Link";
 import { Loader } from "@components/Loader";
 import { MessageBox } from "@components/MessageBox";
 import { Footer } from "@components/Footer";
+import { Selector } from "@components/Selector";
+import { InputSelection } from "@constants/input";
+import { isValidInput, isValidMusicStreamingUrl } from "@helpers/url";
+import { TrackBtn } from "@components/TrackBtn";
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
+
+  /* ################################################## */
+  /* State */
+  /* ################################################## */
   const { isLight } = useLightOrDarkTheme();
   const [links, setLinks] = useState<MusicData[]>([]);
+  const [tracks, setTracks] = useState<ResponseMusicApi["tracks"]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<
     FormatjsIntl.Message["ids"] | undefined
   >(undefined);
+  const [selected, setSelected] = useState<InputSelection>(
+    InputSelection.Artist
+  );
+  const [details, setDetails] = useState<GetMusicLinksInput | undefined>(
+    undefined
+  );
+
+  const createErrorMessage = (selected: InputSelection): string => {
+    switch (selected) {
+      case InputSelection.Artist: {
+        return t({ id: "error.message.requiredArtist" });
+      }
+      case InputSelection.Track: {
+        return t({ id: "error.message.requiredTitle" });
+      }
+      case InputSelection.Url: {
+        return t({ id: "error.message.requiredUrl" });
+      }
+    }
+  };
 
   /* ################################################## */
   /* Forms */
   /* ################################################## */
   const validationSchema = z.object({
-    artist: z
+    search: z
       .string({
         required_error: t({ id: "error.message.requiredArtist" }),
       })
-      .min(1, { message: t({ id: "error.message.requiredArtist" }) })
-      .trim(),
-    title: z
-      .string({
-        required_error: t({ id: "error.message.requiredTitle" }),
-      })
-      .min(1, { message: t({ id: "error.message.requiredTitle" }) })
-      .trim(),
+      .trim()
+      .refine((val) => isValidInput(val, selected), {
+        message: createErrorMessage(selected),
+      }),
   });
 
   type FormFields = TypeOf<typeof validationSchema>;
 
   const defaultValues: FormFields = useMemo(
     () => ({
-      artist: "",
-      title: "",
+      search: "",
     }),
     []
   );
@@ -66,7 +97,7 @@ export const HomeScreen = (): JSX.Element => {
    * Options chosen
    * https://react-hook-form.com/api/useform/
    */
-  const { control, formState, handleSubmit, reset } = useForm({
+  const { control, formState, handleSubmit, reset, watch, setError } = useForm({
     defaultValues,
     mode: "onSubmit",
     shouldFocusError: true,
@@ -74,6 +105,7 @@ export const HomeScreen = (): JSX.Element => {
     criteriaMode: "all",
     resolver: zodResolver(validationSchema),
   });
+  const url = watch("search");
 
   const formErrors = useMemo(() => {
     return formState.errors;
@@ -83,53 +115,169 @@ export const HomeScreen = (): JSX.Element => {
     reset(defaultValues, { keepDefaultValues: true });
   }, [reset, defaultValues]);
 
+  useEffect(() => {
+    /* Will automatically change the selected input to url if a valid url is passed into the field */
+    if (isValidMusicStreamingUrl(url)) {
+      setSelected(InputSelection.Url);
+    }
+  }, [url]);
+
   /* ################################################## */
   /* Actions */
   /* ################################################## */
   const onSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      /* Reset states */
       setIsLoading(true);
+      setErrorMessage(undefined);
+      setLinks([]);
+      setTracks([]);
       let timeOut: NodeJS.Timeout;
 
       handleSubmit(
         async (formFields) => {
-          const response = await fetch("/api/music", {
-            method: "POST",
-            headers: {
-              "Content-type": "application/json",
-            },
-            body: JSON.stringify(formFields),
-          });
+          switch (selected) {
+            case InputSelection.Artist:
+            case InputSelection.Track: {
+              const response = await fetch("/api/tracks", {
+                method: "POST",
+                headers: {
+                  "Content-type": "application/json",
+                },
+                body: JSON.stringify({
+                  [selected]: formFields.search,
+                }),
+              });
 
-          const data: ResponseMusicData = await response.json();
+              const data: ResponseMusicApi = await response.json();
 
-          timeOut = setTimeout(() => {
-            if (response.ok) {
-              setLinks(data.links);
-              setErrorMessage(undefined);
-              setIsLoading(false);
-            } else {
-              // TODO: make specific error messages
-              setErrorMessage("error.message.noTitle");
-              setIsLoading(false);
+              timeOut = setTimeout(() => {
+                if (response.ok) {
+                  setTracks(data.tracks);
+                  reset(defaultValues, { keepDefaultValues: true });
+                } else {
+                  if (response.status === 400) {
+                    setError("search", {
+                      type: "server",
+                      message: t({ id: "error.message.requiredUrl" }),
+                    });
+                  } else if (response.status === 404) {
+                    setError("search", {
+                      type: "server",
+                      message:
+                        selected === InputSelection.Artist
+                          ? t({ id: "error.message.requiredArtist" })
+                          : t({ id: "error.message.requiredTitle" }),
+                    });
+                  }
+                  setErrorMessage("error.message.noTitle");
+                }
+                setIsLoading(false);
+              }, 2000);
+
+              return () => clearTimeout(timeOut);
             }
-          }, 2000);
+            case InputSelection.Url: {
+              const response = await fetch("/api/links", {
+                method: "POST",
+                headers: {
+                  "Content-type": "application/json",
+                },
+                body: JSON.stringify({
+                  url: formFields.search,
+                }),
+              });
 
-          return () => clearTimeout(timeOut);
+              const data: ResponseLinksApi = await response.json();
+
+              timeOut = setTimeout(() => {
+                if (response.ok) {
+                  setLinks(data.links);
+                  setDetails(data.details);
+                  reset(defaultValues, { keepDefaultValues: true });
+                } else {
+                  // TODO: make specific error messages
+                  if (response.status === 400) {
+                    setError("search", {
+                      type: "server",
+                      message: t({ id: "error.message.requiredUrl" }),
+                    });
+                  } else if (response.status === 404) {
+                    setError("search", {
+                      type: "server",
+                      message: t({ id: "error.message.requiredUrl" }),
+                    });
+                  }
+                  setErrorMessage("error.message.incorrectUrl");
+                }
+                setIsLoading(false);
+              }, 2000);
+
+              return () => clearTimeout(timeOut);
+            }
+          }
         },
         (error) => {
-          console.log({ error });
-          // TODO: make specific error messages
-          setErrorMessage("error.message.noTitle");
-          setIsLoading(false);
+          console.log({ error: error.search });
         }
       )();
     },
-    [handleSubmit]
+    [defaultValues, handleSubmit, reset, selected, setError, t]
+  );
+
+  const handleOnClick = useCallback(
+    async ({ artist, track }: { artist: string; track: string }) => {
+      setIsLoading(true);
+      setErrorMessage(undefined);
+      setTracks([]);
+
+      const response = await fetch("/api/links", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ artist, track }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 400) {
+          setError("search", {
+            type: "server",
+            message: t({ id: "error.message.requiredUrl" }),
+          });
+        } else if (response.status === 404) {
+          setError("search", {
+            type: "server",
+            message:
+              selected === InputSelection.Artist
+                ? t({ id: "error.message.requiredArtist" })
+                : t({ id: "error.message.requiredTitle" }),
+          });
+        }
+      }
+
+      const data: ResponseLinksApi = await response.json();
+
+      const timeOut = setTimeout(() => {
+        if (response.ok) {
+          setLinks(data.links);
+          setDetails(data.details);
+          reset(defaultValues, { keepDefaultValues: true });
+        } else {
+          // TODO: make specific error messages
+          setErrorMessage("error.message.noTitle");
+        }
+        setIsLoading(false);
+      }, 2000);
+
+      return () => clearTimeout(timeOut);
+    },
+    [defaultValues, reset, selected, setError, t]
   );
 
   const hasLinks = !!links.length;
+  const hasTracks = !!tracks.length;
   const hasErrorMessage = !!errorMessage;
 
   return (
@@ -149,17 +297,14 @@ export const HomeScreen = (): JSX.Element => {
               isLight={isLight}
               type="text"
               control={control}
-              name="artist"
-              placeholder={t({ id: "label.artist" })}
-              error={formErrors.artist}
+              name="search"
+              placeholder={t({ id: "label.search" })}
+              error={formErrors.search}
             />
-            <InputText
+            <Selector
               isLight={isLight}
-              type="text"
-              control={control}
-              name="title"
-              placeholder={t({ id: "label.title" })}
-              error={formErrors.title}
+              selected={selected}
+              setSelected={setSelected}
             />
             <Button type="submit" isLight={isLight}>
               {t({ id: "home.cta" })}
@@ -167,10 +312,27 @@ export const HomeScreen = (): JSX.Element => {
           </Form>
           <LinksWrapper>
             {isLoading && <Loader isLight={isLight} />}
+            {!isLoading && hasLinks && (
+              <>
+                <ShowingDetailsText isLight={isLight}>
+                  {t(
+                    { id: "home.showingResults" },
+                    { artist: details?.artist, track: details?.track }
+                  )}
+                </ShowingDetailsText>
+                {links.map(({ name, url }) => (
+                  <MusicLink key={name} service={name} serviceUrl={url} />
+                ))}
+              </>
+            )}
             {!isLoading &&
-              hasLinks &&
-              links.map(({ name, url }) => (
-                <MusicLink key={name} service={name} serviceUrl={url} />
+              hasTracks &&
+              tracks.map((track) => (
+                <TrackBtn
+                  key={`${uuid()}=${track.track}`}
+                  track={track}
+                  handleOnClick={handleOnClick}
+                />
               ))}
             {!isLoading && hasErrorMessage && (
               <MessageBox message={errorMessage} />

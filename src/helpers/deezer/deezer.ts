@@ -1,14 +1,14 @@
-import { CustomApiErrorMessages } from "@constants/errors";
+import { CustomApiErrorMessages, ExternalApiError } from "@constants/errors";
 import { GetMusicLinksInput } from "@customTypes";
-import { DeezerApiResponse } from "./deezer.types";
+import { DeezerApiResponse, DeezerTrack } from "./deezer.types";
 
 /**
  * Builds spotify URL using base, artist and track
  * @returns Deezer API URL
  */
-export const buildDeezerApiUrl = ({ artist, title }: GetMusicLinksInput) => {
+export const buildDeezerApiUrl = ({ artist, track }: GetMusicLinksInput) => {
   const url = new URL("https://api.deezer.com/search");
-  url.searchParams.append("q", `artist:"${artist}" track:"${title}"`);
+  url.searchParams.append("q", `artist:"${artist}" track:"${track}"`);
   return url;
 };
 
@@ -28,19 +28,46 @@ export const searchDeezer = async (input: GetMusicLinksInput) => {
   });
 
   if (!response.ok) {
-    throw new Error(CustomApiErrorMessages.ExternalApiIssue);
+    throw new ExternalApiError();
   }
 
   const { data } = (await response.json()) as DeezerApiResponse;
 
   /* TODO: This will need optimising because currently only returns the first element found + need better searching */
   const track = data.find((item) =>
-    item.title.toLowerCase().includes(input.title.toLowerCase())
+    item.title.toLowerCase().includes(input.track.toLowerCase())
   );
 
-  if (!track) {
-    throw new Error(CustomApiErrorMessages.NoTrack);
+  // if (!track) {
+  //   throw new NotFoundError();
+  // }
+
+  return track?.link || CustomApiErrorMessages.NoTrack;
+};
+
+/**
+ * Helper function to get the song details from deezer API given a track id
+ * @see https://developers.deezer.com/api/track
+ */
+export const getTrackDetailsByDeezerId = async (
+  id: string
+): Promise<GetMusicLinksInput> => {
+  const deezerUri = `https://api.deezer.com/track/${id}`;
+
+  const response = await fetch(deezerUri, {
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8",
+    },
+  });
+
+  if (!response.ok) {
+    throw new ExternalApiError();
   }
 
-  return track.link;
+  const data = (await response.json()) as DeezerTrack;
+
+  return {
+    artist: data.artist.name,
+    track: data.title,
+  };
 };
