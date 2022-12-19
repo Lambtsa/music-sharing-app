@@ -15,19 +15,25 @@ import {
   HeaderWrapper,
   LinksWrapper,
   LogoContainer,
+  ShowingDetailsText,
   Subtitle,
   Title,
 } from "./Home.styles";
 import { InputText } from "@components/Inputs/InputText";
 import { Button } from "@components/Button";
-import { MusicData, ResponseLinksApi, ResponseMusicApi } from "@customTypes";
+import {
+  GetMusicLinksInput,
+  MusicData,
+  ResponseLinksApi,
+  ResponseMusicApi,
+} from "@customTypes";
 import { MusicLink } from "@components/Link";
 import { Loader } from "@components/Loader";
 import { MessageBox } from "@components/MessageBox";
 import { Footer } from "@components/Footer";
 import { Selector } from "@components/Selector";
 import { InputSelection } from "@constants/input";
-import { isValidInput } from "@helpers/url";
+import { isValidInput, isValidMusicStreamingUrl } from "@helpers/url";
 import { TrackBtn } from "@components/TrackBtn";
 
 export const HomeScreen = (): JSX.Element => {
@@ -45,6 +51,9 @@ export const HomeScreen = (): JSX.Element => {
   >(undefined);
   const [selected, setSelected] = useState<InputSelection>(
     InputSelection.Artist
+  );
+  const [details, setDetails] = useState<GetMusicLinksInput | undefined>(
+    undefined
   );
 
   const createErrorMessage = (selected: InputSelection): string => {
@@ -88,7 +97,7 @@ export const HomeScreen = (): JSX.Element => {
    * Options chosen
    * https://react-hook-form.com/api/useform/
    */
-  const { control, formState, handleSubmit, reset } = useForm({
+  const { control, formState, handleSubmit, reset, watch } = useForm({
     defaultValues,
     mode: "onSubmit",
     shouldFocusError: true,
@@ -96,6 +105,7 @@ export const HomeScreen = (): JSX.Element => {
     criteriaMode: "all",
     resolver: zodResolver(validationSchema),
   });
+  const url = watch("search");
 
   const formErrors = useMemo(() => {
     return formState.errors;
@@ -104,6 +114,13 @@ export const HomeScreen = (): JSX.Element => {
   useEffect(() => {
     reset(defaultValues, { keepDefaultValues: true });
   }, [reset, defaultValues]);
+
+  useEffect(() => {
+    /* Will automatically change the selected input to url if a valid url is passed into the field */
+    if (isValidMusicStreamingUrl(url)) {
+      setSelected(InputSelection.Url);
+    }
+  }, [url]);
 
   /* ################################################## */
   /* Actions */
@@ -162,6 +179,7 @@ export const HomeScreen = (): JSX.Element => {
               timeOut = setTimeout(() => {
                 if (response.ok) {
                   setLinks(data.links);
+                  setDetails(data.details);
                   setErrorMessage(undefined);
                   setIsLoading(false);
                   reset(defaultValues, { keepDefaultValues: true });
@@ -203,6 +221,7 @@ export const HomeScreen = (): JSX.Element => {
       const timeOut = setTimeout(() => {
         if (response.ok) {
           setLinks(data.links);
+          setDetails(data.details);
           setErrorMessage(undefined);
           setIsLoading(false);
           reset(defaultValues, { keepDefaultValues: true });
@@ -254,11 +273,19 @@ export const HomeScreen = (): JSX.Element => {
           </Form>
           <LinksWrapper>
             {isLoading && <Loader isLight={isLight} />}
-            {!isLoading &&
-              hasLinks &&
-              links.map(({ name, url }) => (
-                <MusicLink key={name} service={name} serviceUrl={url} />
-              ))}
+            {!isLoading && hasLinks && (
+              <>
+                <ShowingDetailsText isLight={isLight}>
+                  {t(
+                    { id: "home.showingResults" },
+                    { artist: details?.artist, track: details?.track }
+                  )}
+                </ShowingDetailsText>
+                {links.map(({ name, url }) => (
+                  <MusicLink key={name} service={name} serviceUrl={url} />
+                ))}
+              </>
+            )}
             {!isLoading &&
               hasTracks &&
               tracks.map((track) => (

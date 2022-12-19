@@ -63,3 +63,20 @@ export const LogoContainer = styled.div`
   left: 16px;
   top: 0;
 `;
+
+export const ShowingDetailsText = styled.p<{
+  isLight: boolean;
+}>`
+  color: ${(props) =>
+    props.isLight
+      ? props.theme.colors.eerieBlack70
+      : props.theme.colors.ivory70};
+  font-weight: ${(props) => props.theme.fontWeights.regular};
+  text-align: left;
+  font-size: 16px;
+  line-height: 20px;
+  margin-bottom: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;

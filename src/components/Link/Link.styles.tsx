@@ -46,4 +46,9 @@ export const StyledButton = styled.button<{
     fill: ${(props) => props.theme.colors.ivory};
   }
   transition: background-color 0.3s ease-out;
+
+  :hover {
+    color: ${(props) => props.theme.colors.ivory};
+    background-color: ${(props) => props.theme.colors.oldRose};
+  }
 `;

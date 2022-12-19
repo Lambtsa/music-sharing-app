@@ -60,6 +60,5 @@ export const TrackBtnBtn = styled.button`
   :hover {
     color: ${(props) => props.theme.colors.ivory};
     background-color: ${(props) => props.theme.colors.oldRose};
-    /* transition: all 0.1s ease-out; */
   }
 `;

@@ -7,6 +7,19 @@ import {
 import { MusicProviders } from "@customTypes";
 
 /**
+ * Will determine whether the url is one of the accepted types
+ * @returns boolean
+ */
+export const isValidMusicStreamingUrl = (url: string): boolean => {
+  /* If one of these is a correct url then it will return true otherwise false */
+  return (
+    spotifyUrlRegex.test(url) ||
+    deezerUrlRegex.test(url) ||
+    youtubeUrlRegex.test(url)
+  );
+};
+
+/**
  * Validates url input against expected url formats, and validates title/artist string length
  * @returns boolean
  * @example
