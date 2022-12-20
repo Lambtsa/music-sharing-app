@@ -12,22 +12,23 @@ import { TrackBtnProps } from "./TrackBtn.types";
 export const TrackBtn = ({
   track,
   handleOnClick,
+  isLight,
 }: TrackBtnProps): JSX.Element => {
   const { t } = useTranslation();
 
   return (
-    <TrackBtnContainer>
+    <TrackBtnContainer isLight={isLight}>
       {/* TODO: sort out default image */}
       <Img
         height={60}
         width={60}
-        src={track.imageUrl || ""}
+        src={track.imageUrl || "/placeholder.svg"}
         alt={track.album}
       />
       <TrackInfoContainer>
-        <TrackBtnTitle>{track.artist}</TrackBtnTitle>
-        <TrackBtnText>{track.track}</TrackBtnText>
-        <TrackBtnText>{track.album}</TrackBtnText>
+        <TrackBtnTitle isLight={isLight}>{track.artist}</TrackBtnTitle>
+        <TrackBtnText isLight={isLight}>{track.track}</TrackBtnText>
+        <TrackBtnText isLight={isLight}>{track.album}</TrackBtnText>
       </TrackInfoContainer>
       <TrackBtnBtn
         type="button"

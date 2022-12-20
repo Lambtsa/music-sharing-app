@@ -1,12 +1,15 @@
 import Image from "next/image";
 import styled from "styled-components";
 
-export const TrackBtnContainer = styled.div`
+export const TrackBtnContainer = styled.div<{
+  isLight: boolean;
+}>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  background-color: ${(props) => props.theme.colors.onyx};
+  background-color: ${(props) =>
+    props.isLight ? props.theme.colors.eerieBlack20 : props.theme.colors.onyx};
   border-radius: 10px;
   width: 100%;
   padding: 12px 16px;
@@ -28,8 +31,11 @@ export const Img = styled(Image)`
   border-radius: 7px;
 `;
 
-export const TrackBtnTitle = styled.h3`
-  color: ${(props) => props.theme.colors.ivory};
+export const TrackBtnTitle = styled.h3<{
+  isLight: boolean;
+}>`
+  color: ${(props) =>
+    props.isLight ? props.theme.colors.eerieBlack : props.theme.colors.ivory};
   font-weight: ${(props) => props.theme.fontWeights.bold};
   text-align: left;
   font-size: 14px;
@@ -38,8 +44,11 @@ export const TrackBtnTitle = styled.h3`
   text-overflow: ellipsis;
 `;
 
-export const TrackBtnText = styled.p`
-  color: ${(props) => props.theme.colors.ivory70};
+export const TrackBtnText = styled.p<{
+  isLight: boolean;
+}>`
+  color: ${(props) =>
+    props.isLight ? props.theme.colors.eerieBlack : props.theme.colors.ivory};
   font-weight: ${(props) => props.theme.fontWeights.regular};
   text-align: left;
   font-size: 14px;

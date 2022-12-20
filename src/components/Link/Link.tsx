@@ -17,11 +17,13 @@ import { MusicProviders } from "@customTypes";
 interface MusicLinkProps {
   service: MusicProviders;
   serviceUrl: string;
+  isLight: boolean;
 }
 
 export const MusicLink = ({
   service,
   serviceUrl,
+  isLight,
 }: MusicLinkProps): JSX.Element => {
   const { t } = useTranslation();
   const [isCopied, setIsCopied] = useState(false);
@@ -61,10 +63,10 @@ export const MusicLink = ({
   }, [copyToClipboard, isCopied, serviceUrl]);
 
   return (
-    <LinkWrapper>
+    <LinkWrapper isLight={isLight}>
       {ServiceIcon}
       <StyledButtonWrapper>
-        <StyledInput readOnly value={serviceUrl} />
+        <StyledInput readOnly value={serviceUrl} isLight={isLight} />
         <StyledButton
           isCopied={isCopied}
           onClick={handleCopyLink}

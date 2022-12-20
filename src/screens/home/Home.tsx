@@ -321,7 +321,12 @@ export const HomeScreen = (): JSX.Element => {
                   )}
                 </ShowingDetailsText>
                 {links.map(({ name, url }) => (
-                  <MusicLink key={name} service={name} serviceUrl={url} />
+                  <MusicLink
+                    key={name}
+                    service={name}
+                    serviceUrl={url}
+                    isLight={isLight}
+                  />
                 ))}
               </>
             )}
@@ -332,6 +337,7 @@ export const HomeScreen = (): JSX.Element => {
                   key={`${uuid()}=${track.track}`}
                   track={track}
                   handleOnClick={handleOnClick}
+                  isLight={isLight}
                 />
               ))}
             {!isLoading && hasErrorMessage && (
