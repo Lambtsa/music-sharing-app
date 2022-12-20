@@ -9,7 +9,6 @@ import { useTranslation } from "@hooks/useTranslation";
 import { useLightOrDarkTheme } from "@context/ThemeContext";
 import { ReactComponent as LightLogo } from "@assets/lightLogo.svg";
 import { ReactComponent as DarkLogo } from "@assets/darkLogo.svg";
-import { v4 as uuid } from "uuid";
 import {
   Form,
   HeaderWrapper,
@@ -21,12 +20,7 @@ import {
 } from "./Home.styles";
 import { InputText } from "@components/Inputs/InputText";
 import { Button } from "@components/Button";
-import {
-  GetMusicLinksInput,
-  MusicData,
-  ResponseLinksApi,
-  ResponseMusicApi,
-} from "@customTypes";
+import { GetMusicLinksInput, MusicData, ResponseLinksApi } from "@customTypes";
 import { MusicLink } from "@components/Link";
 import { Loader } from "@components/Loader";
 import { MessageBox } from "@components/MessageBox";
@@ -35,6 +29,11 @@ import { Selector } from "@components/Selector";
 import { InputSelection } from "@constants/input";
 import { isValidInput, isValidMusicStreamingUrl } from "@helpers/url";
 import { TrackBtn } from "@components/TrackBtn";
+import {
+  ListOfTracksReturnType,
+  ListOfAlbumsReturnType,
+} from "@helpers/spotify/spotify.types";
+import { AlbumBtn } from "@components/AlbumBtn";
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
@@ -44,7 +43,8 @@ export const HomeScreen = (): JSX.Element => {
   /* ################################################## */
   const { isLight } = useLightOrDarkTheme();
   const [links, setLinks] = useState<MusicData[]>([]);
-  const [tracks, setTracks] = useState<ResponseMusicApi["tracks"]>([]);
+  const [tracks, setTracks] = useState<ListOfTracksReturnType["tracks"]>([]);
+  const [albums, setAlbums] = useState<ListOfAlbumsReturnType["albums"]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<
     FormatjsIntl.Message["ids"] | undefined
@@ -133,12 +133,48 @@ export const HomeScreen = (): JSX.Element => {
       setErrorMessage(undefined);
       setLinks([]);
       setTracks([]);
+      setAlbums([]);
       let timeOut: NodeJS.Timeout;
 
       handleSubmit(
         async (formFields) => {
           switch (selected) {
-            case InputSelection.Artist:
+            case InputSelection.Artist: {
+              const response = await fetch("/api/tracks", {
+                method: "POST",
+                headers: {
+                  "Content-type": "application/json",
+                },
+                body: JSON.stringify({
+                  [selected]: formFields.search,
+                }),
+              });
+
+              const data: ListOfAlbumsReturnType = await response.json();
+
+              timeOut = setTimeout(() => {
+                if (response.ok) {
+                  setAlbums(data.albums);
+                  reset(defaultValues, { keepDefaultValues: true });
+                } else {
+                  if (response.status === 400) {
+                    setError("search", {
+                      type: "server",
+                      message: t({ id: "error.message.requiredUrl" }),
+                    });
+                  } else if (response.status === 404) {
+                    setError("search", {
+                      type: "server",
+                      message: t({ id: "error.message.requiredArtist" }),
+                    });
+                  }
+                  setErrorMessage("error.message.noTitle");
+                }
+                setIsLoading(false);
+              }, 2000);
+
+              return () => clearTimeout(timeOut);
+            }
             case InputSelection.Track: {
               const response = await fetch("/api/tracks", {
                 method: "POST",
@@ -150,7 +186,7 @@ export const HomeScreen = (): JSX.Element => {
                 }),
               });
 
-              const data: ResponseMusicApi = await response.json();
+              const data: ListOfTracksReturnType = await response.json();
 
               timeOut = setTimeout(() => {
                 if (response.ok) {
@@ -165,10 +201,7 @@ export const HomeScreen = (): JSX.Element => {
                   } else if (response.status === 404) {
                     setError("search", {
                       type: "server",
-                      message:
-                        selected === InputSelection.Artist
-                          ? t({ id: "error.message.requiredArtist" })
-                          : t({ id: "error.message.requiredTitle" }),
+                      message: t({ id: "error.message.requiredTitle" }),
                     });
                   }
                   setErrorMessage("error.message.noTitle");
@@ -185,7 +218,7 @@ export const HomeScreen = (): JSX.Element => {
                   "Content-type": "application/json",
                 },
                 body: JSON.stringify({
-                  url: formFields.search,
+                  [selected]: formFields.search,
                 }),
               });
 
@@ -231,6 +264,7 @@ export const HomeScreen = (): JSX.Element => {
       setIsLoading(true);
       setErrorMessage(undefined);
       setTracks([]);
+      setAlbums([]);
 
       const response = await fetch("/api/links", {
         method: "POST",
@@ -278,6 +312,7 @@ export const HomeScreen = (): JSX.Element => {
 
   const hasLinks = !!links.length;
   const hasTracks = !!tracks.length;
+  const hasAlbums = !!albums.length;
   const hasErrorMessage = !!errorMessage;
 
   return (
@@ -334,11 +369,16 @@ export const HomeScreen = (): JSX.Element => {
               hasTracks &&
               tracks.map((track) => (
                 <TrackBtn
-                  key={`${uuid()}=${track.track}`}
+                  key={track.id}
                   track={track}
                   handleOnClick={handleOnClick}
                   isLight={isLight}
                 />
+              ))}
+            {!isLoading &&
+              hasAlbums &&
+              albums.map((album) => (
+                <AlbumBtn key={album.id} album={album} isLight={isLight} />
               ))}
             {!isLoading && hasErrorMessage && (
               <MessageBox message={errorMessage} />

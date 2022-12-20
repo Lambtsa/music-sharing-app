@@ -4,7 +4,7 @@ export enum SpotifyDataType {
   Track = "track",
 }
 
-export interface SpotifyArtist {
+export interface ArtistItem {
   external_urls: {
     /* Basic Url */
     spotify: string;
@@ -17,9 +17,9 @@ export interface SpotifyArtist {
   uri: string;
 }
 
-export interface SpotifyAlbum {
+export interface AlbumItem {
   album_type: "album";
-  artists: SpotifyArtist[];
+  artists: ArtistItem[];
   available_markets: string[];
   external_urls: {
     /* Basic Url */
@@ -42,8 +42,8 @@ export interface SpotifyAlbum {
 }
 
 export interface TrackItem {
-  album: SpotifyAlbum;
-  artists: SpotifyArtist[];
+  album: AlbumItem;
+  artists: ArtistItem[];
   available_markets: [];
   disc_number: number;
   duration_ms: number;
@@ -71,6 +71,18 @@ export interface TrackResponse {
   tracks: {
     href: string;
     items: TrackItem[];
+    limit: number;
+    next: string;
+    offset: number | null;
+    previous: number | null;
+    total: number;
+  };
+}
+
+export interface AlbumResponse {
+  albums: {
+    href: string;
+    items: AlbumItem[];
     limit: number;
     next: string;
     offset: number | null;

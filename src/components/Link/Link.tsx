@@ -67,6 +67,7 @@ export const MusicLink = ({
       {ServiceIcon}
       <StyledButtonWrapper>
         <StyledInput readOnly value={serviceUrl} isLight={isLight} />
+        {/* TODO: make this button trigger shareto @see https://developer.mozilla.org/en-US/docs/Web/API/Web_Share_API */}
         <StyledButton
           isCopied={isCopied}
           onClick={handleCopyLink}
