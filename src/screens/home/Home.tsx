@@ -134,11 +134,13 @@ export const HomeScreen = (): JSX.Element => {
       setLinks([]);
       setTracks([]);
       setAlbums([]);
+
       let timeOut: NodeJS.Timeout;
 
       handleSubmit(
         async (formFields) => {
           switch (selected) {
+            /* Artist will return a list of tracks sorted by album. User can then select a track */
             case InputSelection.Artist: {
               const response = await fetch("/api/tracks", {
                 method: "POST",
@@ -175,6 +177,7 @@ export const HomeScreen = (): JSX.Element => {
 
               return () => clearTimeout(timeOut);
             }
+            /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
             case InputSelection.Track: {
               const response = await fetch("/api/tracks", {
                 method: "POST",
@@ -211,6 +214,7 @@ export const HomeScreen = (): JSX.Element => {
 
               return () => clearTimeout(timeOut);
             }
+            /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
             case InputSelection.Url: {
               const response = await fetch("/api/links", {
                 method: "POST",
@@ -230,7 +234,6 @@ export const HomeScreen = (): JSX.Element => {
                   setDetails(data.details);
                   reset(defaultValues, { keepDefaultValues: true });
                 } else {
-                  // TODO: make specific error messages
                   if (response.status === 400) {
                     setError("search", {
                       type: "server",

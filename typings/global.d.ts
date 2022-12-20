@@ -9,5 +9,7 @@ declare namespace NodeJS {
     readonly SPOTIFY_CLIENT_SECRET: string;
 
     readonly YOUTUBE_API_KEY: string;
+
+    readonly AWS_DB_PASSWORD: string;
   }
 }

@@ -36,8 +36,9 @@ export const AlbumBtn = ({
     <>
       <AlbumBtnContainer isLight={isLight}>
         <Img
-          height={60}
           width={60}
+          height={60}
+          object-fit="cover"
           src={album.imageUrl || "/placeholder.svg"}
           alt={album.album}
         />

@@ -18,10 +18,10 @@ export const TrackBtn = ({
 
   return (
     <TrackBtnContainer isLight={isLight}>
-      {/* TODO: sort out default image */}
       <Img
         height={60}
         width={60}
+        object-fit="cover"
         src={track.imageUrl || "/placeholder.svg"}
         alt={track.album}
       />
