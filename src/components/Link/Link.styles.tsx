@@ -47,8 +47,12 @@ export const StyledButton = styled.button<{
   }
   transition: background-color 0.3s ease-out;
 
-  :hover {
-    color: ${(props) => props.theme.colors.ivory};
-    background-color: ${(props) => props.theme.colors.oldRose};
+  /* @see https://developer.mozilla.org/en-US/docs/Web/CSS/@media/hover */
+  @media (hover: hover) {
+    /* when hover is supported */
+    :hover {
+      color: ${(props) => props.theme.colors.ivory};
+      background-color: ${(props) => props.theme.colors.oldRose};
+    }
   }
 `;

@@ -57,8 +57,12 @@ export const TrackBtnBtn = styled.button`
   color: ${(props) => props.theme.colors.ivory};
   background-color: ${(props) => props.theme.colors.pastelPink};
 
-  :hover {
-    color: ${(props) => props.theme.colors.ivory};
-    background-color: ${(props) => props.theme.colors.oldRose};
+  /* @see https://developer.mozilla.org/en-US/docs/Web/CSS/@media/hover */
+  @media (hover: hover) {
+    /* when hover is supported */
+    :hover {
+      color: ${(props) => props.theme.colors.ivory};
+      background-color: ${(props) => props.theme.colors.oldRose};
+    }
   }
 `;

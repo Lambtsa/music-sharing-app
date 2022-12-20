@@ -11,9 +11,12 @@ export const Button = styled.button<{
   color: ${(props) => props.theme.colors.ivory};
   background-color: ${(props) => props.theme.colors.tiffanyBlue};
 
-  :hover {
-    color: ${(props) => props.theme.colors.ivory};
-    background-color: ${(props) => props.theme.colors.viridianGreen};
-    /* transition: all 0.1s ease-out; */
+  /* @see https://developer.mozilla.org/en-US/docs/Web/CSS/@media/hover */
+  @media (hover: hover) {
+    /* when hover is supported */
+    :hover {
+      color: ${(props) => props.theme.colors.ivory};
+      background-color: ${(props) => props.theme.colors.viridianGreen};
+    }
   }
 `;
