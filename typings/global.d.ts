@@ -11,5 +11,7 @@ declare namespace NodeJS {
     readonly YOUTUBE_API_KEY: string;
 
     readonly AWS_DB_PASSWORD: string;
+    readonly AWS_DB_HOST: string;
+    readonly AWS_DB_USER: string;
   }
 }
