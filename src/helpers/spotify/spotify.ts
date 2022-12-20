@@ -89,6 +89,15 @@ export const buildSpotifyAlbumListApiUrl = (artist: string) => {
 };
 
 /**
+ * Builds spotify URL for querying all albums by artist
+ * @returns Spotify API URL
+ */
+export const buildSpotifyAlbumTracksListApiUrl = (id: string) => {
+  const url = new URL(`https://api.spotify.com/v1/albums/${id}/tracks`);
+  return url;
+};
+
+/**
  * Given an artist and title, this helper will return the spotify uri, artist and title
  * We use the spotify API to get stable artist and title because it seems to be the best search so far
  * @returns spotify uri and input
@@ -98,7 +107,6 @@ export const searchSpotify = async (
   input: GetMusicLinksInput
 ): Promise<SearchSpotifyReturnType> => {
   const accessToken = await getAccessToken();
-  console.log({ accessToken });
 
   const spotifyUrl = buildSpotifyApiUrl(input);
 
@@ -221,7 +229,6 @@ export const getListOfAlbums = async (
   artist: string
 ): Promise<ListOfAlbumsReturnType> => {
   const accessToken = await getAccessToken();
-  console.log({ accessToken });
 
   const spotifyUrl = buildSpotifyAlbumListApiUrl(artist);
 
@@ -236,18 +243,42 @@ export const getListOfAlbums = async (
     throw new ExternalApiError();
   }
 
-  const data = (await response.json()) as AlbumResponse;
+  const { albums: albumData } = (await response.json()) as AlbumResponse;
 
-  if (!data.albums.items.length) {
+  if (!albumData.items.length) {
     throw new NotFoundError();
   }
 
+  const albums = await Promise.all(
+    albumData.items.map(async (album) => {
+      const spotifyUrl = buildSpotifyAlbumTracksListApiUrl(album.id);
+      const response = await fetch(spotifyUrl.toString(), {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new ExternalApiError();
+      }
+      const trackdata = (await response.json()) as TrackResponse["tracks"];
+
+      return {
+        id: album.id,
+        artist: album.artists[0]?.name || "Artist unknown",
+        album: album.name,
+        imageUrl: album.images.find((image) => image.height === 300)?.url,
+        tracks: trackdata.items.map((track) => ({
+          id: track.id,
+          artist: album.artists[0]?.name || "Artist unknown",
+          track: track.name,
+        })),
+      };
+    })
+  );
+
   return {
-    albums: data.albums.items.map((item) => ({
-      id: item.id,
-      artist: item.artists[0]?.name || "Artist unknown",
-      album: item.name,
-      imageUrl: item.images.find((image) => image.height === 300)?.url,
-    })),
+    albums,
   };
 };

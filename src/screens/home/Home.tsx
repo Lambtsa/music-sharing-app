@@ -378,7 +378,12 @@ export const HomeScreen = (): JSX.Element => {
             {!isLoading &&
               hasAlbums &&
               albums.map((album) => (
-                <AlbumBtn key={album.id} album={album} isLight={isLight} />
+                <AlbumBtn
+                  handleOnClick={handleOnClick}
+                  key={album.id}
+                  album={album}
+                  isLight={isLight}
+                />
               ))}
             {!isLoading && hasErrorMessage && (
               <MessageBox message={errorMessage} />

@@ -29,5 +29,10 @@ export interface ListOfAlbumsReturnType {
     artist: string;
     album: string;
     imageUrl: string | undefined;
+    tracks: {
+      id: string;
+      artist: string;
+      track: string;
+    }[];
   }[];
 }

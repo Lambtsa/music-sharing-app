@@ -14,40 +14,23 @@ import { ReactComponent as Arrow } from "@assets/arrow.svg";
 import { ReactComponent as Music } from "@assets/music.svg";
 import { useCallback, useMemo, useState } from "react";
 
-export const AlbumBtn = ({ album, isLight }: TrackBtnProps): JSX.Element => {
+export const AlbumBtn = ({
+  album,
+  isLight,
+  handleOnClick,
+}: TrackBtnProps): JSX.Element => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleOnClick = useCallback(() => {
+  const handleExpandOnClick = useCallback(() => {
     setIsExpanded(!isExpanded);
   }, [isExpanded, setIsExpanded]);
 
-  const mockData = useMemo(() => {
-    return [
-      {
-        id: "1",
-        artist: "The Kooks",
-        track: "Naive",
-      },
-      {
-        id: "2",
-        artist: "The Kooks",
-        track: "She Moves In Her Own Way",
-      },
-      {
-        id: "3",
-        artist: "The Kooks",
-        track: "Seaside",
-      },
-      {
-        id: "4",
-        artist: "The Kooks",
-        track: "Do You Love Me Still?",
-      },
-    ];
-  }, []);
+  const tracks = useMemo(() => {
+    return album.tracks;
+  }, [album.tracks]);
 
-  const hasTracks = !!mockData.length;
+  const hasTracks = !!tracks.length;
 
   return (
     <>
@@ -66,7 +49,7 @@ export const AlbumBtn = ({ album, isLight }: TrackBtnProps): JSX.Element => {
         <AlbumBtnBtn
           isExpanded={isExpanded}
           type="button"
-          onClick={handleOnClick}
+          onClick={handleExpandOnClick}
         >
           <Arrow />
         </AlbumBtnBtn>
@@ -74,7 +57,7 @@ export const AlbumBtn = ({ album, isLight }: TrackBtnProps): JSX.Element => {
       {isExpanded && (
         <TracksContainer>
           {hasTracks &&
-            mockData.map((track) => (
+            tracks.map((track) => (
               <AlbumBtnContainer isLight={isLight} key={track.id}>
                 <Music width={30} height={30} />
                 <AlbumInfoContainer>
@@ -83,7 +66,12 @@ export const AlbumBtn = ({ album, isLight }: TrackBtnProps): JSX.Element => {
                   </AlbumBtnTitle>
                   <AlbumBtnText isLight={isLight}>{track.track}</AlbumBtnText>
                 </AlbumInfoContainer>
-                <TrackBtnBtn type="button" onClick={() => console.log("here")}>
+                <TrackBtnBtn
+                  type="button"
+                  onClick={() =>
+                    handleOnClick({ artist: track.artist, track: track.track })
+                  }
+                >
                   {t({ id: "label.select" })}
                 </TrackBtnBtn>
               </AlbumBtnContainer>

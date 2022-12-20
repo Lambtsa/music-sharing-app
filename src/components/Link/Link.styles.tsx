@@ -25,7 +25,7 @@ export const StyledInput = styled.input<{
   flex: 1 1 auto;
   border-radius: 7px 0 0 7px;
   padding: 8px 10px;
-  background-color: ${(props) =>
+  color: ${(props) =>
     props.isLight ? props.theme.colors.eerieBlack : props.theme.colors.ivory};
   background-color: ${(props) =>
     props.isLight ? props.theme.colors.ivory : props.theme.colors.ivory20};
