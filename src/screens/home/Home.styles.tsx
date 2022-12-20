@@ -6,6 +6,7 @@ export const HeaderWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   gap: 4px;
+  width: 100%;
   margin-bottom: 16px;
 `;
 
