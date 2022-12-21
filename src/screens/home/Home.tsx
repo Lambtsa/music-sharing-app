@@ -128,6 +128,9 @@ export const HomeScreen = (): JSX.Element => {
   const onSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      if (isLoading) {
+        return;
+      }
       /* Reset states */
       setIsLoading(true);
       setErrorMessage(undefined);
@@ -264,6 +267,9 @@ export const HomeScreen = (): JSX.Element => {
 
   const handleOnClick = useCallback(
     async ({ artist, track }: { artist: string; track: string }) => {
+      if (isLoading) {
+        return;
+      }
       setIsLoading(true);
       setErrorMessage(undefined);
       setTracks([]);
