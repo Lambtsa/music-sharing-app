@@ -8,7 +8,7 @@
   "home.cta": "Get your links!",
   "home.title": "Share it!",
   "home.subtitle": "Enter details on any song and generate links for the most popular music streaming platforms. Give it a go!",
-  "home.showingResults": "Showing results for {artist} - {track}...",
+  "home.showingResults": "Showing results for {artist} - {track}",
   "label.artist": "Artist",
   "label.copyLink": "Copy Link",
   "label.search": "Artist, title or streaming url",
