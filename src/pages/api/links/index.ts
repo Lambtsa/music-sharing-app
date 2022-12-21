@@ -1,3 +1,5 @@
+// import {Ratelimit} from "@upstash/ratelimit";
+// import {Redis} from "@upstash/redis";
 import {
   MethodNotAllowedError,
   BadRequestError,
@@ -13,6 +15,9 @@ import { determineUrlType, getTrackId } from "@helpers/url";
 import { searchYoutube } from "@helpers/youtube";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
+import { Limiter } from "core/limiter";
+
+const requestLimiter = new Limiter();
 
 const trackSchema = z.object({
   artist: z.string().min(1),
@@ -27,6 +32,21 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseLinksApi | ResponseError>
 ) => {
+  const result = await requestLimiter.limit("api");
+  res.setHeader("X-RateLimit-Limit", result.limit);
+  res.setHeader("X-RateLimit-Remaining", result.remaining);
+
+  if (!result.success) {
+    res.status(400).send({
+      statusCode: 400,
+      message: "",
+    });
+    return;
+  }
+
+  /* ######################################## */
+  /* API */
+  /* ######################################## */
   try {
     if (req.method !== "POST") {
       throw new MethodNotAllowedError();

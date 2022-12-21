@@ -9,8 +9,10 @@ import {
   ListOfTracksReturnType,
   ListOfAlbumsReturnType,
 } from "@helpers/spotify/spotify.types";
+import { Limiter } from "core/limiter";
 import { NextApiRequest, NextApiResponse } from "next/types";
 
+const requestLimiter = new Limiter();
 interface ResponseError {
   message: string;
   statusCode: number;
@@ -22,6 +24,21 @@ const handler = async (
     ListOfTracksReturnType | ListOfAlbumsReturnType | ResponseError
   >
 ) => {
+  const result = await requestLimiter.limit("api");
+  res.setHeader("X-RateLimit-Limit", result.limit);
+  res.setHeader("X-RateLimit-Remaining", result.remaining);
+
+  if (!result.success) {
+    res.status(400).send({
+      statusCode: 400,
+      message: "",
+    });
+    return;
+  }
+
+  /* ######################################## */
+  /* API */
+  /* ######################################## */
   try {
     if (req.method !== "POST") {
       throw new MethodNotAllowedError();
