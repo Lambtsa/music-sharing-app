@@ -3,6 +3,7 @@ import { pageData } from "@helpers/metadata";
 
 const isProduction = process.env.NODE_ENV === "production";
 
+/* TODO: make custom 404 page */
 const Custom404 = () => {
   const { index } = pageData;
   return (
