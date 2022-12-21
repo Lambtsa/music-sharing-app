@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ path: ".env.local" });
 
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
@@ -7,12 +7,10 @@ require("dotenv").config();
 module.exports = {
   client: "pg",
   connection: {
-    host:
-      process.env.AWS_DB_HOST ||
-      "audiolinx-dev.c8unkui8qstw.eu-north-1.rds.amazonaws.com",
+    host: process.env.AWS_DB_HOST || "localhost",
     port: process.env.PORT || 5432,
     user: process.env.AWS_DB_USER || "postgres",
-    password: process.env.AWS_DB_PASSWORD || "caOe60h0llztBsTPD2Od",
+    password: process.env.AWS_DB_PASSWORD || "password",
     database: process.env.DATABASE || "",
   },
   searchPath: [process.env.SCHEMA || "postgres", "public"],
