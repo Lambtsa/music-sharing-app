@@ -99,18 +99,19 @@ const handler = async (
     if (!!user.ip && !!user.geolocation) {
       /* TODO: Add transaction */
       const { ip, geolocation } = user as UseUserDataReturnType;
-      const dbResponse = await knex<Search>("searches").insert({
-        id: uuid(),
-        ip: ip,
-        city: geolocation?.city || null,
-        country: geolocation?.country || null,
-        coordinates: geolocation?.coordinates || null,
-        timezone: geolocation?.timezone || null,
-        search: url,
-        search_type: "url",
-        url_type: urlType,
+      await knex.transaction(async (trx) => {
+        await trx<Search>("searches").insert({
+          id: uuid(),
+          ip: ip,
+          city: geolocation?.city || null,
+          country: geolocation?.country || null,
+          coordinates: geolocation?.coordinates || null,
+          timezone: geolocation?.timezone || null,
+          search: url,
+          search_type: "url",
+          url_type: urlType,
+        });
       });
-      console.log("here in db", { dbResponse });
     }
 
     /* ######################################## */

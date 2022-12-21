@@ -72,18 +72,19 @@ const handler = async (
       if (!!user.ip && !!user.geolocation) {
         /* TODO: Add transaction */
         const { ip, geolocation } = user as UseUserDataReturnType;
-        const dbResponse = await knex<Search>("searches").insert({
-          id: uuid(),
-          ip: ip,
-          city: geolocation?.city || null,
-          country: geolocation?.country || null,
-          coordinates: geolocation?.coordinates || null,
-          timezone: geolocation?.timezone || null,
-          search: artist,
-          search_type: "artist",
-          url_type: null,
+        await knex.transaction(async (trx) => {
+          await trx<Search>("searches").insert({
+            id: uuid(),
+            ip: ip,
+            city: geolocation?.city || null,
+            country: geolocation?.country || null,
+            coordinates: geolocation?.coordinates || null,
+            timezone: geolocation?.timezone || null,
+            search: artist,
+            search_type: "artist",
+            url_type: null,
+          });
         });
-        console.log("here in db", { dbResponse });
       }
       return res.status(200).json(response);
     }
@@ -97,18 +98,19 @@ const handler = async (
       if (!!user.ip && !!user.geolocation) {
         /* TODO: Add transaction */
         const { ip, geolocation } = user as UseUserDataReturnType;
-        const dbResponse = await knex<Search>("searches").insert({
-          id: uuid(),
-          ip: ip,
-          city: geolocation?.city || null,
-          country: geolocation?.country || null,
-          coordinates: geolocation?.coordinates || null,
-          timezone: geolocation?.timezone || null,
-          search: track,
-          search_type: "track",
-          url_type: null,
+        await knex.transaction(async (trx) => {
+          await trx<Search>("searches").insert({
+            id: uuid(),
+            ip: ip,
+            city: geolocation?.city || null,
+            country: geolocation?.country || null,
+            coordinates: geolocation?.coordinates || null,
+            timezone: geolocation?.timezone || null,
+            search: track,
+            search_type: "track",
+            url_type: null,
+          });
         });
-        console.log("here in db", { dbResponse });
       }
       return res.status(200).json(response);
     }
