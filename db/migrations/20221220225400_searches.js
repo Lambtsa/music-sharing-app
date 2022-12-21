@@ -14,9 +14,9 @@ exports.up = async function (knex) {
       "search_type" TEXT NOT NULL CHECK(
         "search_type" = ANY(
           ARRAY[
-            'Artist'::text,
-            'Track'::text,
-            'Url'::text
+            'artist'::text,
+            'track'::text,
+            'url'::text
           ]
         )
       ),

@@ -1,3 +1,4 @@
+export type SearchInputType = "artist" | "track" | "album";
 export interface GetMusicLinksInput {
   artist: string;
   track: string;
