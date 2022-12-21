@@ -262,7 +262,7 @@ export const HomeScreen = (): JSX.Element => {
         }
       )();
     },
-    [defaultValues, handleSubmit, reset, selected, setError, t]
+    [defaultValues, handleSubmit, isLoading, reset, selected, setError, t]
   );
 
   const handleOnClick = useCallback(
@@ -316,7 +316,7 @@ export const HomeScreen = (): JSX.Element => {
 
       return () => clearTimeout(timeOut);
     },
-    [defaultValues, reset, selected, setError, t]
+    [defaultValues, isLoading, reset, selected, setError, t]
   );
 
   const hasLinks = !!links.length;
