@@ -3,6 +3,6 @@ import { InputHTMLAttributes } from "react";
 
 export interface TrackBtnProps extends InputHTMLAttributes<HTMLButtonElement> {
   track: ListOfTracksReturnType["tracks"][number];
-  handleOnClick: ({ artist, track }: { artist: string; track: string }) => void;
+  handleOnClick: (url: string) => void;
   isLight: boolean;
 }

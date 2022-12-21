@@ -30,12 +30,7 @@ export const TrackBtn = ({
         <TrackBtnText isLight={isLight}>{track.track}</TrackBtnText>
         <TrackBtnText isLight={isLight}>{track.album}</TrackBtnText>
       </TrackInfoContainer>
-      <TrackBtnBtn
-        type="button"
-        onClick={() =>
-          handleOnClick({ artist: track.artist, track: track.track })
-        }
-      >
+      <TrackBtnBtn type="button" onClick={() => handleOnClick(track.url)}>
         {t({ id: "label.select" })}
       </TrackBtnBtn>
     </TrackBtnContainer>

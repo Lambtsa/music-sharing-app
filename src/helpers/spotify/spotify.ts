@@ -67,6 +67,15 @@ export const buildSpotifyApiUrl = ({ artist, track }: GetMusicLinksInput) => {
 };
 
 /**
+ * Builds spotify URL for querying track using id
+ * @returns Spotify API URL
+ */
+export const buildSpotifyTrackByIdApiUrl = (id: string) => {
+  const url = new URL(`https://api.spotify.com/v1/tracks/${id}`);
+  return url;
+};
+
+/**
  * Builds spotify URL for querying all tracks by name
  * @returns Spotify API URL
  */
@@ -104,41 +113,73 @@ export const buildSpotifyAlbumTracksListApiUrl = (id: string) => {
  * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/search
  */
 export const searchSpotify = async (
-  input: GetMusicLinksInput
+  input: GetMusicLinksInput,
+  spotifyId?: string
 ): Promise<SearchSpotifyReturnType> => {
   const accessToken = await getAccessToken();
 
-  const spotifyUrl = buildSpotifyApiUrl(input);
+  if (!!spotifyId) {
+    /* Will return TrackItem response */
+    const spotifyUrl = buildSpotifyTrackByIdApiUrl(spotifyId);
 
-  const response = await fetch(spotifyUrl.toString(), {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
+    const response = await fetch(spotifyUrl.toString(), {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-  if (!response.ok) {
-    throw new ExternalApiError();
+    if (!response.ok) {
+      throw new ExternalApiError();
+    }
+
+    const data = (await response.json()) as TrackItem;
+
+    if (!data.artists[0]) {
+      throw new NotFoundError();
+    }
+
+    return {
+      input: {
+        artist: data.artists[0].name,
+        track: data.name,
+      },
+      url: data.external_urls.spotify,
+    };
+  } else {
+    /* Will return TrackResponse response */
+    const spotifyUrl = buildSpotifyApiUrl(input);
+
+    const response = await fetch(spotifyUrl.toString(), {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new ExternalApiError();
+    }
+
+    const data = (await response.json()) as TrackResponse;
+
+    /* TODO: This will need optimising because currently only returns the first element found + need better searching */
+    const track = data.tracks.items.find((item) =>
+      item.name.toLowerCase().includes(input.track.toLowerCase())
+    );
+
+    if (!track || !track.artists[0]) {
+      throw new NotFoundError();
+    }
+
+    return {
+      input: {
+        artist: track.artists[0].name,
+        track: track.name,
+      },
+      url: track.external_urls.spotify,
+    };
   }
-
-  const data = (await response.json()) as TrackResponse;
-
-  /* TODO: This will need optimising because currently only returns the first element found + need better searching */
-  const track = data.tracks.items.find((item) =>
-    item.name.toLowerCase().includes(input.track.toLowerCase())
-  );
-
-  if (!track || !track.artists[0]) {
-    throw new NotFoundError();
-  }
-
-  return {
-    input: {
-      artist: track.artists[0].name,
-      track: track.name,
-    },
-    url: track.external_urls.spotify,
-  };
 };
 
 /**
@@ -214,6 +255,7 @@ export const getListOfSongsByTrack = async (
       id: item.id,
       artist: item.album.artists[0]?.name || "Artist unknown",
       track: item.name,
+      url: item.href,
       album: item.album.name,
       imageUrl: item.album.images.find((image) => image.height === 300)?.url,
     })),
@@ -273,6 +315,7 @@ export const getListOfAlbums = async (
           id: track.id,
           artist: album.artists[0]?.name || "Artist unknown",
           track: track.name,
+          url: track.href,
         })),
       };
     })

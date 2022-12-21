@@ -18,6 +18,7 @@ export interface ListOfTracksReturnType {
     artist: string;
     track: string;
     album: string;
+    url: string;
     imageUrl: string | undefined;
   }[];
 }
@@ -32,6 +33,7 @@ export interface ListOfAlbumsReturnType {
       id: string;
       artist: string;
       track: string;
+      url: string;
     }[];
   }[];
 }
