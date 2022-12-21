@@ -6,8 +6,11 @@ exports.up = async function (knex) {
     CREATE TABLE "public"."${TABLE}" (
       "id" UUID NOT NULL PRIMARY KEY,
       "ip" varchar(255) NOT NULL,
-      "location" varchar(255) NOT NULL,
+      "city" varchar(255) NOT NULL,
+      "country" varchar(255) NOT NULL,
+      "coordinates" varchar(255) NOT NULL,
       "search" varchar(255) NOT NULL,
+      "timezone" varchar(255) NOT NULL,
       "search_type" TEXT NOT NULL CHECK(
         "search_type" = ANY(
           ARRAY[

@@ -34,9 +34,15 @@ import {
   ListOfAlbumsReturnType,
 } from "@helpers/spotify/spotify.types";
 import { AlbumBtn } from "@components/AlbumBtn";
+import { useUserData } from "@hooks/useUserData";
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
+  const { ip } = useUserData();
+
+  useEffect(() => {
+    console.log({ ip });
+  }, [ip]);
 
   /* ################################################## */
   /* State */
@@ -138,8 +144,6 @@ export const HomeScreen = (): JSX.Element => {
       setTracks([]);
       setAlbums([]);
 
-      let timeOut: NodeJS.Timeout;
-
       handleSubmit(
         async (formFields) => {
           switch (selected) {
@@ -157,7 +161,7 @@ export const HomeScreen = (): JSX.Element => {
 
               const data: ListOfAlbumsReturnType = await response.json();
 
-              timeOut = setTimeout(() => {
+              const timeOutArtist = setTimeout(() => {
                 if (response.ok) {
                   setAlbums(data.albums);
                   reset(defaultValues, { keepDefaultValues: true });
@@ -178,7 +182,7 @@ export const HomeScreen = (): JSX.Element => {
                 setIsLoading(false);
               }, 2000);
 
-              return () => clearTimeout(timeOut);
+              return () => clearTimeout(timeOutArtist);
             }
             /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
             case InputSelection.Track: {
@@ -194,7 +198,7 @@ export const HomeScreen = (): JSX.Element => {
 
               const data: ListOfTracksReturnType = await response.json();
 
-              timeOut = setTimeout(() => {
+              const timeOutTrack = setTimeout(() => {
                 if (response.ok) {
                   setTracks(data.tracks);
                   reset(defaultValues, { keepDefaultValues: true });
@@ -215,7 +219,7 @@ export const HomeScreen = (): JSX.Element => {
                 setIsLoading(false);
               }, 2000);
 
-              return () => clearTimeout(timeOut);
+              return () => clearTimeout(timeOutTrack);
             }
             /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
             case InputSelection.Url: {
@@ -231,7 +235,7 @@ export const HomeScreen = (): JSX.Element => {
 
               const data: ResponseLinksApi = await response.json();
 
-              timeOut = setTimeout(() => {
+              const timeOutUrl = setTimeout(() => {
                 if (response.ok) {
                   setLinks(data.links);
                   setDetails(data.details);
@@ -253,7 +257,7 @@ export const HomeScreen = (): JSX.Element => {
                 setIsLoading(false);
               }, 2000);
 
-              return () => clearTimeout(timeOut);
+              return () => clearTimeout(timeOutUrl);
             }
           }
         },
