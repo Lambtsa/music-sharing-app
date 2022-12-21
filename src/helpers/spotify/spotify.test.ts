@@ -3,7 +3,11 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./.env.test" });
 
 import { GetMusicLinksInput } from "@customTypes";
-import { buildSpotifyApiUrl, buildSpotifyListApiUrl } from "./spotify";
+import {
+  buildSpotifyApiUrl,
+  buildSpotifyTrackListApiUrl,
+  buildSpotifyAlbumListApiUrl,
+} from "./spotify";
 
 describe("buildSpotifyApiUrl helper", () => {
   const inputData: GetMusicLinksInput = {
@@ -28,40 +32,40 @@ describe("buildSpotifyApiUrl helper", () => {
   });
 });
 
-describe("buildSpotifyListApiUrl helper", () => {
-  test("Should return valid URL Object given artist", () => {
-    expect(buildSpotifyListApiUrl("Last Train", "artist")).toBeInstanceOf(URL);
-  });
+describe("buildSpotifyTrackListApiUrl helper", () => {
   test("Should return valid URL Object given track", () => {
-    expect(buildSpotifyListApiUrl("Fragile", "track")).toBeInstanceOf(URL);
-  });
-  test("Should return valid url given artist", () => {
-    expect(buildSpotifyListApiUrl("Last Train", "artist").toString()).toBe(
-      `https://api.spotify.com/v1/search?type=track&q=artist%3A%22Last+Train%22`
-    );
+    expect(buildSpotifyTrackListApiUrl("Fragile")).toBeInstanceOf(URL);
   });
   test("Should return valid url given track", () => {
-    expect(buildSpotifyListApiUrl("Fragile", "track").toString()).toBe(
+    expect(buildSpotifyTrackListApiUrl("Fragile").toString()).toBe(
       `https://api.spotify.com/v1/search?type=track&q=track%3A%22Fragile%22`
     );
   });
-  const artistParams = buildSpotifyListApiUrl(
-    "Last Train",
-    "artist"
-  ).searchParams;
-  const trackParams = buildSpotifyListApiUrl("Fragile", "track").searchParams;
-  test("Should have correct number of search Params", () => {
-    expect([...artistParams.keys()]).toHaveLength(2);
-  });
+  const trackParams = buildSpotifyTrackListApiUrl("Fragile").searchParams;
   test("Should have correct number of search Params", () => {
     expect([...trackParams.keys()]).toHaveLength(2);
   });
   test("Should have valid searchParams", () => {
-    expect(artistParams.get("type")).toBe("track");
-    expect(artistParams.get("q")).toBe('artist:"Last Train"');
-  });
-  test("Should have valid searchParams", () => {
     expect(trackParams.get("type")).toBe("track");
     expect(trackParams.get("q")).toBe('track:"Fragile"');
+  });
+});
+
+describe("buildSpotifyAlbumListApiUrl helper", () => {
+  test("Should return valid URL Object given artist", () => {
+    expect(buildSpotifyAlbumListApiUrl("Last Train")).toBeInstanceOf(URL);
+  });
+  test("Should return valid url given artist", () => {
+    expect(buildSpotifyAlbumListApiUrl("Last Train").toString()).toBe(
+      `https://api.spotify.com/v1/search?type=album&q=artist%3A%22Last+Train%22`
+    );
+  });
+  const artistParams = buildSpotifyAlbumListApiUrl("Last Train").searchParams;
+  test("Should have correct number of search Params", () => {
+    expect([...artistParams.keys()]).toHaveLength(2);
+  });
+  test("Should have valid searchParams", () => {
+    expect(artistParams.get("type")).toBe("album");
+    expect(artistParams.get("q")).toBe('artist:"Last Train"');
   });
 });

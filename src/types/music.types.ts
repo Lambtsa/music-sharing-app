@@ -1,5 +1,3 @@
-import { ListOfTracksReturnType } from "@helpers/spotify/spotify.types";
-
 export interface GetMusicLinksInput {
   artist: string;
   track: string;
@@ -11,8 +9,6 @@ export interface ResponseLinksApi {
   links: MusicData[];
   details: GetMusicLinksInput;
 }
-
-export type ResponseMusicApi = ListOfTracksReturnType;
 
 export interface MusicData {
   name: MusicProviders;

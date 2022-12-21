@@ -3,10 +3,12 @@ import {
   CustomBaseError,
   MethodNotAllowedError,
 } from "@constants/errors";
-import { SpotifyDataType } from "@customTypes";
 import { sanitiseData } from "@helpers/sanitise";
-import { getListOfSongs } from "@helpers/spotify";
-import { ListOfTracksReturnType as ResponseMusicApi } from "@helpers/spotify/spotify.types";
+import { getListOfAlbums, getListOfSongsByTrack } from "@helpers/spotify";
+import {
+  ListOfTracksReturnType,
+  ListOfAlbumsReturnType,
+} from "@helpers/spotify/spotify.types";
 import { NextApiRequest, NextApiResponse } from "next/types";
 
 interface ResponseError {
@@ -16,7 +18,9 @@ interface ResponseError {
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<ResponseMusicApi | ResponseError>
+  res: NextApiResponse<
+    ListOfTracksReturnType | ListOfAlbumsReturnType | ResponseError
+  >
 ) => {
   try {
     if (req.method !== "POST") {
@@ -32,23 +36,17 @@ const handler = async (
       throw new BadRequestError();
     }
 
-    /* We sanitise before checking to make sure that we have accurate data */
+    /* We sanitise before checking to make sure that we have an accurate input */
     const artist = sanitiseData(rawArtist || "");
     const track = sanitiseData(rawTrack || "");
 
     if (!!artist) {
-      const response = await getListOfSongs(
-        sanitiseData(rawArtist),
-        SpotifyDataType.Artist
-      );
+      const response = await getListOfAlbums(sanitiseData(rawArtist));
       return res.status(200).json(response);
     }
 
     if (!!track) {
-      const response = await getListOfSongs(
-        sanitiseData(rawTrack),
-        SpotifyDataType.Track
-      );
+      const response = await getListOfSongsByTrack(sanitiseData(rawTrack));
       return res.status(200).json(response);
     }
   } catch (err) {

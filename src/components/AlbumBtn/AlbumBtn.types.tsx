@@ -1,8 +1,8 @@
-import { ListOfTracksReturnType } from "@helpers/spotify/spotify.types";
+import { ListOfAlbumsReturnType } from "@helpers/spotify/spotify.types";
 import { InputHTMLAttributes } from "react";
 
 export interface TrackBtnProps extends InputHTMLAttributes<HTMLButtonElement> {
-  track: ListOfTracksReturnType["tracks"][number];
+  album: ListOfAlbumsReturnType["albums"][number];
   handleOnClick: ({ artist, track }: { artist: string; track: string }) => void;
   isLight: boolean;
 }

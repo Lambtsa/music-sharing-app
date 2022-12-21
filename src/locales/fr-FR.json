@@ -1,6 +1,6 @@
 {
   "error.message.noTitle": "Please try again making sure that the artist or title is written correctly.",
-  "error.message.incorrectUrl": "Please try again making sure that the url is written correctly. Note: We currently do not support Youtube urls.",
+  "error.message.incorrectUrl": "Please try again making sure that the url is written correctly. Note: We do not currently support Youtube urls.",
   "error.message.requiredArtist": "Please provide an artists' name",
   "error.message.requiredTitle": "Please provide a song title",
   "error.message.requiredUrl": "Please provide a valid url",
@@ -8,7 +8,7 @@
   "home.cta": "Get your links!",
   "home.title": "Share it!",
   "home.subtitle": "Enter details on any song and generate links for the most popular music streaming platforms. Give it a go!",
-  "home.showingResults": "Showing results for {artist} - {track}...",
+  "home.showingResults": "Showing results for {artist} - {track}",
   "label.artist": "Artist",
   "label.copyLink": "Copy Link",
   "label.search": "Artist, title or streaming url",
