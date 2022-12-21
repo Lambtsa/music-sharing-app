@@ -20,13 +20,17 @@ import {
 } from "./Home.styles";
 import { InputText } from "@components/Inputs/InputText";
 import { Button } from "@components/Button";
-import { GetMusicLinksInput, MusicData, ResponseLinksApi } from "@customTypes";
+import {
+  GetMusicLinksInput,
+  MusicData,
+  ResponseLinksApi,
+  SearchInputType,
+} from "@customTypes";
 import { MusicLink } from "@components/Link";
 import { Loader } from "@components/Loader";
 import { MessageBox } from "@components/MessageBox";
 import { Footer } from "@components/Footer";
 import { Selector } from "@components/Selector";
-import { InputSelection } from "@constants/input";
 import { isValidInput, isValidMusicStreamingUrl } from "@helpers/url";
 import { TrackBtn } from "@components/TrackBtn";
 import {
@@ -49,22 +53,20 @@ export const HomeScreen = (): JSX.Element => {
   const [errorMessage, setErrorMessage] = useState<
     FormatjsIntl.Message["ids"] | undefined
   >(undefined);
-  const [selected, setSelected] = useState<InputSelection>(
-    InputSelection.Artist
-  );
+  const [selected, setSelected] = useState<SearchInputType>("artist");
   const [details, setDetails] = useState<GetMusicLinksInput | undefined>(
     undefined
   );
 
-  const createErrorMessage = (selected: InputSelection): string => {
+  const createErrorMessage = (selected: SearchInputType): string => {
     switch (selected) {
-      case InputSelection.Artist: {
+      case "artist": {
         return t({ id: "error.message.requiredArtist" });
       }
-      case InputSelection.Track: {
+      case "track": {
         return t({ id: "error.message.requiredTitle" });
       }
-      case InputSelection.Url: {
+      case "url": {
         return t({ id: "error.message.requiredUrl" });
       }
     }
@@ -118,7 +120,7 @@ export const HomeScreen = (): JSX.Element => {
   useEffect(() => {
     /* Will automatically change the selected input to url if a valid url is passed into the field */
     if (isValidMusicStreamingUrl(url)) {
-      setSelected(InputSelection.Url);
+      setSelected("url");
     }
   }, [url]);
 
@@ -131,20 +133,20 @@ export const HomeScreen = (): JSX.Element => {
       if (isLoading) {
         return;
       }
-      /* Reset states */
-      setIsLoading(true);
-      setErrorMessage(undefined);
-      setLinks([]);
-      setTracks([]);
-      setAlbums([]);
 
       let timeOut: NodeJS.Timeout;
 
       handleSubmit(
         async (formFields) => {
+          /* Reset states */
+          setIsLoading(true);
+          setErrorMessage(undefined);
+          setLinks([]);
+          setTracks([]);
+          setAlbums([]);
           switch (selected) {
             /* Artist will return a list of tracks sorted by album. User can then select a track */
-            case InputSelection.Artist: {
+            case "artist": {
               const response = await fetch("/api/tracks", {
                 method: "POST",
                 headers: {
@@ -181,7 +183,7 @@ export const HomeScreen = (): JSX.Element => {
               return () => clearTimeout(timeOut);
             }
             /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
-            case InputSelection.Track: {
+            case "track": {
               const response = await fetch("/api/tracks", {
                 method: "POST",
                 headers: {
@@ -218,7 +220,7 @@ export const HomeScreen = (): JSX.Element => {
               return () => clearTimeout(timeOut);
             }
             /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
-            case InputSelection.Url: {
+            case "url": {
               const response = await fetch("/api/links", {
                 method: "POST",
                 headers: {
@@ -266,7 +268,7 @@ export const HomeScreen = (): JSX.Element => {
   );
 
   const handleOnClick = useCallback(
-    async ({ artist, track }: { artist: string; track: string }) => {
+    async (url: string) => {
       if (isLoading) {
         return;
       }
@@ -280,7 +282,7 @@ export const HomeScreen = (): JSX.Element => {
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({ artist, track }),
+        body: JSON.stringify({ url }),
       });
 
       if (!response.ok) {
@@ -293,7 +295,7 @@ export const HomeScreen = (): JSX.Element => {
           setError("search", {
             type: "server",
             message:
-              selected === InputSelection.Artist
+              selected === "artist"
                 ? t({ id: "error.message.requiredArtist" })
                 : t({ id: "error.message.requiredTitle" }),
           });

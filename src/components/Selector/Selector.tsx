@@ -1,4 +1,4 @@
-import { InputSelection } from "@constants/input";
+import { SearchInputType } from "@customTypes";
 import { useTranslation } from "@hooks/useTranslation";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import {
@@ -9,8 +9,8 @@ import {
 
 interface SelectorProps {
   isLight: boolean;
-  selected: InputSelection;
-  setSelected: Dispatch<SetStateAction<InputSelection>>;
+  selected: SearchInputType;
+  setSelected: Dispatch<SetStateAction<SearchInputType>>;
 }
 
 export const Selector = ({
@@ -20,11 +20,11 @@ export const Selector = ({
 }: SelectorProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const options = useMemo(() => {
-    return Object.values(InputSelection);
+  const options = useMemo((): SearchInputType[] => {
+    return ["artist", "track", "url"];
   }, []);
 
-  const handleOnClick = (input: InputSelection) => {
+  const handleOnClick = (input: SearchInputType) => {
     setSelected(input);
   };
 

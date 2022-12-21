@@ -13,6 +13,7 @@ import { useTranslation } from "@hooks/useTranslation";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 import { MusicProviders } from "@customTypes";
+import { CustomApiErrorMessages } from "@constants/errors";
 
 interface MusicLinkProps {
   service: MusicProviders;
@@ -54,6 +55,13 @@ export const MusicLink = ({
     }
   }, [service]);
 
+  const contentUrl = useMemo(() => {
+    if (serviceUrl === CustomApiErrorMessages.NoTrack) {
+      return t({ id: "label.noUrl" }, { service });
+    }
+    return serviceUrl;
+  }, [service, serviceUrl, t]);
+
   const handleCopyLink = useCallback(() => {
     if (isCopied) {
       return;
@@ -66,7 +74,7 @@ export const MusicLink = ({
     <LinkWrapper isLight={isLight}>
       {ServiceIcon}
       <StyledButtonWrapper>
-        <StyledInput readOnly value={serviceUrl} isLight={isLight} />
+        <StyledInput readOnly value={contentUrl} isLight={isLight} />
         {/* TODO: make this button trigger shareto @see https://developer.mozilla.org/en-US/docs/Web/API/Web_Share_API */}
         <StyledButton
           isCopied={isCopied}

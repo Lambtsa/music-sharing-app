@@ -1,4 +1,3 @@
-export type SpotifyInputType = "artist" | "track";
 export interface AccessTokenBody {
   access_token: string;
   token_type: string;
@@ -19,6 +18,7 @@ export interface ListOfTracksReturnType {
     artist: string;
     track: string;
     album: string;
+    url: string;
     imageUrl: string | undefined;
   }[];
 }
@@ -33,6 +33,7 @@ export interface ListOfAlbumsReturnType {
       id: string;
       artist: string;
       track: string;
+      url: string;
     }[];
   }[];
 }

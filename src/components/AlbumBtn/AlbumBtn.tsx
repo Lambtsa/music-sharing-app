@@ -69,9 +69,7 @@ export const AlbumBtn = ({
                 </AlbumInfoContainer>
                 <TrackBtnBtn
                   type="button"
-                  onClick={() =>
-                    handleOnClick({ artist: track.artist, track: track.track })
-                  }
+                  onClick={() => handleOnClick(track.url)}
                 >
                   {t({ id: "label.select" })}
                 </TrackBtnBtn>
