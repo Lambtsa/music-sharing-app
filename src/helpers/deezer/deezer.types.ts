@@ -1,8 +1,4 @@
-enum DeezerDataType {
-  Artist = "artist",
-  Album = "album",
-  Track = "track",
-}
+import { SearchInputType } from "@customTypes";
 
 interface DeezerArtist {
   id: number;
@@ -14,7 +10,7 @@ interface DeezerArtist {
   picture_big: string;
   picture_xl: string;
   tracklist: string;
-  type: DeezerDataType.Artist;
+  type: SearchInputType;
 }
 
 interface DeezerAlbum {
@@ -27,7 +23,7 @@ interface DeezerAlbum {
   cover_xl: string;
   md5_image: string;
   tracklist: string;
-  type: DeezerDataType.Album;
+  type: SearchInputType;
 }
 
 export interface DeezerTrack {
@@ -46,7 +42,7 @@ export interface DeezerTrack {
   md5_image: string;
   artist: DeezerArtist;
   album: DeezerAlbum;
-  type: DeezerDataType.Track;
+  type: SearchInputType;
 }
 
 export interface DeezerApiResponse {

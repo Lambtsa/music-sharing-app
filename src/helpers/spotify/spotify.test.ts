@@ -7,6 +7,8 @@ import {
   buildSpotifyApiUrl,
   buildSpotifyTrackListApiUrl,
   buildSpotifyAlbumListApiUrl,
+  buildSpotifyTrackByIdApiUrl,
+  buildSpotifyAlbumTracksListApiUrl,
 } from "./spotify";
 
 describe("buildSpotifyApiUrl helper", () => {
@@ -67,5 +69,27 @@ describe("buildSpotifyAlbumListApiUrl helper", () => {
   test("Should have valid searchParams", () => {
     expect(artistParams.get("type")).toBe("album");
     expect(artistParams.get("q")).toBe('artist:"Last Train"');
+  });
+});
+
+describe("buildSpotifyTrackByIdApiUrl helper", () => {
+  test("Should return valid URL Object given id", () => {
+    expect(buildSpotifyTrackByIdApiUrl("1234")).toBeInstanceOf(URL);
+  });
+  test("Should return valid url given id", () => {
+    expect(buildSpotifyTrackByIdApiUrl("1234").toString()).toBe(
+      `https://api.spotify.com/v1/tracks/1234`
+    );
+  });
+});
+
+describe("buildSpotifyAlbumTracksListApiUrl helper", () => {
+  test("Should return valid URL Object given id", () => {
+    expect(buildSpotifyAlbumTracksListApiUrl("1234")).toBeInstanceOf(URL);
+  });
+  test("Should return valid url given id", () => {
+    expect(buildSpotifyAlbumTracksListApiUrl("1234").toString()).toBe(
+      `https://api.spotify.com/v1/albums/1234/tracks`
+    );
   });
 });

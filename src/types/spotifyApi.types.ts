@@ -1,8 +1,4 @@
-export enum SpotifyDataType {
-  Album = "album",
-  Artist = "artist",
-  Track = "track",
-}
+import { SearchInputType } from "./music.types";
 
 export interface ArtistItem {
   external_urls: {
@@ -12,7 +8,7 @@ export interface ArtistItem {
   href: string;
   id: string;
   name: string;
-  type: SpotifyDataType.Artist;
+  type: SearchInputType;
   /* Opens application */
   uri: string;
 }
@@ -36,7 +32,7 @@ export interface AlbumItem {
   release_date: string;
   release_date_precision: string;
   total_tracks: 15;
-  type: SpotifyDataType.Album;
+  type: SearchInputType;
   /* Opens application */
   uri: string;
 }
@@ -62,7 +58,7 @@ export interface TrackItem {
   popularity: number;
   preview_url: string;
   track_number: number;
-  type: SpotifyDataType.Track;
+  type: SearchInputType;
   /* Opens application */
   uri: string;
 }
