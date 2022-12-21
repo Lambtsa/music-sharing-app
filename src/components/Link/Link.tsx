@@ -36,7 +36,7 @@ export const MusicLink = ({
     }
     const timer = setTimeout(() => {
       setIsCopied(false);
-    }, 4000);
+    }, 2000);
     return () => clearTimeout(timer);
   }, [isCopied]);
 

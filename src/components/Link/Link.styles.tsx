@@ -52,14 +52,15 @@ export const StyledButton = styled.button<{
   > svg > path {
     fill: ${(props) => props.theme.colors.ivory};
   }
-  transition: background-color 0.3s ease-out;
+  transition: background-color 0.2s ease-in-out;
 
   /* @see https://developer.mozilla.org/en-US/docs/Web/CSS/@media/hover */
   @media (hover: hover) {
     /* when hover is supported */
     :hover {
       color: ${(props) => props.theme.colors.ivory};
-      background-color: ${(props) => props.theme.colors.oldRose};
+      background-color: ${(props) =>
+        !props.isCopied && props.theme.colors.oldRose};
     }
   }
 `;

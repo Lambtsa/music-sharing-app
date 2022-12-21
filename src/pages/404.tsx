@@ -1,15 +1,17 @@
 import { MetaData } from "@components/MetaData";
-import URL from "@constants/url";
+import { pageData } from "@helpers/metadata";
 
 const isProduction = process.env.NODE_ENV === "production";
 
+/* TODO: make custom 404 page */
 const Custom404 = () => {
+  const { index } = pageData;
   return (
     <>
       <MetaData
-        title="Charlie's Closet | Habillez votre enfant sans déshabiller la planète"
-        description="Habillez votre enfant sans déshabiller la planète"
-        url={URL.PROD}
+        title={index.title}
+        description={index.description}
+        url={index.url}
         production={isProduction}
       />
       <p>404</p>
