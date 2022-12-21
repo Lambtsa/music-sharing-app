@@ -42,11 +42,7 @@ import { useUserData } from "@hooks/useUserData";
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
-  const { ip } = useUserData();
-
-  useEffect(() => {
-    console.log({ ip });
-  }, [ip]);
+  const { ip, geolocation } = useUserData();
 
   /* ################################################## */
   /* State */
@@ -158,6 +154,10 @@ export const HomeScreen = (): JSX.Element => {
                 },
                 body: JSON.stringify({
                   [selected]: formFields.search,
+                  user: {
+                    ip,
+                    geolocation,
+                  },
                 }),
               });
 
@@ -195,6 +195,10 @@ export const HomeScreen = (): JSX.Element => {
                 },
                 body: JSON.stringify({
                   [selected]: formFields.search,
+                  user: {
+                    ip,
+                    geolocation,
+                  },
                 }),
               });
 
@@ -232,6 +236,10 @@ export const HomeScreen = (): JSX.Element => {
                 },
                 body: JSON.stringify({
                   [selected]: formFields.search,
+                  user: {
+                    ip,
+                    geolocation,
+                  },
                 }),
               });
 
@@ -268,7 +276,17 @@ export const HomeScreen = (): JSX.Element => {
         }
       )();
     },
-    [defaultValues, handleSubmit, isLoading, reset, selected, setError, t]
+    [
+      defaultValues,
+      geolocation,
+      handleSubmit,
+      ip,
+      isLoading,
+      reset,
+      selected,
+      setError,
+      t,
+    ]
   );
 
   const handleOnClick = useCallback(
@@ -286,7 +304,13 @@ export const HomeScreen = (): JSX.Element => {
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({
+          url,
+          user: {
+            ip,
+            geolocation,
+          },
+        }),
       });
 
       if (!response.ok) {
@@ -322,7 +346,7 @@ export const HomeScreen = (): JSX.Element => {
 
       return () => clearTimeout(timeOut);
     },
-    [defaultValues, isLoading, reset, selected, setError, t]
+    [defaultValues, geolocation, ip, isLoading, reset, selected, setError, t]
   );
 
   const hasLinks = !!links.length;
