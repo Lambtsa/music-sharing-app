@@ -13,6 +13,13 @@ import { determineUrlType, getTrackId } from "@helpers/url";
 import { searchYoutube } from "@helpers/youtube";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
+import { Limiter } from "core/limiter";
+import { createConnection } from "db/knex";
+import { Search } from "db/tables.types";
+import { v4 as uuid } from "uuid";
+import { UseUserDataReturnType } from "@hooks/useUserData";
+
+const requestLimiter = new Limiter();
 
 const urlSchema = z.object({
   url: z.string().url(),
@@ -22,6 +29,23 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseLinksApi | ResponseError>
 ) => {
+  const result = await requestLimiter.limit("api");
+  res.setHeader("X-RateLimit-Limit", result.limit);
+  res.setHeader("X-RateLimit-Remaining", result.remaining);
+
+  if (!result.success) {
+    res.status(400).send({
+      statusCode: 400,
+      message: "",
+    });
+    return;
+  }
+
+  const knex = await createConnection();
+
+  /* ######################################## */
+  /* API */
+  /* ######################################## */
   try {
     if (req.method !== "POST") {
       throw new MethodNotAllowedError();
@@ -30,7 +54,7 @@ const handler = async (
     /* DATA */
     /* ######################################## */
     const {
-      body: { url },
+      body: { url, user },
     } = req;
     if (!url) {
       throw new BadRequestError();
@@ -70,8 +94,30 @@ const handler = async (
     }
 
     /* ######################################## */
+    /* Save Data to DB */
+    /* ######################################## */
+    if (!!user.ip && !!user.geolocation) {
+      /* TODO: Add transaction */
+      const { ip, geolocation } = user as UseUserDataReturnType;
+      await knex.transaction(async (trx) => {
+        await trx<Search>("searches").insert({
+          id: uuid(),
+          ip: ip,
+          city: geolocation?.city || null,
+          country: geolocation?.country || null,
+          coordinates: geolocation?.coordinates || null,
+          timezone: geolocation?.timezone || null,
+          search: url,
+          search_type: "url",
+          url_type: urlType,
+        });
+      });
+    }
+
+    /* ######################################## */
     /* SPOTIFY */
-    /* Use spotify to find other titles
+    /* Use spotify to find other titles. 
+    /* If url passed in is spotifyesque then we can use the id directly to query api
     /* ######################################## */
     const isSpotifyId = urlType === "spotifyApi" || urlType === "spotify";
     const { url: spotifyUri } = isSpotifyId
