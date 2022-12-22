@@ -39,6 +39,7 @@ import {
 } from "@helpers/spotify/spotify.types";
 import { AlbumBtn } from "@components/AlbumBtn";
 import { useUserData } from "@hooks/useUserData";
+import { delay } from "@helpers/time";
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
@@ -163,7 +164,7 @@ export const HomeScreen = (): JSX.Element => {
 
               const data: ListOfAlbumsReturnType = await response.json();
 
-              const timeOutArtist = setTimeout(() => {
+              delay(() => {
                 if (response.ok) {
                   setAlbums(data.albums);
                   reset(defaultValues, { keepDefaultValues: true });
@@ -184,7 +185,7 @@ export const HomeScreen = (): JSX.Element => {
                 setIsLoading(false);
               }, 2000);
 
-              return () => clearTimeout(timeOutArtist);
+              break;
             }
             /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
             case "track": {
@@ -204,7 +205,7 @@ export const HomeScreen = (): JSX.Element => {
 
               const data: ListOfTracksReturnType = await response.json();
 
-              const timeOutTrack = setTimeout(() => {
+              delay(() => {
                 if (response.ok) {
                   setTracks(data.tracks);
                   reset(defaultValues, { keepDefaultValues: true });
@@ -225,7 +226,7 @@ export const HomeScreen = (): JSX.Element => {
                 setIsLoading(false);
               }, 2000);
 
-              return () => clearTimeout(timeOutTrack);
+              break;
             }
             /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
             case "url": {
@@ -245,7 +246,7 @@ export const HomeScreen = (): JSX.Element => {
 
               const data: ResponseLinksApi = await response.json();
 
-              const timeOutUrl = setTimeout(() => {
+              delay(() => {
                 if (response.ok) {
                   setLinks(data.links);
                   setDetails(data.details);
@@ -267,7 +268,7 @@ export const HomeScreen = (): JSX.Element => {
                 setIsLoading(false);
               }, 2000);
 
-              return () => clearTimeout(timeOutUrl);
+              break;
             }
           }
         },
@@ -332,7 +333,7 @@ export const HomeScreen = (): JSX.Element => {
 
       const data: ResponseLinksApi = await response.json();
 
-      const timeOut = setTimeout(() => {
+      delay(() => {
         if (response.ok) {
           setLinks(data.links);
           setDetails(data.details);
@@ -343,8 +344,6 @@ export const HomeScreen = (): JSX.Element => {
         }
         setIsLoading(false);
       }, 2000);
-
-      return () => clearTimeout(timeOut);
     },
     [defaultValues, geolocation, ip, isLoading, reset, selected, setError, t]
   );

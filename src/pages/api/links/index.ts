@@ -14,10 +14,10 @@ import { searchYoutube } from "@helpers/youtube";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 import { Limiter } from "core/limiter";
-import { createConnection } from "db/knex";
-import { Search } from "db/tables.types";
-import { v4 as uuid } from "uuid";
-import { UseUserDataReturnType } from "@hooks/useUserData";
+// import { createConnection } from "db/knex";
+// import { Search } from "db/tables.types";
+// import { v4 as uuid } from "uuid";
+// import { UseUserDataReturnType } from "@hooks/useUserData";
 
 const requestLimiter = new Limiter();
 
@@ -41,7 +41,7 @@ const handler = async (
     return;
   }
 
-  const knex = await createConnection();
+  // const knex = await createConnection();
 
   /* ######################################## */
   /* API */
@@ -54,7 +54,7 @@ const handler = async (
     /* DATA */
     /* ######################################## */
     const {
-      body: { url, user },
+      body: { url },
     } = req;
     if (!url) {
       throw new BadRequestError();
@@ -96,23 +96,23 @@ const handler = async (
     /* ######################################## */
     /* Save Data to DB */
     /* ######################################## */
-    if (!!user.ip && !!user.geolocation) {
-      /* TODO: Add transaction */
-      const { ip, geolocation } = user as UseUserDataReturnType;
-      await knex.transaction(async (trx) => {
-        await trx<Search>("searches").insert({
-          id: uuid(),
-          ip: ip,
-          city: geolocation?.city || null,
-          country: geolocation?.country || null,
-          coordinates: geolocation?.coordinates || null,
-          timezone: geolocation?.timezone || null,
-          search: url,
-          search_type: "url",
-          url_type: urlType,
-        });
-      });
-    }
+    // if (!!user.ip && !!user.geolocation) {
+    //   /* TODO: Add transaction */
+    //   const { ip, geolocation } = user as UseUserDataReturnType;
+    //   await knex.transaction(async (trx) => {
+    //     await knex<Search>("searches").transacting(trx).insert({
+    //       id: uuid(),
+    //       ip: ip,
+    //       city: geolocation?.city || null,
+    //       country: geolocation?.country || null,
+    //       coordinates: geolocation?.coordinates || null,
+    //       timezone: geolocation?.timezone || null,
+    //       search: url,
+    //       search_type: "url",
+    //       url_type: urlType,
+    //     });
+    //   });
+    // }
 
     /* ######################################## */
     /* SPOTIFY */

@@ -14,6 +14,7 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 import { MusicProviders } from "@customTypes";
 import { CustomApiErrorMessages } from "@constants/errors";
+import { delay } from "@helpers/time";
 
 interface MusicLinkProps {
   service: MusicProviders;
@@ -35,10 +36,9 @@ export const MusicLink = ({
     if (!isCopied) {
       return;
     }
-    const timer = setTimeout(() => {
+    delay(() => {
       setIsCopied(false);
     }, 2000);
-    return () => clearTimeout(timer);
   }, [isCopied]);
 
   const ServiceIcon: ReactNode = useMemo(() => {
