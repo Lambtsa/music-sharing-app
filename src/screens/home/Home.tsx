@@ -22,7 +22,7 @@ import { InputText } from "@components/Inputs/InputText";
 import { Button } from "@components/Button";
 import {
   GetMusicLinksInput,
-  MusicData,
+  LinksResponseData,
   ResponseLinksApi,
   SearchInputType,
 } from "@customTypes";
@@ -46,7 +46,7 @@ export const HomeScreen = (): JSX.Element => {
   /* State */
   /* ################################################## */
   const { isLight } = useLightOrDarkTheme();
-  const [links, setLinks] = useState<MusicData[]>([]);
+  const [links, setLinks] = useState<LinksResponseData[]>([]);
   const [tracks, setTracks] = useState<ListOfTracksReturnType["tracks"]>([]);
   const [albums, setAlbums] = useState<ListOfAlbumsReturnType["albums"]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -133,146 +133,158 @@ export const HomeScreen = (): JSX.Element => {
       if (isLoading) {
         return;
       }
-
-      handleSubmit(
-        async (formFields) => {
-          /* Reset states */
-          setIsLoading(true);
-          setErrorMessage(undefined);
-          setLinks([]);
-          setTracks([]);
-          setAlbums([]);
-          switch (selected) {
-            /* Artist will return a list of tracks sorted by album. User can then select a track */
-            case "artist": {
-              const response = await fetch("http://localhost:8080/api/tracks", {
-                method: "POST",
-                headers: {
-                  "Content-type": "application/json",
-                },
-                body: JSON.stringify({
-                  [selected]: formFields.search,
-                  user: {
-                    ip,
-                    geolocation,
-                  },
-                }),
-              });
-
-              const data: ListOfAlbumsReturnType = await response.json();
-
-              delay(() => {
-                if (response.ok) {
-                  setAlbums(data.albums);
-                  reset(defaultValues, { keepDefaultValues: true });
-                } else {
-                  if (response.status === 400) {
-                    setError("search", {
-                      type: "server",
-                      message: t({ id: "error.message.requiredUrl" }),
-                    });
-                  } else if (response.status === 404) {
-                    setError("search", {
-                      type: "server",
-                      message: t({ id: "error.message.requiredArtist" }),
-                    });
+      try {
+        handleSubmit(
+          async (formFields) => {
+            /* Reset states */
+            setIsLoading(true);
+            setErrorMessage(undefined);
+            setLinks([]);
+            setTracks([]);
+            setAlbums([]);
+            switch (selected) {
+              /* Artist will return a list of tracks sorted by album. User can then select a track */
+              case "artist": {
+                const response = await fetch(
+                  "http://localhost:8080/api/tracks",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      [selected]: formFields.search,
+                      user: {
+                        ip,
+                        geolocation,
+                      },
+                    }),
                   }
-                  setErrorMessage("error.message.noTitle");
-                }
-                setIsLoading(false);
-              }, 2000);
+                );
 
-              break;
-            }
-            /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
-            case "track": {
-              const response = await fetch("http://localhost:8080/api/tracks", {
-                method: "POST",
-                headers: {
-                  "Content-type": "application/json",
-                },
-                body: JSON.stringify({
-                  [selected]: formFields.search,
-                  user: {
-                    ip,
-                    geolocation,
-                  },
-                }),
-              });
+                const data: ListOfAlbumsReturnType = await response.json();
 
-              const data: ListOfTracksReturnType = await response.json();
-
-              delay(() => {
-                if (response.ok) {
-                  setTracks(data.tracks);
-                  reset(defaultValues, { keepDefaultValues: true });
-                } else {
-                  if (response.status === 400) {
-                    setError("search", {
-                      type: "server",
-                      message: t({ id: "error.message.requiredUrl" }),
-                    });
-                  } else if (response.status === 404) {
-                    setError("search", {
-                      type: "server",
-                      message: t({ id: "error.message.requiredTitle" }),
-                    });
+                delay(() => {
+                  if (response.ok) {
+                    setAlbums(data.albums);
+                    reset(defaultValues, { keepDefaultValues: true });
+                  } else {
+                    if (response.status === 400) {
+                      setError("search", {
+                        type: "server",
+                        message: t({ id: "error.message.requiredUrl" }),
+                      });
+                    } else if (response.status === 404) {
+                      setError("search", {
+                        type: "server",
+                        message: t({ id: "error.message.requiredArtist" }),
+                      });
+                    }
+                    setErrorMessage("error.message.noTitle");
                   }
-                  setErrorMessage("error.message.noTitle");
-                }
-                setIsLoading(false);
-              }, 2000);
+                  setIsLoading(false);
+                }, 2000);
 
-              break;
-            }
-            /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
-            case "url": {
-              const response = await fetch("http://localhost:8080/api/links", {
-                method: "POST",
-                headers: {
-                  "Content-type": "application/json",
-                },
-                body: JSON.stringify({
-                  [selected]: formFields.search,
-                  user: {
-                    ip,
-                    geolocation,
-                  },
-                }),
-              });
-
-              const data: ResponseLinksApi = await response.json();
-
-              delay(() => {
-                if (response.ok) {
-                  setLinks(data.links);
-                  setDetails(data.details);
-                  reset(defaultValues, { keepDefaultValues: true });
-                } else {
-                  if (response.status === 400) {
-                    setError("search", {
-                      type: "server",
-                      message: t({ id: "error.message.requiredUrl" }),
-                    });
-                  } else if (response.status === 404) {
-                    setError("search", {
-                      type: "server",
-                      message: t({ id: "error.message.requiredUrl" }),
-                    });
+                break;
+              }
+              /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
+              case "track": {
+                const response = await fetch(
+                  "http://localhost:8080/api/tracks",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      [selected]: formFields.search,
+                      user: {
+                        ip,
+                        geolocation,
+                      },
+                    }),
                   }
-                  setErrorMessage("error.message.incorrectUrl");
-                }
-                setIsLoading(false);
-              }, 2000);
+                );
 
-              break;
+                const data: ListOfTracksReturnType = await response.json();
+
+                delay(() => {
+                  if (response.ok) {
+                    setTracks(data.tracks);
+                    reset(defaultValues, { keepDefaultValues: true });
+                  } else {
+                    if (response.status === 400) {
+                      setError("search", {
+                        type: "server",
+                        message: t({ id: "error.message.requiredUrl" }),
+                      });
+                    } else if (response.status === 404) {
+                      setError("search", {
+                        type: "server",
+                        message: t({ id: "error.message.requiredTitle" }),
+                      });
+                    }
+                    setErrorMessage("error.message.noTitle");
+                  }
+                  setIsLoading(false);
+                }, 2000);
+
+                break;
+              }
+              /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
+              case "url": {
+                const response = await fetch(
+                  "http://localhost:8080/api/links",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      [selected]: formFields.search,
+                      user: {
+                        ip,
+                        geolocation,
+                      },
+                    }),
+                  }
+                );
+
+                const data: ResponseLinksApi = await response.json();
+
+                delay(() => {
+                  if (response.ok) {
+                    setLinks(data.links);
+                    setDetails(data.details);
+                    reset(defaultValues, { keepDefaultValues: true });
+                  } else {
+                    if (response.status === 400) {
+                      setError("search", {
+                        type: "server",
+                        message: t({ id: "error.message.requiredUrl" }),
+                      });
+                    } else if (response.status === 404) {
+                      setError("search", {
+                        type: "server",
+                        message: t({ id: "error.message.requiredUrl" }),
+                      });
+                    }
+                    setErrorMessage("error.message.incorrectUrl");
+                  }
+                  setIsLoading(false);
+                }, 2000);
+
+                break;
+              }
             }
+          },
+          (error) => {
+            console.log({ error: error.search });
           }
-        },
-        (error) => {
-          console.log({ error: error.search });
-        }
-      )();
+        )();
+      } catch (err) {
+        console.log({ err });
+      }
     },
     [
       defaultValues,
@@ -297,50 +309,54 @@ export const HomeScreen = (): JSX.Element => {
       setTracks([]);
       setAlbums([]);
 
-      const response = await fetch("/api/links", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          url,
-          user: {
-            ip,
-            geolocation,
+      try {
+        const response = await fetch("http://localhost:8080/api/links", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
           },
-        }),
-      });
+          body: JSON.stringify({
+            url,
+            user: {
+              ip,
+              geolocation,
+            },
+          }),
+        });
 
-      if (!response.ok) {
-        if (response.status === 400) {
-          setError("search", {
-            type: "server",
-            message: t({ id: "error.message.requiredUrl" }),
-          });
-        } else if (response.status === 404) {
-          setError("search", {
-            type: "server",
-            message:
-              selected === "artist"
-                ? t({ id: "error.message.requiredArtist" })
-                : t({ id: "error.message.requiredTitle" }),
-          });
+        if (!response.ok) {
+          if (response.status === 400) {
+            setError("search", {
+              type: "server",
+              message: t({ id: "error.message.requiredUrl" }),
+            });
+          } else if (response.status === 404) {
+            setError("search", {
+              type: "server",
+              message:
+                selected === "artist"
+                  ? t({ id: "error.message.requiredArtist" })
+                  : t({ id: "error.message.requiredTitle" }),
+            });
+          }
         }
+
+        const data: ResponseLinksApi = await response.json();
+
+        delay(() => {
+          if (response.ok) {
+            setLinks(data.links);
+            setDetails(data.details);
+            reset(defaultValues, { keepDefaultValues: true });
+          } else {
+            // TODO: make specific error messages
+            setErrorMessage("error.message.noTitle");
+          }
+          setIsLoading(false);
+        }, 2000);
+      } catch (err) {
+        console.log({ err });
       }
-
-      const data: ResponseLinksApi = await response.json();
-
-      delay(() => {
-        if (response.ok) {
-          setLinks(data.links);
-          setDetails(data.details);
-          reset(defaultValues, { keepDefaultValues: true });
-        } else {
-          // TODO: make specific error messages
-          setErrorMessage("error.message.noTitle");
-        }
-        setIsLoading(false);
-      }, 2000);
     },
     [defaultValues, geolocation, ip, isLoading, reset, selected, setError, t]
   );
