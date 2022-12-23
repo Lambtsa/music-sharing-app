@@ -149,7 +149,7 @@ export const HomeScreen = (): JSX.Element => {
               /* Artist will return a list of tracks sorted by album. User can then select a track */
               case "artist": {
                 const response = await fetch(
-                  `${isProd ? urls.API : urls.DEV}/api/tracks`,
+                  `${isProd ? urls.PROD_API : urls.DEV}/api/tracks`,
                   {
                     method: "POST",
                     headers: {
@@ -193,7 +193,7 @@ export const HomeScreen = (): JSX.Element => {
               /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
               case "track": {
                 const response = await fetch(
-                  `${isProd ? urls.API : urls.DEV}/api/tracks`,
+                  `${isProd ? urls.PROD_API : urls.DEV}/api/tracks`,
                   {
                     method: "POST",
                     headers: {
@@ -237,7 +237,7 @@ export const HomeScreen = (): JSX.Element => {
               /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
               case "url": {
                 const response = await fetch(
-                  `${isProd ? urls.API : urls.DEV}/api/links`,
+                  `${isProd ? urls.PROD_API : urls.DEV}/api/links`,
                   {
                     method: "POST",
                     headers: {
@@ -314,7 +314,7 @@ export const HomeScreen = (): JSX.Element => {
 
       try {
         const response = await fetch(
-          `${isProd ? urls.API : urls.DEV}/api/links`,
+          `${isProd ? urls.PROD_API : urls.DEV}/api/links`,
           {
             method: "POST",
             headers: {

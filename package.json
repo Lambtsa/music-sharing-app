@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=development next start",
     "lint": "next lint",
     "format:check": "prettier --ignore-path .gitignore --check .",
     "format:fix": "prettier --ignore-path .gitignore --write .",
