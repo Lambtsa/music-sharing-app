@@ -4,7 +4,7 @@ import {
   spotifyUrlRegex,
   youtubeUrlRegex,
 } from "@constants/regex";
-import { ApiUrlInputTypes, SearchInputType } from "@customTypes";
+import { UrlTypes, SearchInputType } from "@customTypes";
 
 /**
  * Will determine whether the url is one of the accepted types
@@ -52,7 +52,7 @@ export const isValidInput = (
  * Helper for determining which type of url has been passed into endpoint
  * @returns MusicProviders | null
  */
-export const determineUrlType = (url: string): ApiUrlInputTypes | null => {
+export const determineUrlType = (url: string): UrlTypes | null => {
   switch (true) {
     case spotifyApiRegex.test(url): {
       return "spotifyApi";
@@ -75,10 +75,7 @@ export const determineUrlType = (url: string): ApiUrlInputTypes | null => {
  * Helper function to get id from the different supported urls
  * @returns string | null
  */
-export const getTrackId = (
-  url: string,
-  type: ApiUrlInputTypes
-): string | null => {
+export const getTrackId = (url: string, type: UrlTypes): string | null => {
   const urlObj = new URL(url);
   switch (type) {
     case "spotify": {

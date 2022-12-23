@@ -1,16 +1,8 @@
-export interface AccessTokenBody {
-  access_token: string;
-  token_type: string;
-  expires_in: number;
-}
+export type SearchInputType = "artist" | "track" | "url";
 
-export interface SearchSpotifyReturnType {
-  input: {
-    artist: string;
-    track: string;
-  };
-  url: string;
-}
+export type MusicProviders = "spotify" | "youtube" | "deezer";
+
+export type UrlTypes = MusicProviders | "spotifyApi";
 
 export interface ListOfTracksReturnType {
   tracks: {
@@ -36,4 +28,14 @@ export interface ListOfAlbumsReturnType {
       url: string;
     }[];
   }[];
+}
+
+export interface GetMusicLinksInput {
+  artist: string;
+  track: string;
+}
+
+export interface LinksResponseData {
+  name: MusicProviders;
+  url: string;
 }
