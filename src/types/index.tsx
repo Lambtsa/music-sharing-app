@@ -1,3 +1,3 @@
 export * from "./translations";
 export * from "./music.types";
-export * from "./spotifyApi.types";
+export * from "./external.types";

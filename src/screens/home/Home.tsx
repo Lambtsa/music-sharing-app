@@ -33,10 +33,7 @@ import { Footer } from "@components/Footer";
 import { Selector } from "@components/Selector";
 import { isValidInput, isValidMusicStreamingUrl } from "@helpers/url";
 import { TrackBtn } from "@components/TrackBtn";
-import {
-  ListOfTracksReturnType,
-  ListOfAlbumsReturnType,
-} from "@helpers/spotify/spotify.types";
+import { ListOfTracksReturnType, ListOfAlbumsReturnType } from "@customTypes";
 import { AlbumBtn } from "@components/AlbumBtn";
 import { useUserData } from "@hooks/useUserData";
 import { delay } from "@helpers/time";
@@ -148,7 +145,7 @@ export const HomeScreen = (): JSX.Element => {
           switch (selected) {
             /* Artist will return a list of tracks sorted by album. User can then select a track */
             case "artist": {
-              const response = await fetch("/api/tracks", {
+              const response = await fetch("http://localhost:8080/api/tracks", {
                 method: "POST",
                 headers: {
                   "Content-type": "application/json",
@@ -189,7 +186,7 @@ export const HomeScreen = (): JSX.Element => {
             }
             /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
             case "track": {
-              const response = await fetch("/api/tracks", {
+              const response = await fetch("http://localhost:8080/api/tracks", {
                 method: "POST",
                 headers: {
                   "Content-type": "application/json",
@@ -230,7 +227,7 @@ export const HomeScreen = (): JSX.Element => {
             }
             /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
             case "url": {
-              const response = await fetch("/api/links", {
+              const response = await fetch("http://localhost:8080/api/links", {
                 method: "POST",
                 headers: {
                   "Content-type": "application/json",

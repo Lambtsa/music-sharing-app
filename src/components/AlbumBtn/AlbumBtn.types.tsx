@@ -1,4 +1,4 @@
-import { ListOfAlbumsReturnType } from "@helpers/spotify/spotify.types";
+import { ListOfAlbumsReturnType } from "@customTypes";
 import { InputHTMLAttributes } from "react";
 
 export interface TrackBtnProps extends InputHTMLAttributes<HTMLButtonElement> {
