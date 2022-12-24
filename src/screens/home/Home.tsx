@@ -186,7 +186,7 @@ export const HomeScreen = (): JSX.Element => {
                     setErrorMessage("error.message.noTitle");
                   }
                   setIsLoading(false);
-                }, 2000);
+                }, 1000);
 
                 break;
               }
@@ -230,7 +230,7 @@ export const HomeScreen = (): JSX.Element => {
                     setErrorMessage("error.message.noTitle");
                   }
                   setIsLoading(false);
-                }, 2000);
+                }, 1000);
 
                 break;
               }
@@ -275,7 +275,7 @@ export const HomeScreen = (): JSX.Element => {
                     setErrorMessage("error.message.incorrectUrl");
                   }
                   setIsLoading(false);
-                }, 2000);
+                }, 1000);
 
                 break;
               }
@@ -359,7 +359,7 @@ export const HomeScreen = (): JSX.Element => {
             setErrorMessage("error.message.noTitle");
           }
           setIsLoading(false);
-        }, 2000);
+        }, 1000);
       } catch (err) {
         console.log({ err });
       }
