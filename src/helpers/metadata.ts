@@ -22,13 +22,13 @@ export const pageData: Pages = {
   default: {
     title: "Audio Linx | Share your favourite songs with all your friends!",
     description:
-      "Enter an artist's name, a song title and generate links for that song for all the most popular music streaming platforms. Click and share your favourite songs with all your friends!",
+      "Enter an artist's name, a song title or a sharing url and generate links for that song for all the most popular music streaming platforms. Click and share your favourite songs with all your friends!",
     url: buildUrl(routes.index()),
   },
   index: {
     title: "Audio Linx | Share your favourite songs with all your friends!",
     description:
-      "Enter an artist's name, a song title and generate links for that song for all the most popular music streaming platforms. Click and share your favourite songs with all your friends!",
+      "Enter an artist's name, a song title or a sharing url and generate links for that song for all the most popular music streaming platforms. Click and share your favourite songs with all your friends!",
     url: buildUrl(routes.index()),
   },
 };
