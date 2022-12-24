@@ -1,5 +1,6 @@
 import { MetaData } from "@components/MetaData";
 import { pageData } from "@helpers/metadata";
+import { FourOhFour } from "@screens/fourOhFour";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -14,7 +15,7 @@ const Custom404 = () => {
         url={index.url}
         production={isProduction}
       />
-      <p>404</p>
+      <FourOhFour />
     </>
   );
 };

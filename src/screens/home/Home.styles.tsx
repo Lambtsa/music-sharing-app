@@ -56,15 +56,6 @@ export const Form = styled.form`
   gap: 4px;
 `;
 
-export const LogoContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  left: 16px;
-  top: 0;
-`;
-
 export const ShowingDetailsText = styled.p<{
   isLight: boolean;
 }>`

@@ -4,16 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Main } from "@components/Main";
 import { Container } from "@components/Container";
-import { Toggle } from "@components/Toggle";
 import { useTranslation } from "@hooks/useTranslation";
 import { useLightOrDarkTheme } from "@context/ThemeContext";
-import { ReactComponent as LightLogo } from "@assets/lightLogo.svg";
-import { ReactComponent as DarkLogo } from "@assets/darkLogo.svg";
 import {
   Form,
   HeaderWrapper,
   LinksWrapper,
-  LogoContainer,
   ShowingDetailsText,
   Subtitle,
   Title,
@@ -38,6 +34,7 @@ import { AlbumBtn } from "@components/AlbumBtn";
 import { useUserData } from "@hooks/useUserData";
 import { delay } from "@helpers/time";
 import urls from "@constants/url";
+import { Header } from "@components/Header";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -376,10 +373,7 @@ export const HomeScreen = (): JSX.Element => {
     <>
       <Main>
         <Container size="mobile">
-          <LogoContainer>
-            {isLight ? <DarkLogo /> : <LightLogo />}
-          </LogoContainer>
-          <Toggle />
+          <Header />
           <HeaderWrapper>
             <Title isLight={isLight}>{t({ id: "home.title" })}</Title>
             <Subtitle isLight={isLight}>{t({ id: "home.subtitle" })}</Subtitle>

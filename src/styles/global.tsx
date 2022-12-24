@@ -48,6 +48,7 @@ export const GlobalStyle = createGlobalStyle`
   #__next {
     width: 100%;
     min-height: 100vh;
+    height: 100%;
   }
 
   #__next {
