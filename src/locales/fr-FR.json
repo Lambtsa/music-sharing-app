@@ -4,6 +4,7 @@
   "error.message.requiredArtist": "Please provide an artists' name",
   "error.message.requiredTitle": "Please provide a song title",
   "error.message.requiredUrl": "Please provide a valid url",
+  "error.message.generic": "There has been an error",
   "footer.copyright": "© {date} AudioLinx. All rights reserved",
   "fourOhFour.cta": "Back home",
   "fourOhFour.title": "404",

@@ -133,20 +133,20 @@ export const HomeScreen = (): JSX.Element => {
       if (isLoading) {
         return;
       }
-      try {
-        handleSubmit(
-          async (formFields) => {
-            /* Reset states */
-            setIsLoading(true);
-            setErrorMessage(undefined);
-            setLinks([]);
-            setTracks([]);
-            setAlbums([]);
+      handleSubmit(
+        async (formFields) => {
+          /* Reset states */
+          setIsLoading(true);
+          setErrorMessage(undefined);
+          setLinks([]);
+          setTracks([]);
+          setAlbums([]);
+          try {
             switch (selected) {
               /* Artist will return a list of tracks sorted by album. User can then select a track */
               case "artist": {
                 const response = await fetch(
-                  `${isProd ? urls.PROD_API : urls.DEV}/api/tracks`,
+                  `${isProd ? urls.PROD_API : urls.DEV_API}/api/tracks`,
                   {
                     method: "POST",
                     headers: {
@@ -190,7 +190,7 @@ export const HomeScreen = (): JSX.Element => {
               /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
               case "track": {
                 const response = await fetch(
-                  `${isProd ? urls.PROD_API : urls.DEV}/api/tracks`,
+                  `${isProd ? urls.PROD_API : urls.DEV_API}/api/tracks`,
                   {
                     method: "POST",
                     headers: {
@@ -234,7 +234,7 @@ export const HomeScreen = (): JSX.Element => {
               /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
               case "url": {
                 const response = await fetch(
-                  `${isProd ? urls.PROD_API : urls.DEV}/api/links`,
+                  `${isProd ? urls.PROD_API : urls.DEV_API}/api/links`,
                   {
                     method: "POST",
                     headers: {
@@ -277,14 +277,18 @@ export const HomeScreen = (): JSX.Element => {
                 break;
               }
             }
-          },
-          (error) => {
-            console.log({ error: error.search });
+          } catch (err) {
+            setIsLoading(false);
+            setErrorMessage("error.message.generic");
+            console.log({ err });
           }
-        )();
-      } catch (err) {
-        console.log({ err });
-      }
+        },
+        (error) => {
+          setIsLoading(false);
+          setErrorMessage("error.message.generic");
+          console.log({ error: error.search });
+        }
+      )();
     },
     [
       defaultValues,
@@ -311,7 +315,7 @@ export const HomeScreen = (): JSX.Element => {
 
       try {
         const response = await fetch(
-          `${isProd ? urls.PROD_API : urls.DEV}/api/links`,
+          `${isProd ? urls.PROD_API : urls.DEV_API}/api/links`,
           {
             method: "POST",
             headers: {
@@ -358,6 +362,8 @@ export const HomeScreen = (): JSX.Element => {
           setIsLoading(false);
         }, 1000);
       } catch (err) {
+        setIsLoading(false);
+        setErrorMessage("error.message.generic");
         console.log({ err });
       }
     },
