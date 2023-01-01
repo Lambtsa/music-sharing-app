@@ -3,12 +3,20 @@ import { Container } from "@components/Container";
 import { Header } from "@components/Header";
 import { Main } from "@components/Main";
 import { useLightOrDarkTheme } from "@context/ThemeContext";
+import { routes } from "@helpers/routes";
 import { useTranslation } from "@hooks/useTranslation";
+import { useRouter } from "next/router";
+import { useCallback } from "react";
 import { FourOhFourContainer, Subtitle, Title } from "./FourOhFour.styles";
 
 export const FourOhFour = (): JSX.Element => {
   const { isLight } = useLightOrDarkTheme();
   const { t } = useTranslation();
+  const router = useRouter();
+
+  const handleOnClick = useCallback(() => {
+    router.push(routes.index());
+  }, [router]);
 
   return (
     <>
@@ -20,7 +28,12 @@ export const FourOhFour = (): JSX.Element => {
             <Subtitle isLight={isLight}>
               {t({ id: "fourOhFour.subtitle" })}
             </Subtitle>
-            <Button width={140} type="button" isLight={isLight}>
+            <Button
+              onClick={handleOnClick}
+              width={140}
+              type="button"
+              isLight={isLight}
+            >
               {t({ id: "fourOhFour.cta" })}
             </Button>
           </FourOhFourContainer>
