@@ -1,17 +1,27 @@
 import { Logo } from "@components/Logo";
 import { Toggle } from "@components/Toggle";
 import { useLightOrDarkTheme } from "@context/ThemeContext";
-import { HeaderContainer } from "./Header.styles";
+import { routes } from "@helpers/routes";
+import { useRouter } from "next/router";
+import { useCallback } from "react";
+import { HeaderContainer, LogoButton } from "./Header.styles";
 
 export const Header = (): JSX.Element => {
   /* ################################################## */
   /* State */
   /* ################################################## */
   const { isLight } = useLightOrDarkTheme();
+  const router = useRouter();
+
+  const handleOnClick = useCallback(() => {
+    router.push(routes.index());
+  }, [router]);
 
   return (
     <HeaderContainer>
-      <Logo isLight={isLight} />
+      <LogoButton onClick={handleOnClick}>
+        <Logo isLight={isLight} />
+      </LogoButton>
       <Toggle />
     </HeaderContainer>
   );

@@ -1,5 +1,6 @@
 import { Button } from "@components/Button";
 import { Container } from "@components/Container";
+import { Footer } from "@components/Footer";
 import { Header } from "@components/Header";
 import { Main } from "@components/Main";
 import { useLightOrDarkTheme } from "@context/ThemeContext";
@@ -39,6 +40,7 @@ export const FourOhFour = (): JSX.Element => {
           </FourOhFourContainer>
         </Container>
       </Main>
+      <Footer isLight={isLight} />
     </>
   );
 };
