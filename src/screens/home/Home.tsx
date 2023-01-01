@@ -58,19 +58,33 @@ export const HomeScreen = (): JSX.Element => {
     undefined
   );
 
-  const createErrorMessage = (selected: SearchInputType): string => {
-    switch (selected) {
-      case "artist": {
-        return t({ id: "error.message.requiredArtist" });
+  const createErrorMessage = useCallback(
+    (selected: SearchInputType): string => {
+      switch (selected) {
+        case "artist": {
+          return t({ id: "error.message.requiredArtist" });
+        }
+        case "track": {
+          return t({ id: "error.message.requiredTitle" });
+        }
+        case "url": {
+          return t({ id: "error.message.requiredUrl" });
+        }
       }
-      case "track": {
-        return t({ id: "error.message.requiredTitle" });
-      }
-      case "url": {
-        return t({ id: "error.message.requiredUrl" });
-      }
+    },
+    [t]
+  );
+
+  const scrollToTop = useCallback(() => {
+    if (typeof window === "undefined") {
+      return;
     }
-  };
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, []);
 
   /* ################################################## */
   /* Forms */
@@ -133,14 +147,16 @@ export const HomeScreen = (): JSX.Element => {
       if (isLoading) {
         return;
       }
+
+      /* Reset states */
+      setIsLoading(true);
+      setErrorMessage(undefined);
+      setLinks([]);
+      setTracks([]);
+      setAlbums([]);
+
       handleSubmit(
         async (formFields) => {
-          /* Reset states */
-          setIsLoading(true);
-          setErrorMessage(undefined);
-          setLinks([]);
-          setTracks([]);
-          setAlbums([]);
           try {
             switch (selected) {
               /* Artist will return a list of tracks sorted by album. User can then select a track */
@@ -168,6 +184,7 @@ export const HomeScreen = (): JSX.Element => {
                   if (response.ok) {
                     setAlbums(data.albums);
                     reset(defaultValues, { keepDefaultValues: true });
+                    scrollToTop();
                   } else {
                     if (response.status === 400) {
                       setError("search", {
@@ -212,6 +229,7 @@ export const HomeScreen = (): JSX.Element => {
                   if (response.ok) {
                     setTracks(data.tracks);
                     reset(defaultValues, { keepDefaultValues: true });
+                    scrollToTop();
                   } else {
                     if (response.status === 400) {
                       setError("search", {
@@ -257,6 +275,7 @@ export const HomeScreen = (): JSX.Element => {
                     setLinks(data.links);
                     setDetails(data.details);
                     reset(defaultValues, { keepDefaultValues: true });
+                    scrollToTop();
                   } else {
                     if (response.status === 400) {
                       setError("search", {
@@ -297,6 +316,7 @@ export const HomeScreen = (): JSX.Element => {
       ip,
       isLoading,
       reset,
+      scrollToTop,
       selected,
       setError,
       t,
@@ -355,6 +375,7 @@ export const HomeScreen = (): JSX.Element => {
             setLinks(data.links);
             setDetails(data.details);
             reset(defaultValues, { keepDefaultValues: true });
+            scrollToTop();
           } else {
             // TODO: make specific error messages
             setErrorMessage("error.message.noTitle");
@@ -367,7 +388,17 @@ export const HomeScreen = (): JSX.Element => {
         console.log({ err });
       }
     },
-    [defaultValues, geolocation, ip, isLoading, reset, selected, setError, t]
+    [
+      defaultValues,
+      geolocation,
+      ip,
+      isLoading,
+      reset,
+      scrollToTop,
+      selected,
+      setError,
+      t,
+    ]
   );
 
   const hasLinks = !!links.length;

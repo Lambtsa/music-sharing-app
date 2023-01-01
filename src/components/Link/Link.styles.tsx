@@ -8,7 +8,7 @@ export const LinkWrapper = styled.div<{
   align-items: center;
   gap: 10px;
   background-color: ${(props) =>
-    props.isLight ? props.theme.colors.eerieBlack20 : props.theme.colors.onyx};
+    props.isLight ? props.theme.colors.tiffanyBlue20 : props.theme.colors.onyx};
   border-radius: 10px;
   width: 100%;
   padding: 12px 16px;

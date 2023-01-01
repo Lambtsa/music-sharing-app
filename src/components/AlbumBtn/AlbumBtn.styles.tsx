@@ -9,13 +9,21 @@ export const AlbumBtnContainer = styled.div<{
   align-items: center;
   gap: 16px;
   background-color: ${(props) =>
-    props.isLight ? props.theme.colors.eerieBlack20 : props.theme.colors.onyx};
+    props.isLight ? props.theme.colors.tiffanyBlue20 : props.theme.colors.onyx};
   border-radius: 10px;
   width: 100%;
   padding: 12px 16px;
 
   > svg {
     min-width: 30px;
+  }
+  svg {
+    path {
+      stroke: ${(props) =>
+        props.isLight
+          ? props.theme.colors.eerieBlack
+          : props.theme.colors.ivory};
+    }
   }
 `;
 

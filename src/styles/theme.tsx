@@ -15,7 +15,9 @@ const colors = {
   oldRose: "#b68278",
   onyx: "#38393D",
   pastelPink: "#DD9F93",
+  pastelPink20: "rgba(221, 159, 147, 0.2)",
   tiffanyBlue: "#3CBBB1",
+  tiffanyBlue20: "rgba(60, 187, 177, 0.2)",
   viridianGreen: "#329A91",
 };
 

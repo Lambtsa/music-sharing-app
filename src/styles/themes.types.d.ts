@@ -12,7 +12,9 @@ interface Colors {
   oldRose: string;
   onyx: string;
   pastelPink: string;
+  pastelPink20: string;
   tiffanyBlue: string;
+  tiffanyBlue20: string;
   viridianGreen: string;
 }
 
