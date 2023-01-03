@@ -24,6 +24,7 @@ export const TrackBtn = ({
         object-fit="cover"
         src={track.imageUrl || "/placeholder.svg"}
         alt={track.album}
+        placeholder="blur"
       />
       <TrackInfoContainer>
         <TrackBtnTitle isLight={isLight}>{track.artist}</TrackBtnTitle>
