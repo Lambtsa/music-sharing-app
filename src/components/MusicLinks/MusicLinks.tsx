@@ -96,7 +96,7 @@ export const MusicLinks = ({
         onClick={handleCopyLink}
       >
         {isCopied ? <Tick /> : <Link />}
-        {"Copy Links"}
+        {selectedProviders.length > 1 ? "Copy Links" : "Copy Link"}
       </StyledButton>
     </>
   );
