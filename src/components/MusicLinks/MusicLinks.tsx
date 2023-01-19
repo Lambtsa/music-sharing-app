@@ -66,7 +66,7 @@ export const MusicLinks = ({
         }
         return url;
       })
-      .join(" \n ");
+      .join(" \n \n ");
   }, [links, selectedProviders]);
 
   const handleCopyLink = useCallback(() => {
