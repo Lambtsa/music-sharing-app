@@ -1,45 +1,38 @@
-import {
-  LinkWrapper,
-  StyledButton,
-  StyledButtonWrapper,
-  StyledInput,
-} from "./Link.styles";
+import { LinkWrapper, StyledButtonWrapper, StyledInput } from "./Link.styles";
 import { ReactComponent as Spotify } from "@assets/spotify.svg";
 import { ReactComponent as Deezer } from "@assets/deezer.svg";
 import { ReactComponent as Youtube } from "@assets/youtube.svg";
-import { ReactComponent as LinkIcon } from "@assets/link.svg";
-import { ReactComponent as Tickcon } from "@assets/tick.svg";
 import { useTranslation } from "@hooks/useTranslation";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { useCopyToClipboard } from "react-use";
+import { ReactNode, useMemo } from "react";
+// import { useCopyToClipboard } from "react-use";
 import { MusicProviders } from "@customTypes";
 import { CustomApiErrorMessages } from "@constants/errors";
-import { delay } from "@helpers/time";
+// import { delay } from "@helpers/time";
+import { InputCheckbox } from "@components/Inputs/InputCheckbox";
 
 interface MusicLinkProps {
   service: MusicProviders;
   serviceUrl: string;
   isLight: boolean;
+  handleOnChange: (id: MusicProviders) => void;
+  isSelected: boolean;
 }
 
 export const MusicLink = ({
   service,
   serviceUrl,
   isLight,
+  handleOnChange,
+  isSelected,
 }: MusicLinkProps): JSX.Element => {
   const { t } = useTranslation();
-  const [isCopied, setIsCopied] = useState(false);
-  // TODO: deal with copy to clipboard errors
-  const [_state, copyToClipboard] = useCopyToClipboard();
 
-  useEffect(() => {
-    if (!isCopied) {
-      return;
-    }
-    delay(() => {
-      setIsCopied(false);
-    }, 2000);
-  }, [isCopied]);
+  /* ############################## */
+  /* State */
+  /* ############################## */
+  const isDisabled = useMemo(() => {
+    return serviceUrl === CustomApiErrorMessages.NoTrack;
+  }, [serviceUrl]);
 
   const ServiceIcon: ReactNode = useMemo(() => {
     switch (service) {
@@ -56,34 +49,24 @@ export const MusicLink = ({
   }, [service]);
 
   const contentUrl = useMemo(() => {
-    if (serviceUrl === CustomApiErrorMessages.NoTrack) {
+    if (isDisabled) {
       return t({ id: "label.noUrl" }, { service });
     }
     return serviceUrl;
-  }, [service, serviceUrl, t]);
-
-  const handleCopyLink = useCallback(() => {
-    if (isCopied) {
-      return;
-    }
-    copyToClipboard(serviceUrl);
-    setIsCopied(!isCopied);
-  }, [copyToClipboard, isCopied, serviceUrl]);
+  }, [isDisabled, service, serviceUrl, t]);
 
   return (
-    <LinkWrapper isLight={isLight}>
-      {ServiceIcon}
+    <LinkWrapper disabled={isDisabled} isLight={isLight}>
+      <InputCheckbox
+        disabled={isDisabled}
+        isSelected={isSelected}
+        handleOnChange={() => handleOnChange(service)}
+        isLight={isLight}
+      />
       <StyledButtonWrapper>
         <StyledInput readOnly value={contentUrl} isLight={isLight} />
-        {/* TODO: make this button trigger shareto @see https://developer.mozilla.org/en-US/docs/Web/API/Web_Share_API */}
-        <StyledButton
-          isCopied={isCopied}
-          onClick={handleCopyLink}
-          title={t({ id: "label.copyLink" })}
-        >
-          {isCopied ? <Tickcon /> : <LinkIcon />}
-        </StyledButton>
       </StyledButtonWrapper>
+      {ServiceIcon}
     </LinkWrapper>
   );
 };

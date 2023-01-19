@@ -25,6 +25,7 @@ export const TrackBtn = ({
         src={track.imageUrl || "/placeholder.svg"}
         alt={track.album}
         placeholder="blur"
+        blurDataURL="/placeholder.svg"
       />
       <TrackInfoContainer>
         <TrackBtnTitle isLight={isLight}>{track.artist}</TrackBtnTitle>

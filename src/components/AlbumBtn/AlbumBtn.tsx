@@ -42,6 +42,7 @@ export const AlbumBtn = ({
           src={album.imageUrl || "/placeholder.svg"}
           alt={album.album}
           placeholder="blur"
+          blurDataURL="/placeholder.svg"
         />
         <AlbumInfoContainer>
           <AlbumBtnTitle isLight={isLight}>{album.artist}</AlbumBtnTitle>

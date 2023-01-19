@@ -22,7 +22,6 @@ import {
   ResponseLinksApi,
   SearchInputType,
 } from "@customTypes";
-import { MusicLink } from "@components/Link";
 import { Loader } from "@components/Loader";
 import { MessageBox } from "@components/MessageBox";
 import { Footer } from "@components/Footer";
@@ -35,6 +34,7 @@ import { useUserData } from "@hooks/useUserData";
 import { delay } from "@helpers/time";
 import urls from "@constants/url";
 import { Header } from "@components/Header";
+import { MusicLinks } from "@components/MusicLinks";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -443,14 +443,8 @@ export const HomeScreen = (): JSX.Element => {
                     { artist: details?.artist, track: details?.track }
                   )}
                 </ShowingDetailsText>
-                {links.map(({ name, url }) => (
-                  <MusicLink
-                    key={name}
-                    service={name}
-                    serviceUrl={url}
-                    isLight={isLight}
-                  />
-                ))}
+                {/* TODO: make this button trigger shareto @see https://developer.mozilla.org/en-US/docs/Web/API/Web_Share_API */}
+                <MusicLinks isLight={isLight} links={links} />
               </>
             )}
             {!isLoading &&
