@@ -35,6 +35,7 @@ export const Selector = ({
       {hasOptions &&
         options.map((option) => (
           <SelectorButton
+            data-test={`selector-${option}`}
             type="button"
             selected={selected === option}
             key={option}

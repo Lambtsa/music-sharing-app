@@ -34,7 +34,7 @@ export const AlbumBtn = ({
 
   return (
     <>
-      <AlbumBtnContainer isLight={isLight}>
+      <AlbumBtnContainer data-test="album-button" isLight={isLight}>
         <Img
           width={60}
           height={60}
@@ -44,9 +44,13 @@ export const AlbumBtn = ({
           placeholder="blur"
           blurDataURL="/placeholder.svg"
         />
-        <AlbumInfoContainer>
-          <AlbumBtnTitle isLight={isLight}>{album.artist}</AlbumBtnTitle>
-          <AlbumBtnText isLight={isLight}>{album.album}</AlbumBtnText>
+        <AlbumInfoContainer data-test="album-inner-container">
+          <AlbumBtnTitle data-test="album-artist" isLight={isLight}>
+            {album.artist}
+          </AlbumBtnTitle>
+          <AlbumBtnText data-test="album-title" isLight={isLight}>
+            {album.album}
+          </AlbumBtnText>
           <AlbumBtnText isLight={isLight}>{"Album"}</AlbumBtnText>
         </AlbumInfoContainer>
         <AlbumBtnBtn
