@@ -8,6 +8,9 @@ module.exports = {
   transform: {
     "^.+\\.ts?$": "ts-jest",
   },
+  testMatch: ["**/*.test.ts"],
+  // Indicates whether the coverage information should be collected while executing the test
+  collectCoverage: true,
   coveragePathIgnorePatterns: ["<rootDir>/node_modules/"],
   moduleNameMapper: {
     "@components/(.*)": "<rootDir>/src/components/$1",

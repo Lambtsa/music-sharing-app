@@ -6,7 +6,7 @@ interface LoaderProps {
 
 export const Loader = ({ isLight }: LoaderProps): JSX.Element => {
   return (
-    <LoaderContainer>
+    <LoaderContainer data-test="loader-container">
       <InnerContainer>
         <InnerLoader isLight={isLight} />
         <InnerLoader isLight={isLight} />

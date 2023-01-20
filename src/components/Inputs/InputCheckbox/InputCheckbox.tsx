@@ -28,6 +28,7 @@ export const InputCheckbox = ({
       </CheckboxInnerContainer>
       <label>
         <Checkbox
+          data-test="link-checkbox"
           disabled={disabled}
           checked={isSelected}
           onChange={handleOnChange}

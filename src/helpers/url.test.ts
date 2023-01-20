@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import { isValidInput, determineUrlType, getTrackId } from "./url";
 
 describe("isValidInput helper input", () => {

@@ -11,11 +11,11 @@ export const SelectorContainer = styled.div`
 
 export const SelectorButton = styled.button<{
   isLight: boolean;
-  selected: boolean;
+  isSelected: boolean;
 }>`
   padding: 16px;
   background-color: ${(props) =>
-    props.selected
+    props.isSelected
       ? props.theme.colors.tiffanyBlue
       : props.isLight
       ? props.theme.colors.eerieBlack20
@@ -25,10 +25,10 @@ export const SelectorButton = styled.button<{
 
 export const ButtonText = styled.p<{
   isLight: boolean;
-  selected: boolean;
+  isSelected: boolean;
 }>`
   color: ${(props) =>
-    props.selected
+    props.isSelected
       ? props.theme.colors.ivory
       : props.isLight
       ? props.theme.colors.eerieBlack70

@@ -1,9 +1,6 @@
 import styled from "styled-components";
 
 export const Form = styled.form`
-  position: absolute;
-  right: 16px;
-  top: 16px;
   width: 60px;
   display: inline-block;
   padding: 0;
@@ -17,6 +14,9 @@ export const Label = styled.label<{
   isLight: boolean;
 }>`
   display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
   overflow: hidden;
   cursor: pointer;
   height: 30px;
@@ -43,12 +43,11 @@ export const Switch = styled.div<{
 }>`
   display: flex;
   width: 25px;
+  aspect-ratio: 1/1;
   margin: 3px;
   background: ${(props) => props.theme.colors.ivory};
   position: absolute;
-  top: 0;
-  bottom: 0;
-  right: ${({ isChecked }) => (isChecked ? "0" : "1.8rem")};
+  right: ${({ isChecked }) => (isChecked ? "0" : "1.7rem")};
   border-radius: 1.2rem;
   transition: all 0.3s ease-in 0s;
 `;

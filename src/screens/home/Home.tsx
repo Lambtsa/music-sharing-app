@@ -409,8 +409,8 @@ export const HomeScreen = (): JSX.Element => {
   return (
     <>
       <Main>
+        <Header />
         <Container size="mobile">
-          <Header />
           <HeaderWrapper>
             <Title data-test="title" isLight={isLight}>
               {t({ id: "home.title" })}

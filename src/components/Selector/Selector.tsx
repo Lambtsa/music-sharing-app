@@ -35,14 +35,14 @@ export const Selector = ({
       {hasOptions &&
         options.map((option) => (
           <SelectorButton
+            key={option}
             data-test={`selector-${option}`}
             type="button"
-            selected={selected === option}
-            key={option}
+            isSelected={selected === option}
             isLight={isLight}
             onClick={() => handleOnClick(option)}
           >
-            <ButtonText selected={selected === option} isLight={isLight}>
+            <ButtonText isSelected={selected === option} isLight={isLight}>
               {t({ id: `label.${option}` })}
             </ButtonText>
           </SelectorButton>
