@@ -64,10 +64,8 @@ export const AlbumBtn = ({
               <AlbumBtnContainer isLight={isLight} key={track.id}>
                 <Music width={30} height={30} />
                 <AlbumInfoContainer>
-                  <AlbumBtnTitle isLight={isLight}>
-                    {track.artist}
-                  </AlbumBtnTitle>
-                  <AlbumBtnText isLight={isLight}>{track.track}</AlbumBtnText>
+                  <AlbumBtnTitle isLight={isLight}>{track.track}</AlbumBtnTitle>
+                  <AlbumBtnText isLight={isLight}>{track.artist}</AlbumBtnText>
                 </AlbumInfoContainer>
                 <TrackBtnBtn
                   type="button"

@@ -20,15 +20,15 @@ const buildUrl = (path: string): string => {
 
 export const pageData: Pages = {
   default: {
-    title: "Audio Linx | Share your favourite songs with all your friends!",
+    title: "Audio Linx | Share your music discoveries with all your friends!",
     description:
-      "Enter an artist's name, a song title or a sharing url and generate links for that song for all the most popular music streaming platforms. Click and share your favourite songs with all your friends!",
+      "You have Spotify but all your friends have Youtube or Deezer? Want to make sharing your new discoveries as easy as a copy/ paste? Search by artist, track or simply paste a music streaming service url and get links to the favourite streaming services. Start sharing today!",
     url: buildUrl(routes.index()),
   },
   index: {
-    title: "Audio Linx | Share your favourite songs with all your friends!",
+    title: "Audio Linx | Share your music discoveries with all your friends!",
     description:
-      "Enter an artist's name, a song title or a sharing url and generate links for that song for all the most popular music streaming platforms. Click and share your favourite songs with all your friends!",
+      "You have Spotify but all your friends have Youtube or Deezer? Want to make sharing your new discoveries as easy as a copy/ paste? Search by artist, track or simply paste a music streaming service url and get links to the favourite streaming services. Start sharing today!",
     url: buildUrl(routes.index()),
   },
 };

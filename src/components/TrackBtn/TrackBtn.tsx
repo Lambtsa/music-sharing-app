@@ -28,8 +28,8 @@ export const TrackBtn = ({
         blurDataURL="/placeholder.svg"
       />
       <TrackInfoContainer>
-        <TrackBtnTitle isLight={isLight}>{track.artist}</TrackBtnTitle>
-        <TrackBtnText isLight={isLight}>{track.track}</TrackBtnText>
+        <TrackBtnTitle isLight={isLight}>{track.track}</TrackBtnTitle>
+        <TrackBtnText isLight={isLight}>{track.artist}</TrackBtnText>
         <TrackBtnText isLight={isLight}>{track.album}</TrackBtnText>
       </TrackInfoContainer>
       <TrackBtnBtn type="button" onClick={() => handleOnClick(track.url)}>
