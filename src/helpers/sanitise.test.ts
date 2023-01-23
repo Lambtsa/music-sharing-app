@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import { BadRequestError } from "@constants/errors";
 import { isValidData, sanitiseData } from "./sanitise";
 import { z } from "zod";

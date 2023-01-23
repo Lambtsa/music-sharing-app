@@ -56,7 +56,11 @@ export const MusicLink = ({
   }, [isDisabled, service, serviceUrl, t]);
 
   return (
-    <LinkWrapper disabled={isDisabled} isLight={isLight}>
+    <LinkWrapper
+      data-test="link-container"
+      disabled={isDisabled}
+      isLight={isLight}
+    >
       <InputCheckbox
         disabled={isDisabled}
         isSelected={isSelected}
@@ -64,7 +68,12 @@ export const MusicLink = ({
         isLight={isLight}
       />
       <StyledButtonWrapper>
-        <StyledInput readOnly value={contentUrl} isLight={isLight} />
+        <StyledInput
+          data-test="link-input"
+          readOnly
+          value={contentUrl}
+          isLight={isLight}
+        />
       </StyledButtonWrapper>
       {ServiceIcon}
     </LinkWrapper>

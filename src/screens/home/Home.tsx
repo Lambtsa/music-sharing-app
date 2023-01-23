@@ -409,14 +409,19 @@ export const HomeScreen = (): JSX.Element => {
   return (
     <>
       <Main>
+        <Header />
         <Container size="mobile">
-          <Header />
           <HeaderWrapper>
-            <Title isLight={isLight}>{t({ id: "home.title" })}</Title>
-            <Subtitle isLight={isLight}>{t({ id: "home.subtitle" })}</Subtitle>
+            <Title data-test="title" isLight={isLight}>
+              {t({ id: "home.title" })}
+            </Title>
+            <Subtitle data-test="subtitle" isLight={isLight}>
+              {t({ id: "home.subtitle" })}
+            </Subtitle>
           </HeaderWrapper>
           <Form onSubmit={onSubmit}>
             <InputText
+              data-test="search-input"
               isLight={isLight}
               type="text"
               control={control}
@@ -429,7 +434,7 @@ export const HomeScreen = (): JSX.Element => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Button type="submit" isLight={isLight}>
+            <Button data-test="submit" type="submit" isLight={isLight}>
               {t({ id: "home.cta" })}
             </Button>
           </Form>

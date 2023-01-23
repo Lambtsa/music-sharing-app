@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import { convertCookieValue } from "./useThemeCookie";
 
 describe("convertCookieValue function", () => {
