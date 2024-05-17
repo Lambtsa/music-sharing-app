@@ -36,7 +36,7 @@ export const useUserData = (): UseUserDataReturnType => {
   /* ######################################## */
   const getGeoLocation = useCallback(async (ip: string) => {
     const response = await fetch(
-      `https://ipinfo.io/${ip}?token=3c03e4000d10b6`
+      `https://ipinfo.io/${ip}?token=3c03e4000d10b6`,
     );
     const data = (await response.json()) as GeoLocationResponse;
     setGeolocation({

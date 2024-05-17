@@ -17,7 +17,7 @@ interface ThemeProviderProps {
 }
 
 const LightOrDarkThemeContext = createContext<ThemeContextShape | undefined>(
-  undefined
+  undefined,
 );
 
 const LightOrDarkThemeProvider = ({ children }: ThemeProviderProps) => {

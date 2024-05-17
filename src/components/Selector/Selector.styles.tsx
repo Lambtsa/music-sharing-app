@@ -18,8 +18,8 @@ export const SelectorButton = styled.button<{
     props.selected
       ? props.theme.colors.tiffanyBlue
       : props.isLight
-      ? props.theme.colors.eerieBlack20
-      : props.theme.colors.ivory20};
+        ? props.theme.colors.eerieBlack20
+        : props.theme.colors.ivory20};
   border-radius: 10px;
 `;
 
@@ -31,8 +31,8 @@ export const ButtonText = styled.p<{
     props.selected
       ? props.theme.colors.ivory
       : props.isLight
-      ? props.theme.colors.eerieBlack70
-      : props.theme.colors.ivory70};
+        ? props.theme.colors.eerieBlack70
+        : props.theme.colors.ivory70};
   font-weight: ${(props) => props.theme.fontWeights.regular};
   text-align: center;
   font-size: 16px;

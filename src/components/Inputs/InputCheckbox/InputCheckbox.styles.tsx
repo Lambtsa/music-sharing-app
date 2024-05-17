@@ -24,8 +24,8 @@ export const CheckboxInnerContainer = styled.label<{
     props.isSelected
       ? props.theme.colors.tiffanyBlue
       : props.isLight
-      ? props.theme.colors.ivory
-      : props.theme.colors.ivory20};
+        ? props.theme.colors.ivory
+        : props.theme.colors.ivory20};
 
   svg {
     display: ${(props) => (props.isSelected ? "block" : "none")};

@@ -23,7 +23,7 @@ export const MusicLinks = ({
   /* State */
   /* ############################## */
   const [selectedProviders, setSelectedProviders] = useState<MusicProviders[]>(
-    []
+    [],
   );
   const [isCopied, setIsCopied] = useState(false);
 
@@ -43,7 +43,7 @@ export const MusicLinks = ({
     (id: MusicProviders) => {
       return selectedProviders.includes(id);
     },
-    [selectedProviders]
+    [selectedProviders],
   );
 
   const handleOnChange = useCallback(
@@ -54,7 +54,7 @@ export const MusicLinks = ({
         setSelectedProviders([...selectedProviders, id]);
       }
     },
-    [isSelected, selectedProviders]
+    [isSelected, selectedProviders],
   );
 
   const createCopyString = useCallback((): string => {

@@ -31,22 +31,25 @@ describe("isValidData helper for object", () => {
 
   test("Input that has whitespace should be returned without", () => {
     expect(
-      isValidData({ artist: "Last Train    ", title: "Fragile" }, testSchema)
+      isValidData({ artist: "Last Train    ", title: "Fragile" }, testSchema),
     ).toHaveProperty("artist", "Last Train");
     expect(
-      isValidData({ artist: "   Last Train", title: "Fragile" }, testSchema)
+      isValidData({ artist: "   Last Train", title: "Fragile" }, testSchema),
     ).toHaveProperty("artist", "Last Train");
     expect(
-      isValidData({ artist: "Last Train", title: "    Fragile" }, testSchema)
+      isValidData({ artist: "Last Train", title: "    Fragile" }, testSchema),
     ).toHaveProperty("title", "Fragile");
     expect(
-      isValidData({ artist: "   Last Train", title: "Fragile    " }, testSchema)
+      isValidData(
+        { artist: "   Last Train", title: "Fragile    " },
+        testSchema,
+      ),
     ).toHaveProperty("title", "Fragile");
   });
 
   test("Input that has too much whitespace should be returned without only one", () => {
     expect(
-      isValidData({ artist: "Last  Train", title: "Fragile" }, testSchema)
+      isValidData({ artist: "Last  Train", title: "Fragile" }, testSchema),
     ).toHaveProperty("artist", "Last Train");
   });
 });

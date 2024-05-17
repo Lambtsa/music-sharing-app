@@ -16,7 +16,7 @@ export const sanitiseData = <T extends string>(input: T): T => {
  */
 export const isValidData = <T extends Record<string, string>>(
   input: T,
-  schema: z.ZodSchema<T>
+  schema: z.ZodSchema<T>,
 ): T => {
   let newInput: T;
 

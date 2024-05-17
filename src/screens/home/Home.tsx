@@ -55,7 +55,7 @@ export const HomeScreen = (): JSX.Element => {
   >(undefined);
   const [selected, setSelected] = useState<SearchInputType>("artist");
   const [details, setDetails] = useState<GetMusicLinksInput | undefined>(
-    undefined
+    undefined,
   );
 
   const createErrorMessage = useCallback(
@@ -72,7 +72,7 @@ export const HomeScreen = (): JSX.Element => {
         }
       }
     },
-    [t]
+    [t],
   );
 
   const scrollToTop = useCallback(() => {
@@ -106,7 +106,7 @@ export const HomeScreen = (): JSX.Element => {
     () => ({
       search: "",
     }),
-    []
+    [],
   );
 
   /**
@@ -175,7 +175,7 @@ export const HomeScreen = (): JSX.Element => {
                         geolocation,
                       },
                     }),
-                  }
+                  },
                 );
 
                 const data: ListOfAlbumsReturnType = await response.json();
@@ -220,7 +220,7 @@ export const HomeScreen = (): JSX.Element => {
                         geolocation,
                       },
                     }),
-                  }
+                  },
                 );
 
                 const data: ListOfTracksReturnType = await response.json();
@@ -265,7 +265,7 @@ export const HomeScreen = (): JSX.Element => {
                         geolocation,
                       },
                     }),
-                  }
+                  },
                 );
 
                 const data: ResponseLinksApi = await response.json();
@@ -306,7 +306,7 @@ export const HomeScreen = (): JSX.Element => {
           setIsLoading(false);
           setErrorMessage("error.message.generic");
           console.log({ error: error.search });
-        }
+        },
       )();
     },
     [
@@ -320,7 +320,7 @@ export const HomeScreen = (): JSX.Element => {
       selected,
       setError,
       t,
-    ]
+    ],
   );
 
   const handleOnClick = useCallback(
@@ -348,7 +348,7 @@ export const HomeScreen = (): JSX.Element => {
                 geolocation,
               },
             }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -398,7 +398,7 @@ export const HomeScreen = (): JSX.Element => {
       selected,
       setError,
       t,
-    ]
+    ],
   );
 
   const hasLinks = !!links.length;
@@ -440,7 +440,7 @@ export const HomeScreen = (): JSX.Element => {
                 <ShowingDetailsText isLight={isLight}>
                   {t(
                     { id: "home.showingResults" },
-                    { artist: details?.artist, track: details?.track }
+                    { artist: details?.artist, track: details?.track },
                   )}
                 </ShowingDetailsText>
                 {/* TODO: make this button trigger shareto @see https://developer.mozilla.org/en-US/docs/Web/API/Web_Share_API */}

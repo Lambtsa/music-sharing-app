@@ -14,7 +14,7 @@ export const convertCookieValue = (cookie: string | null): boolean => {
 };
 
 export const useThemeCookie = (
-  defaultValue: boolean
+  defaultValue: boolean,
 ): UseThemeCookieReturnType => {
   const [cookie, updateCookie] = useCookie("theme");
   const [value, setValue] = useState<boolean>(defaultValue);

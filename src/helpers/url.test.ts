@@ -23,7 +23,7 @@ describe("isValidInput helper input", () => {
 
   test("A correct youtube link should return true", () => {
     expect(isValidInput("https://www.youtube.com/watch?v=test", "url")).toBe(
-      true
+      true,
     );
   });
   test("An incorrect youtube link should return false", () => {
@@ -51,61 +51,67 @@ describe("isValidInput helper input", () => {
 describe("determineUrlType helper function", () => {
   test("should return 'spotify' for valid spotify url", () => {
     expect(
-      determineUrlType("https://open.spotify.com/track/2SGBEDwsOAOAHrrdAd304i")
+      determineUrlType("https://open.spotify.com/track/2SGBEDwsOAOAHrrdAd304i"),
     ).toBe("spotify");
   });
   test("should return null for invalid spotify url", () => {
     expect(
-      determineUrlType("https://open.spotify.com/dasdsa/2SGBEDwsOAOAHrrdAd304i")
+      determineUrlType(
+        "https://open.spotify.com/dasdsa/2SGBEDwsOAOAHrrdAd304i",
+      ),
     ).toBe(null);
     expect(
-      determineUrlType("https://www.random.com/dasdsa/2SGBEDwsOAOAHrrdAd304i")
+      determineUrlType("https://www.random.com/dasdsa/2SGBEDwsOAOAHrrdAd304i"),
     ).toBe(null);
   });
 
   test("should return 'spotifyApi' for valid spotify api url", () => {
     expect(
       determineUrlType(
-        "https://api.spotify.com/v1/tracks/29EeS1c3ZLwDLAcmYN5DFf"
-      )
+        "https://api.spotify.com/v1/tracks/29EeS1c3ZLwDLAcmYN5DFf",
+      ),
     ).toBe("spotifyApi");
   });
   test("should return null for invalid spotify api url", () => {
     expect(
       determineUrlType(
-        "https://api.spotify.com/v1/dasdsa/29EeS1c3ZLwDLAcmYN5DFf"
-      )
+        "https://api.spotify.com/v1/dasdsa/29EeS1c3ZLwDLAcmYN5DFf",
+      ),
     ).toBe(null);
     expect(
-      determineUrlType("https://www.random.com/dasdsa/2SGBEDwsOAOAHrrdAd304i")
+      determineUrlType("https://www.random.com/dasdsa/2SGBEDwsOAOAHrrdAd304i"),
     ).toBe(null);
   });
 
   test("should return 'deezer' for valid deezer url", () => {
     expect(
-      determineUrlType("https://www.deezer.com/track/2SGBEDwsOAOAHrrdAd304i")
+      determineUrlType("https://www.deezer.com/track/2SGBEDwsOAOAHrrdAd304i"),
     ).toBe("deezer");
   });
   test("should return null for invalid deezer url", () => {
     expect(
-      determineUrlType("https://www.deezer.com/dasdsa/2SGBEDwsOAOAHrrdAd304i")
+      determineUrlType("https://www.deezer.com/dasdsa/2SGBEDwsOAOAHrrdAd304i"),
     ).toBe(null);
     expect(
-      determineUrlType("https://www.random.com/dasdsa/2SGBEDwsOAOAHrrdAd304i")
+      determineUrlType("https://www.random.com/dasdsa/2SGBEDwsOAOAHrrdAd304i"),
     ).toBe(null);
   });
 
   test("should return 'youtube' for valid youtube url", () => {
     expect(
-      determineUrlType("https://www.youtube.com/watch?v=2SGBEDwsOAOAHrrdAd304i")
+      determineUrlType(
+        "https://www.youtube.com/watch?v=2SGBEDwsOAOAHrrdAd304i",
+      ),
     ).toBe("youtube");
   });
   test("should return null for invalid youtube url", () => {
     expect(
-      determineUrlType("https://www.youtube.com/watch?t=2SGBEDwsOAOAHrrdAd304i")
+      determineUrlType(
+        "https://www.youtube.com/watch?t=2SGBEDwsOAOAHrrdAd304i",
+      ),
     ).toBe(null);
     expect(
-      determineUrlType("https://www.random.com/dasdsa/2SGBEDwsOAOAHrrdAd304i")
+      determineUrlType("https://www.random.com/dasdsa/2SGBEDwsOAOAHrrdAd304i"),
     ).toBe(null);
   });
 });
@@ -115,8 +121,8 @@ describe("getTrackId helper function", () => {
     expect(
       getTrackId(
         "https://open.spotify.com/track/2SGBEDwsOAOAHrrdAd304i",
-        "spotify"
-      )
+        "spotify",
+      ),
     ).toBe("2SGBEDwsOAOAHrrdAd304i");
   });
   test("should return null given invalid spotify url", () => {
@@ -127,13 +133,13 @@ describe("getTrackId helper function", () => {
     expect(
       getTrackId(
         "https://api.spotify.com/v1/tracks/29EeS1c3ZLwDLAcmYN5DFf",
-        "spotifyApi"
-      )
+        "spotifyApi",
+      ),
     ).toBe("29EeS1c3ZLwDLAcmYN5DFf");
   });
   test("should return null given invalid spotify api url", () => {
     expect(getTrackId("https://api.spotify.com/v1/dasdsa", "spotifyApi")).toBe(
-      null
+      null,
     );
   });
 
@@ -141,8 +147,8 @@ describe("getTrackId helper function", () => {
     expect(
       getTrackId(
         "https://www.deezer.com/track/2SGBEDwsOAOAHrrdAd304i",
-        "deezer"
-      )
+        "deezer",
+      ),
     ).toBe("2SGBEDwsOAOAHrrdAd304i");
   });
   test("should return null given invalid deezer url", () => {
@@ -153,16 +159,16 @@ describe("getTrackId helper function", () => {
     expect(
       getTrackId(
         "https://www.youtube.com/watch?v=2SGBEDwsOAOAHrrdAd304i",
-        "youtube"
-      )
+        "youtube",
+      ),
     ).toBe("2SGBEDwsOAOAHrrdAd304i");
   });
   test("should return null given invalid youtube url", () => {
     expect(
       getTrackId(
         "https://www.youtube.com/watch?t=2SGBEDwsOAOAHrrdAd304i",
-        "spotify"
-      )
+        "spotify",
+      ),
     ).toBe(null);
   });
 });

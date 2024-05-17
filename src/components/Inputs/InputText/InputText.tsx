@@ -4,7 +4,7 @@ import { Input } from "../Input";
 
 export const InputText = <
   TFieldValues extends FieldValues = FieldValues,
-  TName extends Path<TFieldValues> = Path<TFieldValues>
+  TName extends Path<TFieldValues> = Path<TFieldValues>,
 >({
   control,
   name,

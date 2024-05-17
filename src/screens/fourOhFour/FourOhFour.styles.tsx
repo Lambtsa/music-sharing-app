@@ -25,7 +25,7 @@ export const Title = styled.h1<{
   @media ${MEDIA.MOBILE} {
     font-size: 36px;
     line-height: 36px;
-  } ;
+  }
 `;
 
 export const Subtitle = styled.p<{

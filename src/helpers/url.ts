@@ -29,7 +29,7 @@ export const isValidMusicStreamingUrl = (url: string): boolean => {
  */
 export const isValidInput = (
   input: string,
-  selected: SearchInputType
+  selected: SearchInputType,
 ): boolean => {
   switch (selected) {
     case "artist":
