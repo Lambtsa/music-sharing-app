@@ -1,6 +1,6 @@
-import { useLightOrDarkTheme } from "@context/ThemeContext";
-import { ReactNode } from "react";
-import { MainSection } from "./Main.styles";
+import type { ReactNode } from 'react';
+
+import { useLightOrDarkTheme } from '@/context/ThemeContext';
 
 interface MainProps {
   children: ReactNode;
@@ -8,5 +8,9 @@ interface MainProps {
 
 export const Main = ({ children }: MainProps): JSX.Element => {
   const { isLight } = useLightOrDarkTheme();
-  return <MainSection isLight={isLight}>{children}</MainSection>;
+  return (
+    <main className={`flex-1 overflow-x-hidden min-w-full max-w-screen ${isLight ? 'bg-ivory' : 'bg-eerieBlack'}`}>
+      {children}
+    </main>
+  );
 };

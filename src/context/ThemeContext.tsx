@@ -1,11 +1,11 @@
-import React, {
+import {
   createContext,
-  useState,
-  ReactNode,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
   useContext,
-  Dispatch,
-  SetStateAction,
-} from "react";
+  useState
+} from 'react';
 
 interface ThemeContextShape {
   isLight: boolean;
@@ -40,7 +40,7 @@ export { LightOrDarkThemeContext, LightOrDarkThemeProvider };
 export function useLightOrDarkTheme(): ThemeContextShape {
   const context = useContext(LightOrDarkThemeContext);
   if (context === undefined) {
-    throw new Error("useLightOrDarkTheme must be used within a ToastProvider");
+    throw new Error('useLightOrDarkTheme must be used within a ToastProvider');
   }
   return context;
 }

@@ -1,4 +1,4 @@
-import type translations from "locales/fr-FR.json";
+import type translations from "@/locales/fr-FR.json";
 
 /**
  * As of react-intl 5.22.0 it's possible to define ids for translations

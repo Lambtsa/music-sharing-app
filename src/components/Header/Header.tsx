@@ -1,10 +1,12 @@
-import { Logo } from "@components/Logo";
-import { Toggle } from "@components/Toggle";
-import { useLightOrDarkTheme } from "@context/ThemeContext";
-import { routes } from "@helpers/routes";
-import { useRouter } from "next/router";
-import { useCallback } from "react";
-import { HeaderContainer, LogoButton } from "./Header.styles";
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
+
+import { Logo } from '@/components/Logo';
+import { Toggle } from '@/components/Toggle';
+import { useLightOrDarkTheme } from '@/context/ThemeContext';
+import { routes } from '@/helpers/routes';
 
 export const Header = (): JSX.Element => {
   /* ################################################## */
@@ -18,11 +20,11 @@ export const Header = (): JSX.Element => {
   }, [router]);
 
   return (
-    <HeaderContainer>
-      <LogoButton onClick={handleOnClick}>
+    <div>
+      <button type='button' onClick={handleOnClick}>
         <Logo isLight={isLight} />
-      </LogoButton>
+      </button>
       <Toggle />
-    </HeaderContainer>
+    </div>
   );
 };

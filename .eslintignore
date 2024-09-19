@@ -1,4 +1,14 @@
+assets
 node_modules
 dist
+build
+public
 .next
-jest.config.js
+*.css
+*.svg
+**/*.spec.ts
+**/*.spec.tsx
+**/*.test.ts
+**/*.test.tsx
+**/*.d.ts
+i18n

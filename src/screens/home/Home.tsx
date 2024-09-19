@@ -1,42 +1,39 @@
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { TypeOf, z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Main } from "@components/Main";
-import { Container } from "@components/Container";
-import { useTranslation } from "@hooks/useTranslation";
-import { useLightOrDarkTheme } from "@context/ThemeContext";
-import {
-  Form,
-  HeaderWrapper,
-  LinksWrapper,
-  ShowingDetailsText,
-  Subtitle,
-  Title,
-} from "./Home.styles";
-import { InputText } from "@components/Inputs/InputText";
-import { Button } from "@components/Button";
-import {
+'use client';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import z, { type TypeOf} from 'zod';
+
+import { AlbumBtn } from '@/components/AlbumBtn';
+import { Button } from '@/components/Button';
+import { Container } from '@/components/Container';
+import { Footer } from '@/components/Footer';
+import { Header } from '@/components/Header';
+import { InputText } from '@/components/Inputs/InputText';
+import { Loader } from '@/components/Loader';
+import { Main } from '@/components/Main';
+import { MessageBox } from '@/components/MessageBox';
+import { MusicLinks } from '@/components/MusicLinks';
+import { Selector } from '@/components/Selector';
+import { TrackBtn } from '@/components/TrackBtn';
+import { CONTAINER } from '@/constants/layout';
+import urls from '@/constants/url';
+import { useLightOrDarkTheme } from '@/context/ThemeContext';
+import { delay } from '@/helpers/time';
+import { isValidInput, isValidMusicStreamingUrl } from '@/helpers/url';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useUserData } from '@/hooks/useUserData';
+import type { 
   GetMusicLinksInput,
   LinksResponseData,
+  ListOfAlbumsReturnType, 
+  ListOfTracksReturnType, 
   ResponseLinksApi,
-  SearchInputType,
-} from "@customTypes";
-import { Loader } from "@components/Loader";
-import { MessageBox } from "@components/MessageBox";
-import { Footer } from "@components/Footer";
-import { Selector } from "@components/Selector";
-import { isValidInput, isValidMusicStreamingUrl } from "@helpers/url";
-import { TrackBtn } from "@components/TrackBtn";
-import { ListOfTracksReturnType, ListOfAlbumsReturnType } from "@customTypes";
-import { AlbumBtn } from "@components/AlbumBtn";
-import { useUserData } from "@hooks/useUserData";
-import { delay } from "@helpers/time";
-import urls from "@constants/url";
-import { Header } from "@components/Header";
-import { MusicLinks } from "@components/MusicLinks";
+  SearchInputType
+} from '@/types';
 
-const isProd = process.env.NODE_ENV === "production";
+const isProd = process.env.NODE_ENV === 'production';
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
@@ -47,13 +44,13 @@ export const HomeScreen = (): JSX.Element => {
   /* ################################################## */
   const { isLight } = useLightOrDarkTheme();
   const [links, setLinks] = useState<LinksResponseData[]>([]);
-  const [tracks, setTracks] = useState<ListOfTracksReturnType["tracks"]>([]);
-  const [albums, setAlbums] = useState<ListOfAlbumsReturnType["albums"]>([]);
+  const [tracks, setTracks] = useState<ListOfTracksReturnType['tracks']>([]);
+  const [albums, setAlbums] = useState<ListOfAlbumsReturnType['albums']>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<
-    FormatjsIntl.Message["ids"] | undefined
+    FormatjsIntl.Message['ids'] | undefined
   >(undefined);
-  const [selected, setSelected] = useState<SearchInputType>("artist");
+  const [selected, setSelected] = useState<SearchInputType>('artist');
   const [details, setDetails] = useState<GetMusicLinksInput | undefined>(
     undefined,
   );
@@ -61,14 +58,14 @@ export const HomeScreen = (): JSX.Element => {
   const createErrorMessage = useCallback(
     (selected: SearchInputType): string => {
       switch (selected) {
-        case "artist": {
-          return t({ id: "error.message.requiredArtist" });
+        case 'artist': {
+          return t({ id: 'error.message.requiredArtist' });
         }
-        case "track": {
-          return t({ id: "error.message.requiredTitle" });
+        case 'track': {
+          return t({ id: 'error.message.requiredTitle' });
         }
-        case "url": {
-          return t({ id: "error.message.requiredUrl" });
+        case 'url': {
+          return t({ id: 'error.message.requiredUrl' });
         }
       }
     },
@@ -76,13 +73,13 @@ export const HomeScreen = (): JSX.Element => {
   );
 
   const scrollToTop = useCallback(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return;
     }
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   }, []);
 
@@ -92,7 +89,7 @@ export const HomeScreen = (): JSX.Element => {
   const validationSchema = z.object({
     search: z
       .string({
-        required_error: t({ id: "error.message.requiredArtist" }),
+        required_error: t({ id: 'error.message.requiredArtist' }),
       })
       .trim()
       .refine((val) => isValidInput(val, selected), {
@@ -104,7 +101,7 @@ export const HomeScreen = (): JSX.Element => {
 
   const defaultValues: FormFields = useMemo(
     () => ({
-      search: "",
+      search: '',
     }),
     [],
   );
@@ -115,13 +112,13 @@ export const HomeScreen = (): JSX.Element => {
    */
   const { control, formState, handleSubmit, reset, watch, setError } = useForm({
     defaultValues,
-    mode: "onSubmit",
+    mode: 'onSubmit',
     shouldFocusError: true,
     /* All errors from each field will be gathered */
-    criteriaMode: "all",
+    criteriaMode: 'all',
     resolver: zodResolver(validationSchema),
   });
-  const url = watch("search");
+  const url = watch('search');
 
   const formErrors = useMemo(() => {
     return formState.errors;
@@ -134,7 +131,7 @@ export const HomeScreen = (): JSX.Element => {
   useEffect(() => {
     /* Will automatically change the selected input to url if a valid url is passed into the field */
     if (isValidMusicStreamingUrl(url)) {
-      setSelected("url");
+      setSelected('url');
     }
   }, [url]);
 
@@ -160,13 +157,13 @@ export const HomeScreen = (): JSX.Element => {
           try {
             switch (selected) {
               /* Artist will return a list of tracks sorted by album. User can then select a track */
-              case "artist": {
+              case 'artist': {
                 const response = await fetch(
                   `${isProd ? urls.PROD_API : urls.DEV_API}/api/tracks`,
                   {
-                    method: "POST",
+                    method: 'POST',
                     headers: {
-                      "Content-type": "application/json",
+                      'Content-type': 'application/json',
                     },
                     body: JSON.stringify({
                       [selected]: formFields.search,
@@ -187,17 +184,17 @@ export const HomeScreen = (): JSX.Element => {
                     scrollToTop();
                   } else {
                     if (response.status === 400) {
-                      setError("search", {
-                        type: "server",
-                        message: t({ id: "error.message.requiredUrl" }),
+                      setError('search', {
+                        type: 'server',
+                        message: t({ id: 'error.message.requiredUrl' }),
                       });
                     } else if (response.status === 404) {
-                      setError("search", {
-                        type: "server",
-                        message: t({ id: "error.message.requiredArtist" }),
+                      setError('search', {
+                        type: 'server',
+                        message: t({ id: 'error.message.requiredArtist' }),
                       });
                     }
-                    setErrorMessage("error.message.noTitle");
+                    setErrorMessage('error.message.noTitle');
                   }
                   setIsLoading(false);
                 }, 1000);
@@ -205,13 +202,13 @@ export const HomeScreen = (): JSX.Element => {
                 break;
               }
               /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
-              case "track": {
+              case 'track': {
                 const response = await fetch(
                   `${isProd ? urls.PROD_API : urls.DEV_API}/api/tracks`,
                   {
-                    method: "POST",
+                    method: 'POST',
                     headers: {
-                      "Content-type": "application/json",
+                      'Content-type': 'application/json',
                     },
                     body: JSON.stringify({
                       [selected]: formFields.search,
@@ -232,17 +229,17 @@ export const HomeScreen = (): JSX.Element => {
                     scrollToTop();
                   } else {
                     if (response.status === 400) {
-                      setError("search", {
-                        type: "server",
-                        message: t({ id: "error.message.requiredUrl" }),
+                      setError('search', {
+                        type: 'server',
+                        message: t({ id: 'error.message.requiredUrl' }),
                       });
                     } else if (response.status === 404) {
-                      setError("search", {
-                        type: "server",
-                        message: t({ id: "error.message.requiredTitle" }),
+                      setError('search', {
+                        type: 'server',
+                        message: t({ id: 'error.message.requiredTitle' }),
                       });
                     }
-                    setErrorMessage("error.message.noTitle");
+                    setErrorMessage('error.message.noTitle');
                   }
                   setIsLoading(false);
                 }, 1000);
@@ -250,13 +247,13 @@ export const HomeScreen = (): JSX.Element => {
                 break;
               }
               /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
-              case "url": {
+              case 'url': {
                 const response = await fetch(
                   `${isProd ? urls.PROD_API : urls.DEV_API}/api/links`,
                   {
-                    method: "POST",
+                    method: 'POST',
                     headers: {
-                      "Content-type": "application/json",
+                      'Content-type': 'application/json',
                     },
                     body: JSON.stringify({
                       [selected]: formFields.search,
@@ -278,17 +275,17 @@ export const HomeScreen = (): JSX.Element => {
                     scrollToTop();
                   } else {
                     if (response.status === 400) {
-                      setError("search", {
-                        type: "server",
-                        message: t({ id: "error.message.requiredUrl" }),
+                      setError('search', {
+                        type: 'server',
+                        message: t({ id: 'error.message.requiredUrl' }),
                       });
                     } else if (response.status === 404) {
-                      setError("search", {
-                        type: "server",
-                        message: t({ id: "error.message.requiredUrl" }),
+                      setError('search', {
+                        type: 'server',
+                        message: t({ id: 'error.message.requiredUrl' }),
                       });
                     }
-                    setErrorMessage("error.message.incorrectUrl");
+                    setErrorMessage('error.message.incorrectUrl');
                   }
                   setIsLoading(false);
                 }, 1000);
@@ -298,13 +295,13 @@ export const HomeScreen = (): JSX.Element => {
             }
           } catch (err) {
             setIsLoading(false);
-            setErrorMessage("error.message.generic");
+            setErrorMessage('error.message.generic');
             console.log({ err });
           }
         },
         (error) => {
           setIsLoading(false);
-          setErrorMessage("error.message.generic");
+          setErrorMessage('error.message.generic');
           console.log({ error: error.search });
         },
       )();
@@ -337,9 +334,9 @@ export const HomeScreen = (): JSX.Element => {
         const response = await fetch(
           `${isProd ? urls.PROD_API : urls.DEV_API}/api/links`,
           {
-            method: "POST",
+            method: 'POST',
             headers: {
-              "Content-type": "application/json",
+              'Content-type': 'application/json',
             },
             body: JSON.stringify({
               url,
@@ -353,17 +350,17 @@ export const HomeScreen = (): JSX.Element => {
 
         if (!response.ok) {
           if (response.status === 400) {
-            setError("search", {
-              type: "server",
-              message: t({ id: "error.message.requiredUrl" }),
+            setError('search', {
+              type: 'server',
+              message: t({ id: 'error.message.requiredUrl' }),
             });
           } else if (response.status === 404) {
-            setError("search", {
-              type: "server",
+            setError('search', {
+              type: 'server',
               message:
-                selected === "artist"
-                  ? t({ id: "error.message.requiredArtist" })
-                  : t({ id: "error.message.requiredTitle" }),
+                selected === 'artist'
+                  ? t({ id: 'error.message.requiredArtist' })
+                  : t({ id: 'error.message.requiredTitle' }),
             });
           }
         }
@@ -378,13 +375,13 @@ export const HomeScreen = (): JSX.Element => {
             scrollToTop();
           } else {
             // TODO: make specific error messages
-            setErrorMessage("error.message.noTitle");
+            setErrorMessage('error.message.noTitle');
           }
           setIsLoading(false);
         }, 1000);
       } catch (err) {
         setIsLoading(false);
-        setErrorMessage("error.message.generic");
+        setErrorMessage('error.message.generic');
         console.log({ err });
       }
     },
@@ -411,17 +408,24 @@ export const HomeScreen = (): JSX.Element => {
       <Main>
         <Container size="mobile">
           <Header />
-          <HeaderWrapper>
-            <Title isLight={isLight}>{t({ id: "home.title" })}</Title>
-            <Subtitle isLight={isLight}>{t({ id: "home.subtitle" })}</Subtitle>
-          </HeaderWrapper>
-          <Form onSubmit={onSubmit}>
+          <div className='flex flex-col justify-center gap-4 w-full mb-4'>
+            <h1 className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} font-bold text-center text-5xl leading-[48px]`}>
+              {t({ id: 'home.title' })}
+            </h1>
+            <p className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-center text-base leading-[20px]`}>
+              {t({ id: 'home.subtitle' })}
+            </p>
+          </div>
+          <form 
+            className={`flex flex-col justify-center w-full max-w-[${CONTAINER.MOBILE}px] gap-4`} 
+            onSubmit={onSubmit}
+          >
             <InputText
               isLight={isLight}
               type="text"
               control={control}
               name="search"
-              placeholder={t({ id: "label.search" })}
+              placeholder={t({ id: 'label.search' })}
               error={formErrors.search}
             />
             <Selector
@@ -430,19 +434,19 @@ export const HomeScreen = (): JSX.Element => {
               setSelected={setSelected}
             />
             <Button type="submit" isLight={isLight}>
-              {t({ id: "home.cta" })}
+              {t({ id: 'home.cta' })}
             </Button>
-          </Form>
-          <LinksWrapper>
+          </form>
+          <div className='flex flex-col gap-2 w-full mx-6 my-0'>
             {isLoading && <Loader isLight={isLight} />}
             {!isLoading && hasLinks && (
               <>
-                <ShowingDetailsText isLight={isLight}>
+                <p className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-left text-base leading-5 mb-4 whitespace-nowrap overflow-hidden text-ellipsis`}>
                   {t(
-                    { id: "home.showingResults" },
+                    { id: 'home.showingResults' },
                     { artist: details?.artist, track: details?.track },
                   )}
-                </ShowingDetailsText>
+                </p>
                 {/* TODO: make this button trigger shareto @see https://developer.mozilla.org/en-US/docs/Web/API/Web_Share_API */}
                 <MusicLinks isLight={isLight} links={links} />
               </>
@@ -470,7 +474,7 @@ export const HomeScreen = (): JSX.Element => {
             {!isLoading && hasErrorMessage && (
               <MessageBox message={errorMessage} />
             )}
-          </LinksWrapper>
+          </div>
         </Container>
       </Main>
       <Footer isLight={isLight} />

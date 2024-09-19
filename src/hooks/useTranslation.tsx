@@ -1,7 +1,8 @@
-import type { IntlFormatters } from "react-intl";
-import { useIntl } from "react-intl";
+'use client';
 
-export type FormattedMessage = IntlFormatters["formatMessage"];
+import { type IntlFormatters, useIntl } from 'react-intl';
+
+export type FormattedMessage = IntlFormatters['formatMessage'];
 
 type UseTranslation = {
   t: FormattedMessage;

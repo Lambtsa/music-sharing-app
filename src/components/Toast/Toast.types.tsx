@@ -1,7 +1,8 @@
-import { TranslationKey } from "@customTypes";
-import { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
-export type ToastType = "Active" | "Error";
+import type { TranslationKey } from '@/types';
+
+export type ToastType = 'Active' | 'Error';
 
 export interface ToastMessage {
   id: TranslationKey;

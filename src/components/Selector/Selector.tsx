@@ -1,11 +1,7 @@
-import { SearchInputType } from "@customTypes";
-import { useTranslation } from "@hooks/useTranslation";
-import { Dispatch, SetStateAction, useMemo } from "react";
-import {
-  ButtonText,
-  SelectorButton,
-  SelectorContainer,
-} from "./Selector.styles";
+import { type Dispatch, type SetStateAction, useMemo } from 'react';
+
+import { useTranslation } from '@/hooks/useTranslation';
+import type { SearchInputType } from '@/types';
 
 interface SelectorProps {
   isLight: boolean;
@@ -21,7 +17,7 @@ export const Selector = ({
   const { t } = useTranslation();
 
   const options = useMemo((): SearchInputType[] => {
-    return ["artist", "track", "url"];
+    return ['artist', 'track', 'url'];
   }, []);
 
   const handleOnClick = (input: SearchInputType) => {
@@ -31,21 +27,20 @@ export const Selector = ({
   const hasOptions = !!options.length;
 
   return (
-    <SelectorContainer>
+    <div className='grid grid-cols-3 justify-center items-center gap-2 mb-4'>
       {hasOptions &&
         options.map((option) => (
-          <SelectorButton
+          <button
+            className={`p-4 ${selected ? 'bg-tiffanyBlue' : isLight ? 'bg-eerieBlack20' : 'bg-ivory20'} rounded-[10px]`}
             type="button"
-            selected={selected === option}
             key={option}
-            isLight={isLight}
             onClick={() => handleOnClick(option)}
           >
-            <ButtonText selected={selected === option} isLight={isLight}>
+            <p className={`text-center ${selected ? 'text-ivory' : isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-base leading-[20px]`}>
               {t({ id: `label.${option}` })}
-            </ButtonText>
-          </SelectorButton>
+            </p>
+          </button>
         ))}
-    </SelectorContainer>
+    </div>
   );
 };
