@@ -3,5 +3,5 @@ interface Routes {
 }
 
 export const routes: Routes = {
-  index: () => "/",
+  index: () => '/',
 };

@@ -1,5 +1,7 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { useCookie } from "react-use";
+/* eslint-disable no-duplicate-imports */
+import type { Dispatch, SetStateAction} from 'react';
+import { useEffect, useState } from 'react';
+import { useCookie } from 'react-use';
 
 interface UseThemeCookieReturnType {
   value: boolean;
@@ -10,13 +12,13 @@ interface UseThemeCookieReturnType {
  * If cookie value is anything other than "true" then the function will return false
  */
 export const convertCookieValue = (cookie: string | null): boolean => {
-  return cookie === "true";
+  return cookie === 'true';
 };
 
 export const useThemeCookie = (
   defaultValue: boolean,
 ): UseThemeCookieReturnType => {
-  const [cookie, updateCookie] = useCookie("theme");
+  const [cookie, updateCookie] = useCookie('theme');
   const [value, setValue] = useState<boolean>(defaultValue);
 
   useEffect(() => {

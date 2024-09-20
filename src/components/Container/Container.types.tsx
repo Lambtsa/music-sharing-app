@@ -1,9 +1,6 @@
-export type WrapSize = "mobile" | "tablet" | "pc" | "tv" | "full";
-export type Alignment = "top" | "center" | "bottom";
+export type WrapSize = 'mobile' | 'tablet' | 'pc' | 'tv' | 'full';
 
-export interface Props {
-  className?: string;
+export interface ContainerProps {
   size?: WrapSize;
   children: React.ReactNode;
-  alignment?: Alignment;
 }

@@ -1,6 +1,5 @@
-import { LogoContainer } from "./Logo.styles";
-import { ReactComponent as LightLogo } from "@assets/lightLogo.svg";
-import { ReactComponent as DarkLogo } from "@assets/darkLogo.svg";
+import { ReactComponent as DarkLogo } from '@/assets/darkLogo.svg';
+import { ReactComponent as LightLogo } from '@/assets/lightLogo.svg';
 
 interface LogoProps {
   isLight: boolean;
@@ -8,6 +7,6 @@ interface LogoProps {
 
 export const Logo = ({ isLight }: LogoProps): JSX.Element => {
   return (
-    <LogoContainer>{isLight ? <DarkLogo /> : <LightLogo />}</LogoContainer>
+    <div className='flex justify-center items-center absolute left-4 top-0'>{isLight ? <DarkLogo /> : <LightLogo />}</div>
   );
 };

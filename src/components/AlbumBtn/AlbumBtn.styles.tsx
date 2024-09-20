@@ -1,5 +1,6 @@
-import Image from "next/image";
-import styled, { css } from "styled-components";
+import Image from 'next/image';
+import styled, { css } from 'styled-components';
+
 
 export const AlbumBtnContainer = styled.div<{
   isLight: boolean;
@@ -20,12 +21,13 @@ export const AlbumBtnContainer = styled.div<{
   svg {
     path {
       stroke: ${(props) =>
-        props.isLight
-          ? props.theme.colors.eerieBlack
-          : props.theme.colors.ivory};
+    props.isLight
+      ? props.theme.colors.eerieBlack
+      : props.theme.colors.ivory};
     }
   }
 `;
+
 
 export const AlbumInfoContainer = styled.div`
   display: flex;
@@ -56,6 +58,7 @@ export const AlbumBtnTitle = styled.h3<{
   text-overflow: ellipsis;
 `;
 
+
 export const AlbumBtnText = styled.p<{
   isLight: boolean;
 }>`
@@ -70,6 +73,7 @@ export const AlbumBtnText = styled.p<{
   text-overflow: ellipsis;
 `;
 
+
 export const AlbumBtnBtn = styled.button<{
   isExpanded: boolean;
 }>`
@@ -81,7 +85,7 @@ export const AlbumBtnBtn = styled.button<{
   font-size: 14px;
   color: ${(props) => props.theme.colors.ivory};
   ${(props) =>
-    props.isExpanded &&
+      props.isExpanded &&
     css`
       transform: rotate(90deg);
     `};
@@ -89,12 +93,14 @@ export const AlbumBtnBtn = styled.button<{
   transition: transform 0.3s ease-out;
 `;
 
+
 export const TracksContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
   padding: 0 8px;
 `;
+
 
 export const TrackBtnBtn = styled.button`
   padding: 6px 10px;

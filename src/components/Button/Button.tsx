@@ -1,15 +1,17 @@
-import { Button as ButtonUI } from "./Button.styles";
-import type { ButtonProps } from "./Button.types";
+import type { ButtonProps } from './Button.types';
 
 export const Button = ({
   children,
-  isLight,
   width,
   ...rest
 }: ButtonProps): JSX.Element => {
   return (
-    <ButtonUI width={width} {...rest} type="submit" isLight={isLight}>
+    <button 
+      {...rest} 
+      className={`py-3 px-6 bg-tiffanyBlue text-ivory font-bold rounded-[10px] text-base leading-[20px] ${width ? `w-[${width}px]` : 'w-full'} :hover:bg-viridianGreen :hover:text-ivory`}
+      type="submit"
+    >
       {children}
-    </ButtonUI>
+    </button>
   );
 };

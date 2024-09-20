@@ -1,5 +1,6 @@
-import Head from "next/head";
-import type { MetaData as MetaDataProps } from "@helpers/metadata";
+import Head from 'next/head';
+
+import type { MetaData as MetaDataProps } from '@/helpers/metadata';
 
 export const MetaData = ({
   title,

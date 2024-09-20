@@ -1,14 +1,12 @@
-import { LinkWrapper, StyledButtonWrapper, StyledInput } from "./Link.styles";
-import { ReactComponent as Spotify } from "@assets/spotify.svg";
-import { ReactComponent as Deezer } from "@assets/deezer.svg";
-import { ReactComponent as Youtube } from "@assets/youtube.svg";
-import { useTranslation } from "@hooks/useTranslation";
-import { ReactNode, useMemo } from "react";
-// import { useCopyToClipboard } from "react-use";
-import { MusicProviders } from "@customTypes";
-import { CustomApiErrorMessages } from "@constants/errors";
-// import { delay } from "@helpers/time";
-import { InputCheckbox } from "@components/Inputs/InputCheckbox";
+import { type ReactNode, useMemo } from 'react';
+
+import { ReactComponent as Deezer } from '@/assets/deezer.svg';
+import { ReactComponent as Spotify } from '@/assets/spotify.svg';
+import { ReactComponent as Youtube } from '@/assets/youtube.svg';
+import { InputCheckbox } from '@/components/Inputs/InputCheckbox';
+import { CustomApiErrorMessages } from '@/constants/errors';
+import { useTranslation } from '@/hooks/useTranslation';
+import type { MusicProviders } from '@/types';
 
 interface MusicLinkProps {
   service: MusicProviders;
@@ -36,13 +34,13 @@ export const MusicLink = ({
 
   const ServiceIcon: ReactNode = useMemo(() => {
     switch (service) {
-      case "spotify": {
+      case 'spotify': {
         return <Spotify />;
       }
-      case "deezer": {
+      case 'deezer': {
         return <Deezer />;
       }
-      case "youtube": {
+      case 'youtube': {
         return <Youtube />;
       }
     }
@@ -50,23 +48,27 @@ export const MusicLink = ({
 
   const contentUrl = useMemo(() => {
     if (isDisabled) {
-      return t({ id: "label.noUrl" }, { service });
+      return t({ id: 'label.noUrl' }, { service });
     }
     return serviceUrl;
   }, [isDisabled, service, serviceUrl, t]);
 
   return (
-    <LinkWrapper disabled={isDisabled} isLight={isLight}>
+    <div className={`flex justify-center items-center gap-[10px] ${isLight ? 'bg-tiffanyBlue20' : 'bg-onyx'} rounded-[10px] w-full px-3 py-4 ${isDisabled ? 'opacity-40' : ''}`}>
       <InputCheckbox
         disabled={isDisabled}
         isSelected={isSelected}
         handleOnChange={() => handleOnChange(service)}
         isLight={isLight}
       />
-      <StyledButtonWrapper>
-        <StyledInput readOnly value={contentUrl} isLight={isLight} />
-      </StyledButtonWrapper>
+      <div className='flex flex-auto'>
+        <input 
+          className={`flex-auto rounded-[7px] px-2 py-[10px] ${isLight ? 'bg-ivory text-eerieBlack' : 'bg-ivory20 text-ivory'} overflow-hidden text-ellipsis`}
+          readOnly
+          value={contentUrl} 
+        />
+      </div>
       {ServiceIcon}
-    </LinkWrapper>
+    </div>
   );
 };

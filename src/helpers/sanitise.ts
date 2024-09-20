@@ -1,5 +1,6 @@
-import { BadRequestError } from "@constants/errors";
-import { z } from "zod";
+import type { z } from 'zod';
+
+import { BadRequestError } from '@/constants/errors';
 
 /**
  * Small helper function to remove whitespace and trim
@@ -7,7 +8,7 @@ import { z } from "zod";
  */
 export const sanitiseData = <T extends string>(input: T): T => {
   const rmWhitespaceRegex = /\s\s+/g;
-  return input.trim().replace(rmWhitespaceRegex, " ") as T;
+  return input.trim().replace(rmWhitespaceRegex, ' ') as T;
 };
 
 /**
@@ -18,11 +19,9 @@ export const isValidData = <T extends Record<string, string>>(
   input: T,
   schema: z.ZodSchema<T>,
 ): T => {
-  let newInput: T;
-
-  newInput = input;
+  const newInput: T = input;
   for (const key in input) {
-    if (input.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(input, key)) {
       newInput[key] = sanitiseData(input[key] as string) as T[Extract<
         keyof T,
         string

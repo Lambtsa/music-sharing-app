@@ -3,8 +3,8 @@ import {
   spotifyApiRegex,
   spotifyUrlRegex,
   youtubeUrlRegex,
-} from "@constants/regex";
-import { UrlTypes, SearchInputType } from "@customTypes";
+} from '@/constants/regex';
+import type { SearchInputType, UrlTypes } from '@/types';
 
 /**
  * Will determine whether the url is one of the accepted types
@@ -32,12 +32,12 @@ export const isValidInput = (
   selected: SearchInputType,
 ): boolean => {
   switch (selected) {
-    case "artist":
-    case "track": {
+    case 'artist':
+    case 'track': {
       // TODO: valid string to avoid urls, js,...
       return input.length >= 1;
     }
-    case "url": {
+    case 'url': {
       /* If one of these is a correct url then it will return true otherwise false */
       return (
         spotifyUrlRegex.test(input) ||
@@ -55,16 +55,16 @@ export const isValidInput = (
 export const determineUrlType = (url: string): UrlTypes | null => {
   switch (true) {
     case spotifyApiRegex.test(url): {
-      return "spotifyApi";
+      return 'spotifyApi';
     }
     case spotifyUrlRegex.test(url): {
-      return "spotify";
+      return 'spotify';
     }
     case deezerUrlRegex.test(url): {
-      return "deezer";
+      return 'deezer';
     }
     case youtubeUrlRegex.test(url): {
-      return "youtube";
+      return 'youtube';
     }
     default: {
       return null;
@@ -78,20 +78,20 @@ export const determineUrlType = (url: string): UrlTypes | null => {
 export const getTrackId = (url: string, type: UrlTypes): string | null => {
   const urlObj = new URL(url);
   switch (type) {
-    case "spotify": {
-      const pathnameArray = urlObj.pathname.split("/");
+    case 'spotify': {
+      const pathnameArray = urlObj.pathname.split('/');
       return pathnameArray[2] || null;
     }
-    case "spotifyApi": {
-      const pathnameArray = urlObj.pathname.split("/");
+    case 'spotifyApi': {
+      const pathnameArray = urlObj.pathname.split('/');
       return pathnameArray[3] || null;
     }
-    case "deezer": {
-      const pathnameArray = urlObj.pathname.split("/");
+    case 'deezer': {
+      const pathnameArray = urlObj.pathname.split('/');
       return pathnameArray[2] || null;
     }
-    case "youtube": {
-      return urlObj.searchParams.get("v");
+    case 'youtube': {
+      return urlObj.searchParams.get('v');
     }
   }
 };

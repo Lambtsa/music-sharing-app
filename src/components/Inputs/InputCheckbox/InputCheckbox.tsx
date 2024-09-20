@@ -1,13 +1,9 @@
-import { InputHTMLAttributes } from "react";
-import {
-  Checkbox,
-  CheckboxInnerContainer,
-  CheckboxWrapper,
-} from "./InputCheckbox.styles";
-import { ReactComponent as Tick } from "@assets/tick16.svg";
+import type { InputHTMLAttributes } from 'react';
+
+import { ReactComponent as Tick } from '@/assets/tick16.svg';
 
 interface InputCheckboxProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label?: string | undefined;
   isLight: boolean;
   isSelected: boolean;
@@ -22,12 +18,15 @@ export const InputCheckbox = ({
   isSelected,
 }: InputCheckboxProps): JSX.Element => {
   return (
-    <CheckboxWrapper>
-      <CheckboxInnerContainer isLight={isLight} isSelected={isSelected}>
+    <div className='relative flex justify-center items-center'>
+      <label
+        className={`flex absolute justify-center items-center gap-1 w-5 h-5 ${isSelected ? '[&>svg]:block border-2 border-tiffanyBlue bg-tiffanyBlue' : isLight ? 'bg-ivory [&>svg]:none' : 'bg-ivory20 [&>svg]:none'} rounded-[4px]`}
+      >
         <Tick />
-      </CheckboxInnerContainer>
+      </label>
       <label>
-        <Checkbox
+        <input
+          className='cursor-pointer opacity-0 w-5 h-5 disabled:cursor-not-allowed'
           disabled={disabled}
           checked={isSelected}
           onChange={handleOnChange}
@@ -35,6 +34,6 @@ export const InputCheckbox = ({
         />
         <span>{label}</span>
       </label>
-    </CheckboxWrapper>
+    </div>
   );
 };

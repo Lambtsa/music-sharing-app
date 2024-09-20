@@ -1,12 +1,12 @@
-import { MusicLink } from "@components/Link";
-import { LinksResponseData, MusicProviders } from "@customTypes";
-import { StyledButton } from "./MusicLinks.styles";
-import { ReactComponent as Link } from "@assets/link.svg";
-import { ReactComponent as Tick } from "@assets/tick16.svg";
-import { useCallback, useEffect, useState } from "react";
-import { useCopyToClipboard } from "react-use";
-import { delay } from "@helpers/time";
-import { CustomApiErrorMessages } from "@constants/errors";
+import { useCallback, useEffect, useState } from 'react';
+import { useCopyToClipboard } from 'react-use';
+
+import { ReactComponent as Link } from '@/assets/link.svg';
+import { ReactComponent as Tick } from '@/assets/tick16.svg';
+import { MusicLink } from '@/components/Link';
+import { CustomApiErrorMessages } from '@/constants/errors';
+import { delay } from '@/helpers/time';
+import type { LinksResponseData, MusicProviders } from '@/types';
 
 interface MusicLinksProps {
   isLight: boolean;
@@ -62,11 +62,11 @@ export const MusicLinks = ({
       .map((provider) => {
         const url = links.find((link) => link.name === provider)?.url;
         if (!url || url === CustomApiErrorMessages.NoTrack) {
-          return "";
+          return '';
         }
         return url;
       })
-      .join("\n \n");
+      .join('\n \n');
   }, [links, selectedProviders]);
 
   const handleCopyLink = useCallback(() => {
@@ -90,16 +90,17 @@ export const MusicLinks = ({
           isLight={isLight}
         />
       ))}
-      <StyledButton
+      <button
+        className={`flex justify-center gap-2 items-center rounded-[10px] ${isCopied ? 'bg-chelseaCucumber hover:bg-viridianGreen' : 'bg-tiffanyBlue'} px-4 py-2 text-ivory w-fit mt-4 disabled:opacity-40 disabled:bg-tiffanyBlue disabled:cursor-not-allowed`}
+        type='button'
         disabled={!hasProviders}
-        isCopied={isCopied}
         onClick={handleCopyLink}
       >
         {isCopied ? <Tick /> : <Link />}
-        {isCopied && "Copied"}
+        {isCopied && 'Copied'}
         {!isCopied &&
-          (selectedProviders.length > 1 ? "Copy Links" : "Copy Link")}
-      </StyledButton>
+          (selectedProviders.length > 1 ? 'Copy Links' : 'Copy Link')}
+      </button>
     </>
   );
 };
