@@ -26,7 +26,7 @@ const RootLayout = ({ children }: LayoutProps) => (
       {/* TODO: add preconnect to google.tagmanager.com */}
       <script
         async
-        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.gaTrackingId}`}
+        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GTAG}`}
       />
 
       <script
@@ -36,7 +36,7 @@ const RootLayout = ({ children }: LayoutProps) => (
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
         
-          gtag('config', '${process.env.gaTrackingId}');
+          gtag('config', '${process.env.GTAG}');
         `,
         }}
       />
@@ -45,6 +45,10 @@ const RootLayout = ({ children }: LayoutProps) => (
       <AppProviders>
         {children}
       </AppProviders>
+      <div
+        id="toast-root"
+        className="fixed right-4 top-4 z-toast flex flex-col gap-2"
+      />
     </body>
   </html>
 );

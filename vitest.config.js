@@ -10,10 +10,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     env: {
-      NEXT_PUBLIC_BASE_URL: 'http://localhost:8080',
-      API_URL: 'https://smart-supply-api-qual.pp.dktapp.cloud',
-      FED_URL: 'http://localhost:3000',
-      NEXTAUTH_URL: 'http://localhost:3001'
+      
     },
     coverage: {
       reporter: ["text", "lcov"],

@@ -9,8 +9,8 @@ import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { Main } from '@/components/Main';
 import { useLightOrDarkTheme } from '@/context/ThemeContext';
-import { routes } from '@/helpers/routes';
 import { useTranslation } from '@/hooks/useTranslation';
+import { routes } from '@/utils/routes';
 
 export const FourOhFour = (): JSX.Element => {
   const { isLight } = useLightOrDarkTheme();

@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import type { ReactElement } from 'react';
 
-import { pageData } from '@/helpers/metadata';
 import { FourOhFour } from '@/screens/fourOhFour';
-import { createMetadata } from '@/utils/metadata';
+import { createMetadata, pageData } from '@/utils/metadata';
 
 const { index } = pageData;
 

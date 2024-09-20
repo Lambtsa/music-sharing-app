@@ -1,24 +1,57 @@
-import { ReactComponent as Close } from '@/assets/icons/close.svg';
-import { ReactComponent as Info } from '@/assets/icons/info.svg';
-import { ReactComponent as Warning } from '@/assets/icons/warning.svg';
-import { CONTAINER } from '@/constants/layout';
-import { useTranslation } from '@/hooks/useTranslation';
+import { type ReactElement, useMemo } from 'react';
+
+import { Icon, type IconType } from '@/components/icon';
+import { useLightOrDarkTheme } from '@/context/ThemeContext';
 
 import type { ToastProps } from './Toast.types';
 
-export const Toast = ({ type, message, onClose }: ToastProps): JSX.Element => {
-  const { t } = useTranslation();
-  const { variables } = message;
+export const Toast = ({
+  title,
+  type,
+  message,
+  onClose,
+}: ToastProps): ReactElement => {
+  const { isLight } = useLightOrDarkTheme();
 
+  const icon = useMemo((): IconType => {
+    switch (type) {
+      case 'success':
+        return 'info';
+      case 'warning':
+        return 'warning';
+      case 'danger':
+        return 'warning';
+      case 'info':
+        return 'info';
+    }
+  }, [type]);
   return (
-    <div className={`${type === 'Error' ? 'bg-newYorkPink' : 'bg-chelseaCucumber'} top-4 left-1/2 z-[100] rounded-[10px] transform -translate-x-1/2 mx-auto w-[${CONTAINER.MOBILE}px] shadow-[0_0_6px_#262626]`}>
-      <div className='relative flex justify-center items-center gap-2 p-4'>
-        {type === 'Error' ? <Warning className='w-4 h-4 [&>path]:fill-ivory' /> : <Info className='w-4 h-4 [&>path]:fill-ivory' />}
-        <p className='text-ivory text-left text-sm leading-6 font-bold'>{t({ id: message.id }, { ...variables })}</p>
-        <button className='absolute top-2 right-2' type='button' onClick={onClose}>
-          <Close className='w-4 h-4 [&>path]:fill-ivory' />
-        </button>
+    <div
+      data-testid='component-toast'
+      className={`toast flex w-80 items-center justify-between gap-2 rounded ${isLight ? 'bg-eerieBlack text-ivory' : 'bg-ivory text-eerieBlack'} px-4 py-3`}
+    >
+      <div className="flex items-center gap-2">
+        <Icon
+          color={isLight ? '#FFFEED' : '#262626'}
+          data-testid="toast-info-icon"
+          icon={icon}
+        />
+        <div>
+          <h2 className="text-sm font-bold leading-4">{title}</h2>
+          {message && <p className="text-sm leading-4">{message}</p>}
+        </div>
       </div>
+      <button
+        type="button"
+        onClick={onClose}
+        className={`rounded p-2 ${isLight ? 'hover:bg-ivory20' : 'hover:bg-eerieBlack20'}`}
+      >
+        <Icon
+          color={isLight ? '#FFFEED' : '#262626'}
+          data-testid="toast-close-icon" 
+          icon='close' 
+        />
+      </button>
     </div>
   );
 };

@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { v4 as uuid } from 'uuid';
 import z, { type TypeOf} from 'zod';
 
 import { AlbumBtn } from '@/components/AlbumBtn';
@@ -13,15 +14,13 @@ import { Header } from '@/components/Header';
 import { InputText } from '@/components/Inputs/InputText';
 import { Loader } from '@/components/Loader';
 import { Main } from '@/components/Main';
-import { MessageBox } from '@/components/MessageBox';
 import { MusicLinks } from '@/components/MusicLinks';
 import { Selector } from '@/components/Selector';
 import { TrackBtn } from '@/components/TrackBtn';
 import { CONTAINER } from '@/constants/layout';
 import urls from '@/constants/url';
 import { useLightOrDarkTheme } from '@/context/ThemeContext';
-import { delay } from '@/helpers/time';
-import { isValidInput, isValidMusicStreamingUrl } from '@/helpers/url';
+import { useToast } from '@/context/ToastContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUserData } from '@/hooks/useUserData';
 import type { 
@@ -32,12 +31,15 @@ import type {
   ResponseLinksApi,
   SearchInputType
 } from '@/types';
+import { delay } from '@/utils/time';
+import { isValidInput, isValidMusicStreamingUrl } from '@/utils/url';
 
 const isProd = process.env.NODE_ENV === 'production';
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
   const { ip, geolocation } = useUserData();
+  const { addToast } = useToast();
 
   /* ################################################## */
   /* State */
@@ -47,9 +49,6 @@ export const HomeScreen = (): JSX.Element => {
   const [tracks, setTracks] = useState<ListOfTracksReturnType['tracks']>([]);
   const [albums, setAlbums] = useState<ListOfAlbumsReturnType['albums']>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<
-    FormatjsIntl.Message['ids'] | undefined
-  >(undefined);
   const [selected, setSelected] = useState<SearchInputType>('artist');
   const [details, setDetails] = useState<GetMusicLinksInput | undefined>(
     undefined,
@@ -110,7 +109,7 @@ export const HomeScreen = (): JSX.Element => {
    * Options chosen
    * https://react-hook-form.com/api/useform/
    */
-  const { control, formState, handleSubmit, reset, watch, setError } = useForm({
+  const { control, formState, reset, watch, setError } = useForm({
     defaultValues,
     mode: 'onSubmit',
     shouldFocusError: true,
@@ -147,177 +146,173 @@ export const HomeScreen = (): JSX.Element => {
 
       /* Reset states */
       setIsLoading(true);
-      setErrorMessage(undefined);
+      // setErrorMessage(undefined);
       setLinks([]);
       setTracks([]);
       setAlbums([]);
 
-      handleSubmit(
-        async (formFields) => {
-          try {
-            switch (selected) {
-              /* Artist will return a list of tracks sorted by album. User can then select a track */
-              case 'artist': {
-                const response = await fetch(
-                  `${isProd ? urls.PROD_API : urls.DEV_API}/api/tracks`,
-                  {
-                    method: 'POST',
-                    headers: {
-                      'Content-type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      [selected]: formFields.search,
-                      user: {
-                        ip,
-                        geolocation,
-                      },
-                    }),
-                  },
-                );
+      addToast({
+        message: 'error message',
+        type: 'success',
+        title: 'title',
+        id: uuid()
+      });
 
-                const data: ListOfAlbumsReturnType = await response.json();
+      // handleSubmit(
+      //   async (formFields) => {
+      //     try {
+      //       switch (selected) {
+      //         /* Artist will return a list of tracks sorted by album. User can then select a track */
+      //         case 'artist': {
+      //           const response = await fetch(
+      //             `${isProd ? urls.PROD_API : urls.DEV_API}/api/tracks`,
+      //             {
+      //               method: 'POST',
+      //               headers: {
+      //                 'Content-type': 'application/json',
+      //               },
+      //               body: JSON.stringify({
+      //                 [selected]: formFields.search,
+      //                 user: {
+      //                   ip,
+      //                   geolocation,
+      //                 },
+      //               }),
+      //             },
+      //           );
 
-                delay(() => {
-                  if (response.ok) {
-                    setAlbums(data.albums);
-                    reset(defaultValues, { keepDefaultValues: true });
-                    scrollToTop();
-                  } else {
-                    if (response.status === 400) {
-                      setError('search', {
-                        type: 'server',
-                        message: t({ id: 'error.message.requiredUrl' }),
-                      });
-                    } else if (response.status === 404) {
-                      setError('search', {
-                        type: 'server',
-                        message: t({ id: 'error.message.requiredArtist' }),
-                      });
-                    }
-                    setErrorMessage('error.message.noTitle');
-                  }
-                  setIsLoading(false);
-                }, 1000);
+      //           const data: ListOfAlbumsReturnType = await response.json();
 
-                break;
-              }
-              /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
-              case 'track': {
-                const response = await fetch(
-                  `${isProd ? urls.PROD_API : urls.DEV_API}/api/tracks`,
-                  {
-                    method: 'POST',
-                    headers: {
-                      'Content-type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      [selected]: formFields.search,
-                      user: {
-                        ip,
-                        geolocation,
-                      },
-                    }),
-                  },
-                );
+      //           delay(() => {
+      //             if (response.ok) {
+      //               setAlbums(data.albums);
+      //               reset(defaultValues, { keepDefaultValues: true });
+      //               scrollToTop();
+      //             } else {
+      //               if (response.status === 400) {
+      //                 setError('search', {
+      //                   type: 'server',
+      //                   message: t({ id: 'error.message.requiredUrl' }),
+      //                 });
+      //               } else if (response.status === 404) {
+      //                 setError('search', {
+      //                   type: 'server',
+      //                   message: t({ id: 'error.message.requiredArtist' }),
+      //                 });
+      //               }
+      //               setErrorMessage('error.message.noTitle');
+      //             }
+      //             setIsLoading(false);
+      //           }, 1000);
 
-                const data: ListOfTracksReturnType = await response.json();
+      //           break;
+      //         }
+      //         /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
+      //         case 'track': {
+      //           const response = await fetch(
+      //             `${isProd ? urls.PROD_API : urls.DEV_API}/api/tracks`,
+      //             {
+      //               method: 'POST',
+      //               headers: {
+      //                 'Content-type': 'application/json',
+      //               },
+      //               body: JSON.stringify({
+      //                 [selected]: formFields.search,
+      //                 user: {
+      //                   ip,
+      //                   geolocation,
+      //                 },
+      //               }),
+      //             },
+      //           );
 
-                delay(() => {
-                  if (response.ok) {
-                    setTracks(data.tracks);
-                    reset(defaultValues, { keepDefaultValues: true });
-                    scrollToTop();
-                  } else {
-                    if (response.status === 400) {
-                      setError('search', {
-                        type: 'server',
-                        message: t({ id: 'error.message.requiredUrl' }),
-                      });
-                    } else if (response.status === 404) {
-                      setError('search', {
-                        type: 'server',
-                        message: t({ id: 'error.message.requiredTitle' }),
-                      });
-                    }
-                    setErrorMessage('error.message.noTitle');
-                  }
-                  setIsLoading(false);
-                }, 1000);
+      //           const data: ListOfTracksReturnType = await response.json();
 
-                break;
-              }
-              /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
-              case 'url': {
-                const response = await fetch(
-                  `${isProd ? urls.PROD_API : urls.DEV_API}/api/links`,
-                  {
-                    method: 'POST',
-                    headers: {
-                      'Content-type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      [selected]: formFields.search,
-                      user: {
-                        ip,
-                        geolocation,
-                      },
-                    }),
-                  },
-                );
+      //           delay(() => {
+      //             if (response.ok) {
+      //               setTracks(data.tracks);
+      //               reset(defaultValues, { keepDefaultValues: true });
+      //               scrollToTop();
+      //             } else {
+      //               if (response.status === 400) {
+      //                 setError('search', {
+      //                   type: 'server',
+      //                   message: t({ id: 'error.message.requiredUrl' }),
+      //                 });
+      //               } else if (response.status === 404) {
+      //                 setError('search', {
+      //                   type: 'server',
+      //                   message: t({ id: 'error.message.requiredTitle' }),
+      //                 });
+      //               }
+      //               setErrorMessage('error.message.noTitle');
+      //             }
+      //             setIsLoading(false);
+      //           }, 1000);
 
-                const data: ResponseLinksApi = await response.json();
+      //           break;
+      //         }
+      //         /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
+      //         case 'url': {
+      //           const response = await fetch(
+      //             `${isProd ? urls.PROD_API : urls.DEV_API}/api/links`,
+      //             {
+      //               method: 'POST',
+      //               headers: {
+      //                 'Content-type': 'application/json',
+      //               },
+      //               body: JSON.stringify({
+      //                 [selected]: formFields.search,
+      //                 user: {
+      //                   ip,
+      //                   geolocation,
+      //                 },
+      //               }),
+      //             },
+      //           );
 
-                delay(() => {
-                  if (response.ok) {
-                    setLinks(data.links);
-                    setDetails(data.details);
-                    reset(defaultValues, { keepDefaultValues: true });
-                    scrollToTop();
-                  } else {
-                    if (response.status === 400) {
-                      setError('search', {
-                        type: 'server',
-                        message: t({ id: 'error.message.requiredUrl' }),
-                      });
-                    } else if (response.status === 404) {
-                      setError('search', {
-                        type: 'server',
-                        message: t({ id: 'error.message.requiredUrl' }),
-                      });
-                    }
-                    setErrorMessage('error.message.incorrectUrl');
-                  }
-                  setIsLoading(false);
-                }, 1000);
+      //           const data: ResponseLinksApi = await response.json();
 
-                break;
-              }
-            }
-          } catch (err) {
-            setIsLoading(false);
-            setErrorMessage('error.message.generic');
-            console.log({ err });
-          }
-        },
-        (error) => {
-          setIsLoading(false);
-          setErrorMessage('error.message.generic');
-          console.log({ error: error.search });
-        },
-      )();
+      //           delay(() => {
+      //             if (response.ok) {
+      //               setLinks(data.links);
+      //               setDetails(data.details);
+      //               reset(defaultValues, { keepDefaultValues: true });
+      //               scrollToTop();
+      //             } else {
+      //               if (response.status === 400) {
+      //                 setError('search', {
+      //                   type: 'server',
+      //                   message: t({ id: 'error.message.requiredUrl' }),
+      //                 });
+      //               } else if (response.status === 404) {
+      //                 setError('search', {
+      //                   type: 'server',
+      //                   message: t({ id: 'error.message.requiredUrl' }),
+      //                 });
+      //               }
+      //               setErrorMessage('error.message.incorrectUrl');
+      //             }
+      //             setIsLoading(false);
+      //           }, 1000);
+
+      //           break;
+      //         }
+      //       }
+      //     } catch (err) {
+      //       setIsLoading(false);
+      //       setErrorMessage('error.message.generic');
+      //       console.log({ err });
+      //     }
+      //   },
+      //   (error) => {
+      //     setIsLoading(false);
+      //     setErrorMessage('error.message.generic');
+      //     console.log({ error: error.search });
+      //   },
+      // )();
     },
-    [
-      defaultValues,
-      geolocation,
-      handleSubmit,
-      ip,
-      isLoading,
-      reset,
-      scrollToTop,
-      selected,
-      setError,
-      t,
-    ],
+    [addToast, isLoading],
   );
 
   const handleOnClick = useCallback(
@@ -326,7 +321,7 @@ export const HomeScreen = (): JSX.Element => {
         return;
       }
       setIsLoading(true);
-      setErrorMessage(undefined);
+      // setErrorMessage(undefined);
       setTracks([]);
       setAlbums([]);
 
@@ -375,13 +370,13 @@ export const HomeScreen = (): JSX.Element => {
             scrollToTop();
           } else {
             // TODO: make specific error messages
-            setErrorMessage('error.message.noTitle');
+            // setErrorMessage('error.message.noTitle');
           }
           setIsLoading(false);
         }, 1000);
       } catch (err) {
         setIsLoading(false);
-        setErrorMessage('error.message.generic');
+        // setErrorMessage('error.message.generic');
         console.log({ err });
       }
     },
@@ -401,7 +396,6 @@ export const HomeScreen = (): JSX.Element => {
   const hasLinks = !!links.length;
   const hasTracks = !!tracks.length;
   const hasAlbums = !!albums.length;
-  const hasErrorMessage = !!errorMessage;
 
   return (
     <>
@@ -471,9 +465,6 @@ export const HomeScreen = (): JSX.Element => {
                   isLight={isLight}
                 />
               ))}
-            {!isLoading && hasErrorMessage && (
-              <MessageBox message={errorMessage} />
-            )}
           </div>
         </Container>
       </Main>

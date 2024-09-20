@@ -8,7 +8,7 @@ export const Button = ({
   return (
     <button 
       {...rest} 
-      className={`py-3 px-6 bg-tiffanyBlue text-ivory font-bold rounded-[10px] text-base leading-[20px] ${width ? `w-[${width}px]` : 'w-full'} :hover:bg-viridianGreen :hover:text-ivory`}
+      className={`py-3 px-6 hover:bg-pastelPink bg-tiffanyBlue text-ivory font-bold rounded-[10px] text-base leading-[20px] ${width ? `w-[${width}px]` : 'w-full'} :hover:bg-viridianGreen :hover:text-ivory`}
       type="submit"
     >
       {children}

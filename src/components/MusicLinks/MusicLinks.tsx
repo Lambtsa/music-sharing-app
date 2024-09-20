@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'react-use';
 
-import { ReactComponent as Link } from '@/assets/link.svg';
-import { ReactComponent as Tick } from '@/assets/tick16.svg';
+import { Icon } from '@/components/icon';
 import { MusicLink } from '@/components/Link';
 import { CustomApiErrorMessages } from '@/constants/errors';
-import { delay } from '@/helpers/time';
 import type { LinksResponseData, MusicProviders } from '@/types';
+import { delay } from '@/utils/time';
 
 interface MusicLinksProps {
   isLight: boolean;
@@ -96,7 +95,7 @@ export const MusicLinks = ({
         disabled={!hasProviders}
         onClick={handleCopyLink}
       >
-        {isCopied ? <Tick /> : <Link />}
+        {isCopied ? <Icon icon='tick' /> : <Icon icon='link' />}
         {isCopied && 'Copied'}
         {!isCopied &&
           (selectedProviders.length > 1 ? 'Copy Links' : 'Copy Link')}

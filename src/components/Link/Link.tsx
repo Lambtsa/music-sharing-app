@@ -1,8 +1,6 @@
 import { type ReactNode, useMemo } from 'react';
 
-import { ReactComponent as Deezer } from '@/assets/deezer.svg';
-import { ReactComponent as Spotify } from '@/assets/spotify.svg';
-import { ReactComponent as Youtube } from '@/assets/youtube.svg';
+import { Icon } from '@/components/icon';
 import { InputCheckbox } from '@/components/Inputs/InputCheckbox';
 import { CustomApiErrorMessages } from '@/constants/errors';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -35,13 +33,13 @@ export const MusicLink = ({
   const ServiceIcon: ReactNode = useMemo(() => {
     switch (service) {
       case 'spotify': {
-        return <Spotify />;
+        return <Icon icon='spotify' />;
       }
       case 'deezer': {
-        return <Deezer />;
+        return <Icon icon='deezer' />;
       }
       case 'youtube': {
-        return <Youtube />;
+        return <Icon icon='youtube' />;
       }
     }
   }, [service]);

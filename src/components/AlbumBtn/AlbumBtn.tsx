@@ -1,8 +1,7 @@
 import Image from 'next/image';
 import { useCallback, useMemo, useState } from 'react';
 
-import { ReactComponent as Arrow } from '@/assets/arrow.svg';
-import { ReactComponent as Music } from '@/assets/music.svg';
+import { Icon } from '@/components/icon';
 import { useTranslation } from '@/hooks/useTranslation';
 
 import type { TrackBtnProps } from './AlbumBtn.types';
@@ -54,7 +53,7 @@ export const AlbumBtn = ({
           type="button"
           onClick={handleExpandOnClick}
         >
-          <Arrow />
+          <Icon icon='chevron' />
         </button>
       </div>
       {isExpanded && (
@@ -65,7 +64,7 @@ export const AlbumBtn = ({
                 key={track.id}
                 className={`flex justify-between items-center gap-4 ${isLight ? 'bg-tiffanyBlue20' : 'bg-onyx'} rounded-[10px] w-full px-3 py-4`} 
               >
-                <Music width={30} height={30} />
+                <Icon icon='music' width={30} height={30} />
                 <div className='flex flex-auto flex-col justify-center items-start gap-1/2 w-full overflow-hidden whitespace-nowrap'>
                   <h3 className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-bold text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
                     {track.track}

@@ -31,12 +31,12 @@ export const Selector = ({
       {hasOptions &&
         options.map((option) => (
           <button
-            className={`p-4 ${selected ? 'bg-tiffanyBlue' : isLight ? 'bg-eerieBlack20' : 'bg-ivory20'} rounded-[10px]`}
+            className={`p-4 hover:bg-pastelPink ${selected === option ? 'bg-tiffanyBlue' : isLight ? 'bg-eerieBlack20' : 'bg-ivory20'} rounded-[10px]`}
             type="button"
             key={option}
             onClick={() => handleOnClick(option)}
           >
-            <p className={`text-center ${selected ? 'text-ivory' : isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-base leading-[20px]`}>
+            <p className={`text-center ${selected === option ? 'text-ivory' : isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-base leading-[20px]`}>
               {t({ id: `label.${option}` })}
             </p>
           </button>
