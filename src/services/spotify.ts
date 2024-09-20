@@ -1,0 +1,221 @@
+import { GatewayError } from '@/core/errors';
+import type { AlbumReturnType, MusicDetails, SpotifyAlbumListApiResponseType, SpotifyTrackApiResponseType, SpotifyTrackListApiResponseType, TrackReturnType } from '@/types/api';
+import { albumMapper } from '@/utils/mappers/albumMapper';
+import { trackMapper } from '@/utils/mappers/trackMapper';
+
+import type { AccessTokenBody, BuildSpotifySearchApiUrlInput } from './spotify.types';
+
+export class SpotifyWebApi {
+  #baseUrl = 'https://api.spotify.com/v1';
+  #tokenUrl = 'https://accounts.spotify.com/api/token';
+  #searchUrl = `${this.#baseUrl}/search`;
+
+  // constructor() {}
+
+  /**
+   * Encodes in base64 the clientId:clientSecret for use with spotify API
+   * @returns base64 encoded client_id:client_secret
+   */
+  private encodeBearer(): string {
+    const data = `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`;
+    const encodedString = Buffer.from(data).toString('base64');
+    return `Basic ${encodedString}`;
+  }
+
+  /**
+   * Before querying the API, this helper will request an access_token
+   * @returns access_token
+   * @see https://developer.spotify.com/documentation/general/guides/authorization/client-credentials/
+   */
+  private async getAccessToken(): Promise<string> {
+    const auth = this.encodeBearer();
+
+    const response = await fetch(this.#tokenUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: auth,
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: 'grant_type=client_credentials',
+    });
+
+    if (!response.ok) {
+      throw new GatewayError({
+        message: 'Issue authenticating spotify API',
+        statusCode: response.status,
+        type: 'spotify',
+      });
+    }
+
+    const body = (await response.json()) as AccessTokenBody;
+
+    return body.access_token;
+  }
+
+  /**
+   * Builds spotify URL for querying all tracks by name
+   * @returns Spotify API URL
+   */
+  private buildSpotifySearchApiUrl({
+    searchBy,
+    with: { artist, track, album },
+  }: BuildSpotifySearchApiUrlInput): string {
+    const url = new URL(this.#searchUrl);
+    url.searchParams.append('type', searchBy);
+    const search: string[] = [];
+
+    if (artist) {
+      search.push(`artist:"${artist}"`);
+    }
+    if (track) {
+      search.push(`track:"${track}"`);
+    }
+    if (album) {
+      search.push(`album:"${album}"`);
+    }
+    url.searchParams.append('q', search.join(' '));
+    return url.toString();
+  }
+
+  /**
+   * Builds spotify URL for querying all albums by artist
+   * @returns Spotify API URL
+   */
+  private buildSpotifyAlbumTracksListApiUrl(id: string): string {
+    const url = new URL(`${this.#baseUrl}/albums/${id}/tracks`);
+    return url.toString();
+  }
+
+  /**
+   * Given an artist or a track this helper will return a list of the songs
+   * @returns spotify uri and input
+   * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/search
+   */
+  async getTrackList(track: string): Promise<TrackReturnType[]> {
+    const accessToken = await this.getAccessToken();
+
+    const spotifyUrl = this.buildSpotifySearchApiUrl({
+      searchBy: 'track',
+      with: { track },
+    });
+
+    const response = await fetch(spotifyUrl, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new GatewayError({
+        message: response.statusText,
+        statusCode: response.status,
+        type: 'spotify',
+      });
+    }
+
+    const data = (await response.json()) as SpotifyTrackListApiResponseType;
+
+    if (!data.tracks.items.length) {
+      return [];
+    }
+
+    return trackMapper(data.tracks.items);
+  }
+
+  /**
+   * Given an artist or a track this helper will return a list of the songs
+   * @returns spotify uri and input
+   * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/search
+   */
+  async getAlbumList(
+    artist: string,
+  ): Promise<AlbumReturnType[]> {
+    const accessToken = await this.getAccessToken();
+
+    const spotifyUrl = this.buildSpotifySearchApiUrl({
+      searchBy: 'album',
+      with: { artist },
+    });
+
+    const response = await fetch(spotifyUrl.toString(), {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new GatewayError({
+        message: response.statusText,
+        statusCode: response.status,
+        type: 'spotify',
+      });
+    }
+
+    const { albums: albumData } = (await response.json()) as SpotifyAlbumListApiResponseType;
+
+    if (!albumData.items.length) {
+      return [];
+    }
+
+    const albums = await Promise.all(
+      albumData.items.map(async (album) => {
+        const spotifyUrl = this.buildSpotifyAlbumTracksListApiUrl(album.id);
+
+        const response = await fetch(spotifyUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new GatewayError({
+            message: response.statusText,
+            statusCode: response.status,
+            type: 'spotify',
+          });
+        }
+        const trackdata = (await response.json()) as SpotifyTrackListApiResponseType['tracks'];
+
+        return albumMapper(album, trackdata);
+      }),
+    );
+
+    return albums;
+  }
+
+
+  /**
+   * Helper function to get the song details from spotify API given a track id
+   * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/get-track
+   */
+  async getTrackDetailsById(trackId: string): Promise<MusicDetails> {
+    const accessToken = await this.getAccessToken();
+    const spotifyUrl = `${this.#baseUrl}/tracks/${trackId}`;
+
+    const response = await fetch(spotifyUrl, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new GatewayError({
+        message: response.statusText,
+        statusCode: response.status,
+        type: 'spotify',
+      });
+    }
+
+    const data = (await response.json()) as SpotifyTrackApiResponseType;
+
+    return {
+      artist: data.artists[0]?.name || 'No artist',
+      track: data.name,
+      album: data.album.name,
+    };
+  }
+}

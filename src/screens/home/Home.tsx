@@ -23,15 +23,8 @@ import { useLightOrDarkTheme } from '@/context/ThemeContext';
 import { useToast } from '@/context/ToastContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUserData } from '@/hooks/useUserData';
-import type { 
-  GetMusicLinksInput,
-  LinksResponseData,
-  ListOfAlbumsReturnType, 
-  ListOfTracksReturnType, 
-  ResponseLinksApi,
-  SearchInputType
-} from '@/types';
-import { delay } from '@/utils/time';
+import type { AlbumReturnType, SearchInputType, TrackReturnType } from '@/types/api';
+import type { GetMusicLinksInput, LinksResponseData, SearchType } from '@/types/external.types';
 import { isValidInput, isValidMusicStreamingUrl } from '@/utils/url';
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -46,16 +39,16 @@ export const HomeScreen = (): JSX.Element => {
   /* ################################################## */
   const { isLight } = useLightOrDarkTheme();
   const [links, setLinks] = useState<LinksResponseData[]>([]);
-  const [tracks, setTracks] = useState<ListOfTracksReturnType['tracks']>([]);
-  const [albums, setAlbums] = useState<ListOfAlbumsReturnType['albums']>([]);
+  const [tracks, setTracks] = useState<TrackReturnType[]>([]);
+  const [albums, setAlbums] = useState<AlbumReturnType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selected, setSelected] = useState<SearchInputType>('artist');
-  const [details, setDetails] = useState<GetMusicLinksInput | undefined>(
+  const [selected, setSelected] = useState<SearchType>('artist');
+  const [details] = useState<GetMusicLinksInput | undefined>(
     undefined,
   );
-
+  
   const createErrorMessage = useCallback(
-    (selected: SearchInputType): string => {
+    (selected: SearchType): string => {
       switch (selected) {
         case 'artist': {
           return t({ id: 'error.message.requiredArtist' });
@@ -109,7 +102,7 @@ export const HomeScreen = (): JSX.Element => {
    * Options chosen
    * https://react-hook-form.com/api/useform/
    */
-  const { control, formState, reset, watch, setError } = useForm({
+  const { control, formState, reset, watch, handleSubmit } = useForm({
     defaultValues,
     mode: 'onSubmit',
     shouldFocusError: true,
@@ -151,168 +144,152 @@ export const HomeScreen = (): JSX.Element => {
       setTracks([]);
       setAlbums([]);
 
-      addToast({
-        message: 'error message',
-        type: 'success',
-        title: 'title',
-        id: uuid()
-      });
+      handleSubmit(
+        async (formFields) => {
+          try {
+            switch (selected) {
+              /* Artist will return a list of tracks sorted by album. User can then select a track */
+              case 'artist': {
+                const body: SearchInputType = {
+                  searchTerm: formFields.search,
+                  user: {
+                    ip,
+                    geolocation,
+                  },
+                };
+                const response = await fetch(
+                  `${isProd ? urls.PROD : urls.DEV}/api/albums`,
+                  {
+                    method: 'POST',
+                    headers: {
+                      'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                  },
+                );
 
-      // handleSubmit(
-      //   async (formFields) => {
-      //     try {
-      //       switch (selected) {
-      //         /* Artist will return a list of tracks sorted by album. User can then select a track */
-      //         case 'artist': {
-      //           const response = await fetch(
-      //             `${isProd ? urls.PROD_API : urls.DEV_API}/api/tracks`,
-      //             {
-      //               method: 'POST',
-      //               headers: {
-      //                 'Content-type': 'application/json',
-      //               },
-      //               body: JSON.stringify({
-      //                 [selected]: formFields.search,
-      //                 user: {
-      //                   ip,
-      //                   geolocation,
-      //                 },
-      //               }),
-      //             },
-      //           );
+                if (!response.ok) {
+                  addToast({
+                    message: response.statusText,
+                    type: 'warning',
+                    title: 'Issue getting albums',
+                    id: uuid()
+                  });
+                  break;
+                }
 
-      //           const data: ListOfAlbumsReturnType = await response.json();
+                const data: AlbumReturnType[] = await response.json();
+                setAlbums(data);
+                reset(defaultValues, { keepDefaultValues: true });
+                scrollToTop();
 
-      //           delay(() => {
-      //             if (response.ok) {
-      //               setAlbums(data.albums);
-      //               reset(defaultValues, { keepDefaultValues: true });
-      //               scrollToTop();
-      //             } else {
-      //               if (response.status === 400) {
-      //                 setError('search', {
-      //                   type: 'server',
-      //                   message: t({ id: 'error.message.requiredUrl' }),
-      //                 });
-      //               } else if (response.status === 404) {
-      //                 setError('search', {
-      //                   type: 'server',
-      //                   message: t({ id: 'error.message.requiredArtist' }),
-      //                 });
-      //               }
-      //               setErrorMessage('error.message.noTitle');
-      //             }
-      //             setIsLoading(false);
-      //           }, 1000);
+                break;
+              }
+              /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
+              case 'track': {
+                const body: SearchInputType = {
+                  searchTerm: formFields.search,
+                  user: {
+                    ip,
+                    geolocation,
+                  },
+                };
+                const response = await fetch(
+                  `${isProd ? urls.PROD : urls.DEV}/api/tracks`,
+                  {
+                    method: 'POST',
+                    headers: {
+                      'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                  },
+                );
 
-      //           break;
-      //         }
-      //         /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
-      //         case 'track': {
-      //           const response = await fetch(
-      //             `${isProd ? urls.PROD_API : urls.DEV_API}/api/tracks`,
-      //             {
-      //               method: 'POST',
-      //               headers: {
-      //                 'Content-type': 'application/json',
-      //               },
-      //               body: JSON.stringify({
-      //                 [selected]: formFields.search,
-      //                 user: {
-      //                   ip,
-      //                   geolocation,
-      //                 },
-      //               }),
-      //             },
-      //           );
+                if (!response.ok) {
+                  addToast({
+                    message: response.statusText,
+                    type: 'warning',
+                    title: 'Issue getting tracks',
+                    id: uuid()
+                  });
+                  break;
+                }
 
-      //           const data: ListOfTracksReturnType = await response.json();
+                const data: TrackReturnType[] = await response.json();
+                setTracks(data);
+                reset(defaultValues, { keepDefaultValues: true });
+                scrollToTop();
 
-      //           delay(() => {
-      //             if (response.ok) {
-      //               setTracks(data.tracks);
-      //               reset(defaultValues, { keepDefaultValues: true });
-      //               scrollToTop();
-      //             } else {
-      //               if (response.status === 400) {
-      //                 setError('search', {
-      //                   type: 'server',
-      //                   message: t({ id: 'error.message.requiredUrl' }),
-      //                 });
-      //               } else if (response.status === 404) {
-      //                 setError('search', {
-      //                   type: 'server',
-      //                   message: t({ id: 'error.message.requiredTitle' }),
-      //                 });
-      //               }
-      //               setErrorMessage('error.message.noTitle');
-      //             }
-      //             setIsLoading(false);
-      //           }, 1000);
+                break;
+              }
+              /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
+              case 'url': {
+                const body: SearchInputType = {
+                  searchTerm: formFields.search,
+                  user: {
+                    ip,
+                    geolocation,
+                  },
+                };
+                const response = await fetch(
+                  `${isProd ? urls.PROD : urls.DEV}/api/links`,
+                  {
+                    method: 'POST',
+                    headers: {
+                      'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                  },
+                );
 
-      //           break;
-      //         }
-      //         /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
-      //         case 'url': {
-      //           const response = await fetch(
-      //             `${isProd ? urls.PROD_API : urls.DEV_API}/api/links`,
-      //             {
-      //               method: 'POST',
-      //               headers: {
-      //                 'Content-type': 'application/json',
-      //               },
-      //               body: JSON.stringify({
-      //                 [selected]: formFields.search,
-      //                 user: {
-      //                   ip,
-      //                   geolocation,
-      //                 },
-      //               }),
-      //             },
-      //           );
+                if (!response.ok) {
+                  addToast({
+                    message: response.statusText,
+                    type: 'warning',
+                    title: 'Issue getting tracks',
+                    id: uuid()
+                  });
+                  break;
+                }
 
-      //           const data: ResponseLinksApi = await response.json();
+                // const data: TrackReturnType[] = await response.json();
 
-      //           delay(() => {
-      //             if (response.ok) {
-      //               setLinks(data.links);
-      //               setDetails(data.details);
-      //               reset(defaultValues, { keepDefaultValues: true });
-      //               scrollToTop();
-      //             } else {
-      //               if (response.status === 400) {
-      //                 setError('search', {
-      //                   type: 'server',
-      //                   message: t({ id: 'error.message.requiredUrl' }),
-      //                 });
-      //               } else if (response.status === 404) {
-      //                 setError('search', {
-      //                   type: 'server',
-      //                   message: t({ id: 'error.message.requiredUrl' }),
-      //                 });
-      //               }
-      //               setErrorMessage('error.message.incorrectUrl');
-      //             }
-      //             setIsLoading(false);
-      //           }, 1000);
+                // delay(() => {
+                //   if (response.ok) {
+                //     setLinks(data.links);
+                //     setDetails(data.details);
+                //     reset(defaultValues, { keepDefaultValues: true });
+                //     scrollToTop();
+                //   } else {
+                //     if (response.status === 400) {
+                //       setError('search', {
+                //         type: 'server',
+                //         message: t({ id: 'error.message.requiredUrl' }),
+                //       });
+                //     } else if (response.status === 404) {
+                //       setError('search', {
+                //         type: 'server',
+                //         message: t({ id: 'error.message.requiredUrl' }),
+                //       });
+                //     }
+                //     setErrorMessage('error.message.incorrectUrl');
+                //   }
+                //   setIsLoading(false);
+                // }, 1000);
 
-      //           break;
-      //         }
-      //       }
-      //     } catch (err) {
-      //       setIsLoading(false);
-      //       setErrorMessage('error.message.generic');
-      //       console.log({ err });
-      //     }
-      //   },
-      //   (error) => {
-      //     setIsLoading(false);
-      //     setErrorMessage('error.message.generic');
-      //     console.log({ error: error.search });
-      //   },
-      // )();
+                break;
+              }
+            }
+          } catch (err) {
+            // setErrorMessage('error.message.generic');
+            console.log({ err });
+          } finally {
+            setIsLoading(false);
+          }
+        },
+      )();
     },
-    [addToast, isLoading],
+    [addToast, defaultValues, geolocation, handleSubmit, ip, isLoading, reset, scrollToTop, selected],
   );
 
   const handleOnClick = useCallback(
@@ -325,72 +302,64 @@ export const HomeScreen = (): JSX.Element => {
       setTracks([]);
       setAlbums([]);
 
-      try {
-        const response = await fetch(
-          `${isProd ? urls.PROD_API : urls.DEV_API}/api/links`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-type': 'application/json',
-            },
-            body: JSON.stringify({
-              url,
-              user: {
-                ip,
-                geolocation,
-              },
-            }),
-          },
-        );
+      console.log({ url });
 
-        if (!response.ok) {
-          if (response.status === 400) {
-            setError('search', {
-              type: 'server',
-              message: t({ id: 'error.message.requiredUrl' }),
-            });
-          } else if (response.status === 404) {
-            setError('search', {
-              type: 'server',
-              message:
-                selected === 'artist'
-                  ? t({ id: 'error.message.requiredArtist' })
-                  : t({ id: 'error.message.requiredTitle' }),
-            });
-          }
-        }
+      // try {
+      //   const response = await fetch(
+      //     `${isProd ? urls.PROD_API : urls.DEV_API}/api/links`,
+      //     {
+      //       method: 'POST',
+      //       headers: {
+      //         'Content-type': 'application/json',
+      //       },
+      //       body: JSON.stringify({
+      //         url,
+      //         user: {
+      //           ip,
+      //           geolocation,
+      //         },
+      //       }),
+      //     },
+      //   );
 
-        const data: ResponseLinksApi = await response.json();
+      //   if (!response.ok) {
+      //     if (response.status === 400) {
+      //       setError('search', {
+      //         type: 'server',
+      //         message: t({ id: 'error.message.requiredUrl' }),
+      //       });
+      //     } else if (response.status === 404) {
+      //       setError('search', {
+      //         type: 'server',
+      //         message:
+      //           selected === 'artist'
+      //             ? t({ id: 'error.message.requiredArtist' })
+      //             : t({ id: 'error.message.requiredTitle' }),
+      //       });
+      //     }
+      //   }
 
-        delay(() => {
-          if (response.ok) {
-            setLinks(data.links);
-            setDetails(data.details);
-            reset(defaultValues, { keepDefaultValues: true });
-            scrollToTop();
-          } else {
-            // TODO: make specific error messages
-            // setErrorMessage('error.message.noTitle');
-          }
-          setIsLoading(false);
-        }, 1000);
-      } catch (err) {
-        setIsLoading(false);
-        // setErrorMessage('error.message.generic');
-        console.log({ err });
-      }
+      //   const data: ResponseLinksApi = await response.json();
+
+      //   delay(() => {
+      //     if (response.ok) {
+      //       setLinks(data.links);
+      //       setDetails(data.details);
+      //       reset(defaultValues, { keepDefaultValues: true });
+      //       scrollToTop();
+      //     } else {
+      //       // TODO: make specific error messages
+      //       // setErrorMessage('error.message.noTitle');
+      //     }
+      //     setIsLoading(false);
+      //   }, 1000);
+      // } catch (err) {
+      //   setIsLoading(false);
+      //   // setErrorMessage('error.message.generic');
+      //   console.log({ err });
+      // }
     },
-    [
-      defaultValues,
-      geolocation,
-      ip,
-      isLoading,
-      reset,
-      scrollToTop,
-      selected,
-      setError,
-      t,
-    ],
+    [isLoading],
   );
 
   const hasLinks = !!links.length;
@@ -427,11 +396,11 @@ export const HomeScreen = (): JSX.Element => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Button type="submit" isLight={isLight}>
+            <Button type="submit">
               {t({ id: 'home.cta' })}
             </Button>
           </form>
-          <div className='flex flex-col gap-2 w-full mx-6 my-0'>
+          <div className='flex flex-col gap-2 w-full mx-6 my-0 py-[40px]'>
             {isLoading && <Loader isLight={isLight} />}
             {!isLoading && hasLinks && (
               <>

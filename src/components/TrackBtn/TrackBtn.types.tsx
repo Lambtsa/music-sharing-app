@@ -1,9 +1,9 @@
 import type { InputHTMLAttributes } from 'react';
 
-import type { ListOfTracksReturnType } from '@/types';
+import type { TrackReturnType } from '@/types/api';
 
 export interface TrackBtnProps extends InputHTMLAttributes<HTMLButtonElement> {
-  track: ListOfTracksReturnType['tracks'][number];
+  track: TrackReturnType;
   handleOnClick: (url: string) => void;
   isLight: boolean;
 }

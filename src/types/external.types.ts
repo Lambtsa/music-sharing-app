@@ -1,8 +1,6 @@
-export type SearchInputType = "artist" | "track" | "url";
+import type { MusicProviders } from './music';
 
-export type MusicProviders = "spotify" | "youtube" | "deezer";
-
-export type UrlTypes = MusicProviders | "spotifyApi";
+export type SearchType = 'artist' | 'track' | 'url';
 
 export interface ListOfTracksReturnType {
   tracks: {

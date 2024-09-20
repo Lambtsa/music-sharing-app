@@ -1,12 +1,12 @@
 import { type Dispatch, type SetStateAction, useMemo } from 'react';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import type { SearchInputType } from '@/types';
+import type { SearchType } from '@/types/music';
 
 interface SelectorProps {
   isLight: boolean;
-  selected: SearchInputType;
-  setSelected: Dispatch<SetStateAction<SearchInputType>>;
+  selected: SearchType;
+  setSelected: Dispatch<SetStateAction<SearchType>>;
 }
 
 export const Selector = ({
@@ -16,11 +16,11 @@ export const Selector = ({
 }: SelectorProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const options = useMemo((): SearchInputType[] => {
+  const options = useMemo((): SearchType[] => {
     return ['artist', 'track', 'url'];
   }, []);
 
-  const handleOnClick = (input: SearchInputType) => {
+  const handleOnClick = (input: SearchType) => {
     setSelected(input);
   };
 

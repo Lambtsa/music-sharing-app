@@ -1,9 +1,9 @@
 import type { InputHTMLAttributes } from 'react';
 
-import type { ListOfAlbumsReturnType } from '@/types';
+import type { AlbumReturnType } from '@/types/api';
 
 export interface TrackBtnProps extends InputHTMLAttributes<HTMLButtonElement> {
-  album: ListOfAlbumsReturnType['albums'][number];
+  album: AlbumReturnType;
   handleOnClick: (url: string) => void;
   isLight: boolean;
 }

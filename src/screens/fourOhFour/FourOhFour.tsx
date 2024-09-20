@@ -37,7 +37,6 @@ export const FourOhFour = (): JSX.Element => {
               onClick={handleOnClick}
               width={140}
               type="button"
-              isLight={isLight}
             >
               {t({ id: 'fourOhFour.cta' })}
             </Button>

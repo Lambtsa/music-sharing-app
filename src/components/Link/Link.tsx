@@ -4,7 +4,7 @@ import { Icon } from '@/components/icon';
 import { InputCheckbox } from '@/components/Inputs/InputCheckbox';
 import { CustomApiErrorMessages } from '@/constants/errors';
 import { useTranslation } from '@/hooks/useTranslation';
-import type { MusicProviders } from '@/types';
+import type { MusicProviders } from '@/types/music';
 
 interface MusicLinkProps {
   service: MusicProviders;

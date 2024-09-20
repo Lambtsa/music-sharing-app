@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
 interface GeoLocationResponse {
   ip: string;
@@ -48,7 +48,7 @@ export const useUserData = (): UseUserDataReturnType => {
   }, []);
 
   const getIp = useCallback(async () => {
-    const response = await fetch("https://api.ipify.org?format=json	");
+    const response = await fetch('https://api.ipify.org?format=json	');
     const { ip: responseIp } = await response.json();
     setIp(responseIp);
   }, []);

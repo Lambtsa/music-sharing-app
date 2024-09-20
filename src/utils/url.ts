@@ -1,10 +1,9 @@
 import {
   deezerUrlRegex,
-  spotifyApiRegex,
   spotifyUrlRegex,
   youtubeUrlRegex,
 } from '@/constants/regex';
-import type { SearchInputType, UrlTypes } from '@/types';
+import type { MusicProviders, SearchType } from '@/types/music';
 
 /**
  * Will determine whether the url is one of the accepted types
@@ -29,7 +28,7 @@ export const isValidMusicStreamingUrl = (url: string): boolean => {
  */
 export const isValidInput = (
   input: string,
-  selected: SearchInputType,
+  selected: SearchType,
 ): boolean => {
   switch (selected) {
     case 'artist':
@@ -52,11 +51,8 @@ export const isValidInput = (
  * Helper for determining which type of url has been passed into endpoint
  * @returns MusicProviders | null
  */
-export const determineUrlType = (url: string): UrlTypes | null => {
+export const determineUrlType = (url: string): MusicProviders | null => {
   switch (true) {
-    case spotifyApiRegex.test(url): {
-      return 'spotifyApi';
-    }
     case spotifyUrlRegex.test(url): {
       return 'spotify';
     }
@@ -75,16 +71,12 @@ export const determineUrlType = (url: string): UrlTypes | null => {
  * Helper function to get id from the different supported urls
  * @returns string | null
  */
-export const getTrackId = (url: string, type: UrlTypes): string | null => {
+export const getTrackId = (url: string, type: MusicProviders): string | null => {
   const urlObj = new URL(url);
   switch (type) {
     case 'spotify': {
       const pathnameArray = urlObj.pathname.split('/');
       return pathnameArray[2] || null;
-    }
-    case 'spotifyApi': {
-      const pathnameArray = urlObj.pathname.split('/');
-      return pathnameArray[3] || null;
     }
     case 'deezer': {
       const pathnameArray = urlObj.pathname.split('/');

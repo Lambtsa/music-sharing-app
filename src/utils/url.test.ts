@@ -129,20 +129,6 @@ describe("getTrackId helper function", () => {
     expect(getTrackId("https://open.spotify.com/dasdsa", "spotify")).toBe(null);
   });
 
-  test("should return valid id given valid spotify api url", () => {
-    expect(
-      getTrackId(
-        "https://api.spotify.com/v1/tracks/29EeS1c3ZLwDLAcmYN5DFf",
-        "spotifyApi",
-      ),
-    ).toBe("29EeS1c3ZLwDLAcmYN5DFf");
-  });
-  test("should return null given invalid spotify api url", () => {
-    expect(getTrackId("https://api.spotify.com/v1/dasdsa", "spotifyApi")).toBe(
-      null,
-    );
-  });
-
   test("should return valid id given valid deezer url", () => {
     expect(
       getTrackId(

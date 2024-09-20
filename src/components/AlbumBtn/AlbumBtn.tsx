@@ -53,7 +53,7 @@ export const AlbumBtn = ({
           type="button"
           onClick={handleExpandOnClick}
         >
-          <Icon icon='chevron' />
+          <Icon icon='chevron' rotate={270} color={isLight ? '#262626' : '#FFFEED'} />
         </button>
       </div>
       {isExpanded && (
@@ -64,7 +64,7 @@ export const AlbumBtn = ({
                 key={track.id}
                 className={`flex justify-between items-center gap-4 ${isLight ? 'bg-tiffanyBlue20' : 'bg-onyx'} rounded-[10px] w-full px-3 py-4`} 
               >
-                <Icon icon='music' width={30} height={30} />
+                <Icon icon='music' width={30} height={30} color={isLight ? '#262626' : '#FFFEED'} />
                 <div className='flex flex-auto flex-col justify-center items-start gap-1/2 w-full overflow-hidden whitespace-nowrap'>
                   <h3 className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-bold text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
                     {track.track}
@@ -74,7 +74,7 @@ export const AlbumBtn = ({
                   </p>
                 </div>
                 <button
-                  className = 'px-[6px] py-[10px] rounded-[7px] bg-pastelPink text-ivory font-bold hover:text-ivory hover:bg-oldRose text-sm'
+                  className = 'px-4 py-2 rounded-[7px] bg-pastelPink text-ivory font-bold hover:text-ivory hover:bg-oldRose text-sm'
                   type="button"
                   onClick={() => handleOnClick(track.url)}
                 >

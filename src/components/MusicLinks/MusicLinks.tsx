@@ -4,7 +4,8 @@ import { useCopyToClipboard } from 'react-use';
 import { Icon } from '@/components/icon';
 import { MusicLink } from '@/components/Link';
 import { CustomApiErrorMessages } from '@/constants/errors';
-import type { LinksResponseData, MusicProviders } from '@/types';
+import type { LinksResponseData } from '@/types/external.types';
+import type { MusicProviders } from '@/types/music';
 import { delay } from '@/utils/time';
 
 interface MusicLinksProps {
