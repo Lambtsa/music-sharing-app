@@ -10,7 +10,7 @@ export const albumMapper = (album: SpotifyAlbumApiResponseType, tracks: SpotifyT
       id: track.id,
       artist: album.artists[0]?.name || 'Artist unknown',
       track: track.name,
-      url: track.href,
+      url: track.external_urls.spotify,
     })),
   };
 };

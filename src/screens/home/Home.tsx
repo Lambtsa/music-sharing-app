@@ -285,68 +285,57 @@ export const HomeScreen = (): JSX.Element => {
         return;
       }
       setIsLoading(true);
-      // setErrorMessage(undefined);
       setTracks([]);
       setAlbums([]);
 
-      console.log({ url });
+      try {
+        const body: SearchInputType = {
+          searchTerm: url,
+          user: {
+            ip,
+            geolocation,
+          },
+        };
 
-      // try {
-      //   const response = await fetch(
-      //     `${isProd ? urls.PROD_API : urls.DEV_API}/api/links`,
-      //     {
-      //       method: 'POST',
-      //       headers: {
-      //         'Content-type': 'application/json',
-      //       },
-      //       body: JSON.stringify({
-      //         url,
-      //         user: {
-      //           ip,
-      //           geolocation,
-      //         },
-      //       }),
-      //     },
-      //   );
+        const response = await fetch(
+          `${isProd ? urls.PROD : urls.DEV}/api/links`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json',
+            },
+            body: JSON.stringify(body),
+          },
+        );
 
-      //   if (!response.ok) {
-      //     if (response.status === 400) {
-      //       setError('search', {
-      //         type: 'server',
-      //         message: t({ id: 'error.message.requiredUrl' }),
-      //       });
-      //     } else if (response.status === 404) {
-      //       setError('search', {
-      //         type: 'server',
-      //         message:
-      //           selected === 'artist'
-      //             ? t({ id: 'error.message.requiredArtist' })
-      //             : t({ id: 'error.message.requiredTitle' }),
-      //       });
-      //     }
-      //   }
-
-      //   const data: ResponseLinksApi = await response.json();
-
-      //   delay(() => {
-      //     if (response.ok) {
-      //       setLinks(data.links);
-      //       setDetails(data.details);
-      //       reset(defaultValues, { keepDefaultValues: true });
-      //       scrollToTop();
-      //     } else {
-      //       // TODO: make specific error messages
-      //       // setErrorMessage('error.message.noTitle');
-      //     }
-      //     setIsLoading(false);
-      //   }, 1000);
-      // } catch (err) {
-      //   setIsLoading(false);
-      //   // setErrorMessage('error.message.generic');
-      //   console.log({ err });
-      // }
+        if (!response.ok) {
+          addToast({
+            message: response.statusText,
+            type: 'warning',
+            title: 'Issue getting tracks',
+            id: uuid()
+          });
+        } else {
+          const data: LinkListReturnType = await response.json();
+  
+          setLinks(data.links);
+          setDetails(data.details);
+          reset(defaultValues, { keepDefaultValues: true });
+          scrollToTop();
+        }
+      } catch (err) {
+        addToast({
+          message: (err as Error).message,
+          type: 'warning',
+          title: 'Issue getting tracks',
+          id: uuid()
+        });
+        console.log({ err });
+      } finally {
+        setIsLoading(false);
+      }
     },
-    [isLoading],
+    [addToast, defaultValues, geolocation, ip, isLoading, reset, scrollToTop],
   );
 
   const hasTracks = !!tracks.length;

@@ -54,8 +54,6 @@ export const POST = async (req: NextRequest): Promise<Response> => {
       });
     }
 
-    console.log({ trackId });
-
     /* ############################## */
     /* FETCH DATA */
     /* ############################## */
