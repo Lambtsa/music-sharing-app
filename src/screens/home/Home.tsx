@@ -379,7 +379,7 @@ export const HomeScreen = (): JSX.Element => {
             {isLoading && <Loader isLight={isLight} />}
             {!isLoading && links && (
               <>
-                <p className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-left text-base leading-5 mb-4 whitespace-nowrap overflow-hidden text-ellipsis`}>
+                <p className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-left text-base leading-5 mb-4`}>
                   {t(
                     { id: 'home.showingResults' },
                     { artist: details?.artist, track: details?.track },
