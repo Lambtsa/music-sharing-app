@@ -27,7 +27,7 @@ export const FourOhFour = (): JSX.Element => {
         <Container size="mobile">
           <Header />
           <div className='flex flex-col justify-center items-center gap-4 w-full h-full mb-4'>
-            <h1 className={`${isLight ? 'text-ivory' : 'text-eerieBlack'} font-bold text-center text-[110px] leading-[110px]`}>
+            <h1 className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} font-bold text-center text-[110px] leading-[110px]`}>
               {t({ id: 'fourOhFour.title' })}
             </h1>
             <p className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal italic text-center text-base leading-5`}>
