@@ -2,13 +2,12 @@ import { type ReactNode, useMemo } from 'react';
 
 import { Icon } from '@/components/icon';
 import { InputCheckbox } from '@/components/Inputs/InputCheckbox';
-import { CustomApiErrorMessages } from '@/constants/errors';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { MusicProviders } from '@/types/music';
 
 interface MusicLinkProps {
   service: MusicProviders;
-  serviceUrl: string;
+  serviceUrl: string | null;
   isLight: boolean;
   handleOnChange: (id: MusicProviders) => void;
   isSelected: boolean;
@@ -27,7 +26,7 @@ export const MusicLink = ({
   /* State */
   /* ############################## */
   const isDisabled = useMemo(() => {
-    return serviceUrl === CustomApiErrorMessages.NoTrack;
+    return !serviceUrl;
   }, [serviceUrl]);
 
   const ServiceIcon: ReactNode = useMemo(() => {
@@ -45,11 +44,11 @@ export const MusicLink = ({
   }, [service]);
 
   const contentUrl = useMemo(() => {
-    if (isDisabled) {
+    if (!serviceUrl) {
       return t({ id: 'label.noUrl' }, { service });
     }
     return serviceUrl;
-  }, [isDisabled, service, serviceUrl, t]);
+  }, [service, serviceUrl, t]);
 
   return (
     <div className={`flex justify-center items-center gap-[10px] ${isLight ? 'bg-tiffanyBlue20' : 'bg-onyx'} rounded-[10px] w-full px-3 py-4 ${isDisabled ? 'opacity-40' : ''}`}>

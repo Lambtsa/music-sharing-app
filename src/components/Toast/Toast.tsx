@@ -25,6 +25,20 @@ export const Toast = ({
         return 'info';
     }
   }, [type]);
+
+  const color = useMemo(() => {
+    switch (type) {
+      case 'success':
+        return '#4CAF50';
+      case 'warning':
+        return '#FFC107';
+      case 'danger':
+        return '#F44336';
+      case 'info':
+        return '#2196F3';
+    }
+  }, [type]);
+
   return (
     <div
       data-testid='component-toast'
@@ -32,7 +46,7 @@ export const Toast = ({
     >
       <div className="flex items-center gap-2">
         <Icon
-          color={isLight ? '#FFFEED' : '#262626'}
+          color={color}
           data-testid="toast-info-icon"
           icon={icon}
         />

@@ -1,8 +1,8 @@
 import { type NextRequest } from 'next/server';
 
 import { BadRequestError, globalApiErrorHandler } from '@/core/errors';
-import { searchInputSchema } from '@/schemas/input.schema';
-import { SpotifyWebApi } from '@/services/spotify';
+import { searchInputSchema } from '@/schemas/api.schema';
+import { SpotifyWebApi } from '@/services/api/spotify';
 import type { SearchInputType } from '@/types/api';
 import { getUserAgentInfo } from '@/utils/userAgentInfo';
 

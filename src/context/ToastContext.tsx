@@ -62,14 +62,14 @@ const ToastProvider = ({ children }: ToastProviderProps) => {
   /* ############################## */
   /* Lifecycle hooks */
   /* ############################## */
-  // useEffect(() => {
-  //   let timer: NodeJS.Timeout;
-  //   if (toasts.length > 0) {
-  //     timer = setTimeout(() => setToasts((toasts) => toasts.slice(1)), 3000);
-  //   }
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (toasts.length > 0) {
+      timer = setTimeout(() => setToasts((toasts) => toasts.slice(1)), 3000);
+    }
 
-  //   return () => clearTimeout(timer);
-  // }, [toasts.length]);
+    return () => clearTimeout(timer);
+  }, [toasts.length]);
 
   useEffect(() => {
     const toastDiv = document.querySelector('#toast-root');

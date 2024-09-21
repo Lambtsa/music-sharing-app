@@ -23,8 +23,8 @@ import { useLightOrDarkTheme } from '@/context/ThemeContext';
 import { useToast } from '@/context/ToastContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUserData } from '@/hooks/useUserData';
-import type { AlbumReturnType, SearchInputType, TrackReturnType } from '@/types/api';
-import type { GetMusicLinksInput, LinksResponseData, SearchType } from '@/types/external.types';
+import type { AlbumReturnType, LinkListReturnType, MusicDetails, SearchInputType, TrackReturnType } from '@/types/api';
+import type { SearchType } from '@/types/external.types';
 import { isValidInput, isValidMusicStreamingUrl } from '@/utils/url';
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -38,12 +38,12 @@ export const HomeScreen = (): JSX.Element => {
   /* State */
   /* ################################################## */
   const { isLight } = useLightOrDarkTheme();
-  const [links, setLinks] = useState<LinksResponseData[]>([]);
+  const [links, setLinks] = useState<LinkListReturnType['links'] | undefined>(undefined);
   const [tracks, setTracks] = useState<TrackReturnType[]>([]);
   const [albums, setAlbums] = useState<AlbumReturnType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selected, setSelected] = useState<SearchType>('artist');
-  const [details] = useState<GetMusicLinksInput | undefined>(
+  const [details, setDetails] = useState<MusicDetails | undefined>(
     undefined,
   );
   
@@ -127,6 +127,12 @@ export const HomeScreen = (): JSX.Element => {
     }
   }, [url]);
 
+  useEffect(() => {
+    setAlbums([]);
+    setTracks([]);
+    setLinks(undefined);
+  }, [selected]);
+
   /* ################################################## */
   /* Actions */
   /* ################################################## */
@@ -139,8 +145,7 @@ export const HomeScreen = (): JSX.Element => {
 
       /* Reset states */
       setIsLoading(true);
-      // setErrorMessage(undefined);
-      setLinks([]);
+      setLinks(undefined);
       setTracks([]);
       setAlbums([]);
 
@@ -252,30 +257,12 @@ export const HomeScreen = (): JSX.Element => {
                   break;
                 }
 
-                // const data: TrackReturnType[] = await response.json();
+                const data: LinkListReturnType = await response.json();
 
-                // delay(() => {
-                //   if (response.ok) {
-                //     setLinks(data.links);
-                //     setDetails(data.details);
-                //     reset(defaultValues, { keepDefaultValues: true });
-                //     scrollToTop();
-                //   } else {
-                //     if (response.status === 400) {
-                //       setError('search', {
-                //         type: 'server',
-                //         message: t({ id: 'error.message.requiredUrl' }),
-                //       });
-                //     } else if (response.status === 404) {
-                //       setError('search', {
-                //         type: 'server',
-                //         message: t({ id: 'error.message.requiredUrl' }),
-                //       });
-                //     }
-                //     setErrorMessage('error.message.incorrectUrl');
-                //   }
-                //   setIsLoading(false);
-                // }, 1000);
+                setLinks(data.links);
+                setDetails(data.details);
+                reset(defaultValues, { keepDefaultValues: true });
+                scrollToTop();
 
                 break;
               }
@@ -362,7 +349,6 @@ export const HomeScreen = (): JSX.Element => {
     [isLoading],
   );
 
-  const hasLinks = !!links.length;
   const hasTracks = !!tracks.length;
   const hasAlbums = !!albums.length;
 
@@ -400,9 +386,9 @@ export const HomeScreen = (): JSX.Element => {
               {t({ id: 'home.cta' })}
             </Button>
           </form>
-          <div className='flex flex-col gap-2 w-full mx-6 my-0 py-[40px]'>
+          <div className='flex flex-col gap-2 w-full mx-6 my-0 pb-[40px]'>
             {isLoading && <Loader isLight={isLight} />}
-            {!isLoading && hasLinks && (
+            {!isLoading && links && (
               <>
                 <p className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-left text-base leading-5 mb-4 whitespace-nowrap overflow-hidden text-ellipsis`}>
                   {t(

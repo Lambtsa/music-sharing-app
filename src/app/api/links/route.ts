@@ -1,10 +1,11 @@
 import { type NextRequest } from 'next/server';
 
 import { BadRequestError, globalApiErrorHandler } from '@/core/errors';
-import { searchInputSchema } from '@/schemas/input.schema';
-import { DeezerWebApi } from '@/services/deezer';
-import { SpotifyWebApi } from '@/services/spotify';
-import type { MusicDetails, SearchInputType } from '@/types/api';
+import { searchInputSchema } from '@/schemas/api.schema';
+import { DeezerWebApi } from '@/services/api/deezer';
+import { SpotifyWebApi } from '@/services/api/spotify';
+import { YoutubeWebApi } from '@/services/api/youtube';
+import type { LinkListReturnType, MusicDetails, SearchInputType } from '@/types/api';
 import { determineUrlType, getTrackId } from '@/utils/url';
 import { getUserAgentInfo } from '@/utils/userAgentInfo';
 
@@ -60,6 +61,7 @@ export const POST = async (req: NextRequest): Promise<Response> => {
     /* ############################## */
     const spotifyApi = new SpotifyWebApi();
     const deezerApi = new DeezerWebApi();
+    const youtubeApi = new YoutubeWebApi();
 
     let details: MusicDetails | undefined;
 
@@ -70,9 +72,29 @@ export const POST = async (req: NextRequest): Promise<Response> => {
       details = await deezerApi.getTrackDetailsByDeezerId(trackId);
     }
 
-    console.log({ details });
+    if (!details) {
+      throw new BadRequestError({
+        message: 'Track not found',
+        statusCode: 404,
+        url: '/api/links',
+        userAgentInfo,
+      });
+    }
+
+    const spotifyUrl = await spotifyApi.searchSpotify(details);
+    const deezerUrl = await deezerApi.searchDeezer(details);
+    const youtubeUrl = await youtubeApi.searchYoutube(details);
+
+    const response: LinkListReturnType = {
+      details, 
+      links: {
+        spotify: spotifyUrl,
+        deezer: deezerUrl,
+        youtube: youtubeUrl,
+      }
+    };
     
-    return new Response(JSON.stringify({}), {
+    return new Response(JSON.stringify(response), {
       status: 200,
     });
   } catch (err) {

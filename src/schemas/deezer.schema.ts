@@ -47,19 +47,13 @@ export const deezerTrackApiResponseSchema = z.object({
   explicit_lyrics: z.boolean(),
   explicit_content_lyrics: z.boolean(),
   explicit_content_cover: z.boolean(),
-  isrc: z.string(),
-  share: z.string(),
-  track_position: z.number(),
-  disk_number: z.number(),
-  release_date: z.string(),
-  bpm: z.number(),
-  gain: z.number(),
   preview: z.string(),
   md5_image: z.string(),
-  /* ISO countries */
-  available_countries: z.array(z.string()),
-  track_token: z.string(),
   type: z.literal('track'),
   artist: deezerArtistApiResponseSchema,
   album: deezerAlbumApiResponseSchema,
+});
+
+export const deezerSearchApiResponseSchema = z.object({
+  data: z.array(deezerTrackApiResponseSchema),
 });

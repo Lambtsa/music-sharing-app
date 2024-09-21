@@ -3,7 +3,7 @@ import type { AlbumReturnType, MusicDetails, SpotifyAlbumListApiResponseType, Sp
 import { albumMapper } from '@/utils/mappers/albumMapper';
 import { trackMapper } from '@/utils/mappers/trackMapper';
 
-import type { AccessTokenBody, BuildSpotifySearchApiUrlInput } from './spotify.types';
+import type { AccessTokenBody, BuildSpotifySearchApiUrlInput } from './api.types';
 
 export class SpotifyWebApi {
   #baseUrl = 'https://api.spotify.com/v1';
@@ -217,5 +217,54 @@ export class SpotifyWebApi {
       track: data.name,
       album: data.album.name,
     };
+  }
+
+  /**
+   * Given an artist and title, this helper will return the spotify uri, artist and title
+   * We use the spotify API to get stable artist and title because it seems to be the best search so far
+   * @returns spotify uri and input
+   * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/search
+   */
+  async searchSpotify(
+    input: MusicDetails,
+  ): Promise<string | null> {
+    const accessToken = await this.getAccessToken();
+
+    /* Will return TrackResponse response */
+    const spotifyUrl = this.buildSpotifySearchApiUrl({
+      searchBy: 'track',
+      with: input
+    });
+
+    const response = await fetch(spotifyUrl, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new GatewayError({
+        message: response.statusText,
+        statusCode: response.status,
+        type: 'spotify',
+      });
+    }
+
+    const data = (await response.json()) as SpotifyTrackListApiResponseType;
+
+    /* TODO: This will need optimising because currently only returns the first element found + need better searching */
+    const track = data.tracks.items.find((item) => {
+      /* Is this too strict? */
+      return item.artists.find((artist) => artist.name.toLowerCase().includes(input.artist.toLowerCase())) &&
+      item.name.toLowerCase().includes(input.track.toLowerCase()) &&
+      item.album.name.toLowerCase().includes(input.album.toLowerCase());
+    });
+
+    if (!track) {
+      return null;
+    }
+
+    return track.external_urls.spotify;
   }
 }

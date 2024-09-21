@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'react-use';
+import { v4 as uuid } from 'uuid';
 
 import { Icon } from '@/components/icon';
 import { MusicLink } from '@/components/Link';
-import { CustomApiErrorMessages } from '@/constants/errors';
-import type { LinksResponseData } from '@/types/external.types';
+import { useToast } from '@/context/ToastContext';
+import type { LinkListReturnType } from '@/types/api';
 import type { MusicProviders } from '@/types/music';
 import { delay } from '@/utils/time';
 
 interface MusicLinksProps {
   isLight: boolean;
-  links: LinksResponseData[];
+  links: LinkListReturnType['links'];
 }
 
 export const MusicLinks = ({
@@ -19,6 +20,7 @@ export const MusicLinks = ({
 }: MusicLinksProps): JSX.Element => {
   // TODO: deal with copy to clipboard errors
   const [_state, copyToClipboard] = useCopyToClipboard();
+  const { addToast } = useToast();
   /* ############################## */
   /* State */
   /* ############################## */
@@ -60,9 +62,10 @@ export const MusicLinks = ({
   const createCopyString = useCallback((): string => {
     return selectedProviders
       .map((provider) => {
-        const url = links.find((link) => link.name === provider)?.url;
-        if (!url || url === CustomApiErrorMessages.NoTrack) {
-          return '';
+        const url = links[provider];
+        
+        if (!url) {
+          return 'No track available';
         }
         return url;
       })
@@ -74,13 +77,19 @@ export const MusicLinks = ({
       return;
     }
     copyToClipboard(createCopyString());
+    addToast({
+      message: `You have copied the link${selectedProviders.length > 1 ? 's' : ''}`,
+      type: 'success',
+      title: 'Copied',
+      id: uuid()
+    });
     setIsCopied(!isCopied);
-  }, [copyToClipboard, createCopyString, isCopied]);
+  }, [addToast, copyToClipboard, createCopyString, isCopied, selectedProviders.length]);
 
   const hasProviders = !!selectedProviders.length;
   return (
     <>
-      {links.map(({ name, url }) => (
+      {(Object.entries(links) as [MusicProviders, string | null][]).map(([ name, url ]) => (
         <MusicLink
           key={name}
           isSelected={isSelected(name)}
@@ -91,15 +100,13 @@ export const MusicLinks = ({
         />
       ))}
       <button
-        className={`flex justify-center gap-2 items-center rounded-[10px] ${isCopied ? 'bg-chelseaCucumber hover:bg-viridianGreen' : 'bg-tiffanyBlue'} px-4 py-2 text-ivory w-fit mt-4 disabled:opacity-40 disabled:bg-tiffanyBlue disabled:cursor-not-allowed`}
+        className='flex justify-center gap-2 items-center rounded-[10px] bg-tiffanyBlue hover:bg-viridianGreen px-4 py-2 text-ivory w-fit mt-4 disabled:opacity-40 disabled:bg-tiffanyBlue disabled:cursor-not-allowed'
         type='button'
         disabled={!hasProviders}
         onClick={handleCopyLink}
       >
-        {isCopied ? <Icon icon='tick' /> : <Icon icon='link' />}
-        {isCopied && 'Copied'}
-        {!isCopied &&
-          (selectedProviders.length > 1 ? 'Copy Links' : 'Copy Link')}
+        <Icon icon='link' color='#FFFEED' height={20} />
+        {selectedProviders.length > 1 ? 'Copy Links' : 'Copy Link'}
       </button>
     </>
   );

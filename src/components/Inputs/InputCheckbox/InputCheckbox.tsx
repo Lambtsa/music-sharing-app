@@ -22,7 +22,7 @@ export const InputCheckbox = ({
       <label
         className={`flex absolute justify-center items-center gap-1 w-5 h-5 ${isSelected ? '[&>svg]:block border-2 border-tiffanyBlue bg-tiffanyBlue' : isLight ? 'bg-ivory [&>svg]:none' : 'bg-ivory20 [&>svg]:none'} rounded-[4px]`}
       >
-        <Icon icon='tick' />
+        {isSelected && <Icon icon='tick' height={16} width={16} color='#FFFEED' />}
       </label>
       <label>
         <input
