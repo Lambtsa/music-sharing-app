@@ -27,22 +27,27 @@ export const AlbumBtn = ({
   return (
     <>
       <div className={`flex justify-center items-center gap-4 [&>svg]:min-w-[30px] ${isLight ? 'bg-tiffanyBlue20 [&>svg>path]:stroke-eerieBlack' : 'bg-onyx [&>svg>path]:stroke-ivory'} rounded-[10px] w-full px-3 py-4`}>
-        <Image
-          className='rounded-[7px]'
-          width={60}
-          height={60}
-          object-fit="cover"
-          src={album.imageUrl || '/placeholder.svg'}
-          alt={album.album}
-          placeholder="blur"
-          blurDataURL="/placeholder.svg"
-        />
+        {album.imageUrl ? (
+          <Image
+            className='rounded-[7px]'
+            width={60}
+            height={60}
+            object-fit="cover"
+            src={album.imageUrl}
+            alt={album.album.name}
+            placeholder="blur"
+            blurDataURL="/placeholder.svg"
+          />
+        ) : (
+          <Icon icon='placeholder' width={60} height={60} />
+        )
+        }
         <div className = 'flex flex-auto flex-col justify-center items-start gap-1/2 w-full overflow-hidden whitespace-nowrap'>
           <h3 className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-bold text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
             {album.artist}
           </h3>
           <p className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
-            {album.album}
+            {album.album.name}
           </p>
           <p className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
             {'Album'}
@@ -67,7 +72,7 @@ export const AlbumBtn = ({
                 <Icon icon='music' width={30} height={30} color={isLight ? '#262626' : '#FFFEED'} />
                 <div className='flex flex-auto flex-col justify-center items-start gap-1/2 w-full overflow-hidden whitespace-nowrap'>
                   <h3 className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-bold text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
-                    {track.track}
+                    {track.track.name}
                   </h3>
                   <p className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
                     {track.artist}

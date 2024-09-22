@@ -32,7 +32,7 @@ export const POST = async (req: NextRequest): Promise<Response> => {
 
     const tracks = await spotifyApi.getTrackList(body.searchTerm);
 
-    await Promise.all(
+    await Promise.all([
       tracks.map(async (track) => {
 
         const { data: artist } = await insert.artist({
@@ -60,7 +60,18 @@ export const POST = async (req: NextRequest): Promise<Response> => {
           duration: track.track.duration,
           track_number: track.track.track_number
         });
-      })
+      }),
+      insert.search({
+        search: body.searchTerm,
+        search_type: 'track',
+        ip: body.user.ip ?? null,
+        city: body.user.geolocation?.city ?? null,
+        country: body.user.geolocation?.country ?? null,
+        coordinates: body.user.geolocation?.coordinates ?? null,
+        timezone: body.user.geolocation?.timezone ?? null,
+        url_type: null,
+      }),
+    ]
     );
 
     return new Response(JSON.stringify(tracks), {

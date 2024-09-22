@@ -1,3 +1,4 @@
+import type { SearchType } from '@/types/music';
 
 
 type Artist = {
@@ -35,7 +36,7 @@ type Search = {
   coordinates: string | null;
   search: string;
   timezone: string | null;
-  search_type: string;
+  search_type: SearchType;
   url_type: string | null;
   created_at: string;
   updated_at: string;

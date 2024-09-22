@@ -1,5 +1,6 @@
 import { type NextRequest } from 'next/server';
 
+import { insert } from '@/core/db';
 import { BadRequestError, globalApiErrorHandler } from '@/core/errors';
 import { searchInputSchema } from '@/schemas/api.schema';
 import { DeezerWebApi } from '@/services/api/deezer';
@@ -91,6 +92,17 @@ export const POST = async (req: NextRequest): Promise<Response> => {
         youtube: youtubeUrl,
       }
     };
+
+    await insert.search({
+      search: body.searchTerm,
+      search_type: 'url',
+      ip: body.user.ip ?? null,
+      city: body.user.geolocation?.city ?? null,
+      country: body.user.geolocation?.country ?? null,
+      coordinates: body.user.geolocation?.coordinates ?? null,
+      timezone: body.user.geolocation?.timezone ?? null,
+      url_type: urlType,
+    });
     
     return new Response(JSON.stringify(response), {
       status: 200,
