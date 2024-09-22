@@ -9,6 +9,11 @@ declare namespace NodeJS {
     readonly SPOTIFY_CLIENT_SECRET: string;
     
     readonly YOUTUBE_API_KEY: string;
+
+    readonly SUPABASE_PASSWORD: string;
+    readonly SUPABASE_ANON_KEY: string;
+
+    readonly SUPABASE_URL: string;
   }
 }
 

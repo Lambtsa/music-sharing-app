@@ -5,9 +5,17 @@ export const trackMapper = (tracks: SpotifyTrackApiResponseType[]): TrackReturnT
     return {
       id: item.id,
       artist: item.album.artists[0]?.name || 'Artist unknown',
-      track: item.name,
+      track: {
+        name: item.name,
+        url: item.external_urls.spotify,
+        duration: item.duration_ms,
+        track_number: item.track_number,
+      },
       url: item.external_urls.spotify,
-      album: item.album.name,
+      album: {
+        name: item.album.name,
+        cover: item.album.images.find((image) => image.height === 300)?.url ?? null,
+      },
       imageUrl: item.album.images.find((image) => image.height === 300)
         ?.url,
     };

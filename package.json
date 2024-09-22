@@ -24,6 +24,7 @@
     "@fontsource/montserrat": "^5.1.0",
     "@hookform/resolvers": "^3.9.0",
     "@sentry/nextjs": "^8.30.0",
+    "@supabase/supabase-js": "^2.45.4",
     "dotenv": "^16.4.5",
     "pino": "^9.3.1",
     "react": "18.3.1",
