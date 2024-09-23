@@ -1,0 +1,22 @@
+name: Release
+
+# Description
+# Tagging a new release from the main page of the repository and publish it in production.
+
+on:
+  release:
+    types:
+      - published
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_for_prod:
+    name: Build - Test for PROD
+    uses: ./.github/workflows/project_build.yaml
+    with:
+      deploy-env: prod
+      publish: true
+    secrets: inherit

@@ -1,0 +1,22 @@
+name: Pull Request
+
+on:
+  # Trigger analysis when pushing in main or pull requests, and when creating a pull request.
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build - Test
+    uses: ./.github/workflows/project_build.yaml
+    with:
+      deploy-env: prod
+      publish: false
+    secrets: inherit

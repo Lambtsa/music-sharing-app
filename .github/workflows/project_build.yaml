@@ -1,0 +1,89 @@
+name: Common Publish
+
+on:
+  workflow_call:
+    inputs:
+      timeout-minutes:
+        required: false
+        type: number
+        default: 60
+      deploy-env:
+        required: true
+        type: string
+        default: qual
+      publish:
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  project_build:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    environment: ${{ inputs.deploy-env }}
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+      checks: write
+      deployments: write
+      issues: write
+      packages: write
+      pull-requests: write
+      repository-projects: write
+      security-events: write
+      statuses: write
+    
+    steps:
+      ##############################
+      # Build & deploy
+      ##############################
+      # Get access to github repository
+      - uses: actions/checkout@v4
+        id: checkout
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 20
+    
+      - name: Install dependencies
+        run: npm ci
+        shell: bash
+  
+      - name: Run Unit Tests
+        run: npm run test
+        shell: bash
+  
+      - name: Run linter
+        run: npm run lint
+        shell: bash
+  
+      - name: Run pnpm build
+        env: 
+          NEXT_PUBLIC_DEPLOY_STAGE: ${{ inputs.NEXT_PUBLIC_DEPLOY_STAGE }}
+        run: npm run build
+        shell: bash
+
+      - name: Deploy to VPS
+        if: ${{ inputs.publish == true }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 700 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_IP }} >> ~/.ssh/known_hosts
+          echo "Pushing the build app to the remote server"
+          scp -o StrictHostKeyChecking=yes -r ./.next/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}:/home/${{ secrets.SSH_USER }}/client/.next
+        shell: bash
+
+      - name: Restart the audiolinx-client process on server
+        if: ${{ inputs.publish == true }}
+        run: |
+          echo "Restarting the audiolinx-client process on server..."
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "source ~/.nvm/nvm.sh; cd client; npm i; pm2 restart audiolinx-client; exit"
+        shell: bash
+
+
+          

@@ -1,0 +1,23 @@
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    target-branch: "main"
+    # ignore:
+    #   - dependency-name: "*"
+    #     # Security updates are unaffected by this setting.
+    #     update-types: [ "version-update:semver-patch" ]
+    commit-message:
+      prefix: "chore(deps): "
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    target-branch: "main"
+    commit-message:
+      prefix: "ci: "
