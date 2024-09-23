@@ -24,7 +24,7 @@ import { useToast } from '@/context/ToastContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUserData } from '@/hooks/useUserData';
 import type { AlbumReturnType, LinkListReturnType, MusicDetails, SearchInputType, TrackReturnType } from '@/types/api';
-import type { SearchType } from '@/types/external.types';
+import type { SearchType } from '@/types/music';
 import { isValidInput, isValidMusicStreamingUrl } from '@/utils/url';
 
 const isProd = process.env.NODE_ENV === 'production';
