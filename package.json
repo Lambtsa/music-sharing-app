@@ -46,7 +46,7 @@
     "@stylistic/eslint-plugin-ts": "^2.6.4",
     "@svgr/webpack": "^8.1.0",
     "@testing-library/react": "^16.0.0",
-    "@testing-library/react-hooks": "^7.0.2",
+    "@testing-library/react-hooks": "^8.0.1",
     "@types/dotenv": "^8.2.0",
     "@types/node": "^20.16.5",
     "@types/react": "^18.3.3",
