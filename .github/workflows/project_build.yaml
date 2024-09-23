@@ -63,7 +63,8 @@ jobs:
   
       - name: Run pnpm build
         env: 
-          NEXT_PUBLIC_DEPLOY_STAGE: ${{ inputs.NEXT_PUBLIC_DEPLOY_STAGE }}
+          GTAG: ${{ secrets.GTAG }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         run: npm run build
         shell: bash
 
