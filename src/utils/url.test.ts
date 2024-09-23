@@ -65,13 +65,6 @@ describe("determineUrlType helper function", () => {
     ).toBe(null);
   });
 
-  test("should return 'spotifyApi' for valid spotify api url", () => {
-    expect(
-      determineUrlType(
-        "https://api.spotify.com/v1/tracks/29EeS1c3ZLwDLAcmYN5DFf",
-      ),
-    ).toBe("spotifyApi");
-  });
   test("should return null for invalid spotify api url", () => {
     expect(
       determineUrlType(

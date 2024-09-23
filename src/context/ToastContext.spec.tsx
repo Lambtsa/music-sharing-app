@@ -2,6 +2,7 @@ import { ToastProvider, useToast } from './ToastContext';
 import { type ToastProps } from '@/components/Toast';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useCallback } from 'react';
+import { LightOrDarkThemeProvider } from './ThemeContext';
 
 const ToastTestComponent = () => {
   const { addToast } = useToast();
@@ -14,34 +15,34 @@ const ToastTestComponent = () => {
   );
   return (
     <>
-      <button
-        data-testid="toast-trigger-success-btn"
-        type="button"
-        onClick={() =>
-          handleAddToast({
-            id: '1',
-            type: 'success',
-            title: 'Title success',
-            message: 'This is a success toast message',
-          })
-        }
-      >
-        Trigger
-      </button>
-      <button
-        data-testid="toast-trigger-fail-btn"
-        type="button"
-        onClick={() =>
-          handleAddToast({
-            id: '2',
-            type: 'danger',
-            title: 'Title failed',
-            message: 'This is a fail toast message',
-          })
-        }
-      >
-        Trigger
-      </button>
+        <button
+          data-testid="toast-trigger-success-btn"
+          type="button"
+          onClick={() =>
+            handleAddToast({
+              id: '1',
+              type: 'success',
+              title: 'Title success',
+              message: 'This is a success toast message',
+            })
+          }
+        >
+          Trigger
+        </button>
+        <button
+          data-testid="toast-trigger-fail-btn"
+          type="button"
+          onClick={() =>
+            handleAddToast({
+              id: '2',
+              type: 'danger',
+              title: 'Title failed',
+              message: 'This is a fail toast message',
+            })
+          }
+        >
+          Trigger
+        </button>
     </>
   );
 };
@@ -52,9 +53,11 @@ describe('Toast context', () => {
     container.setAttribute('id', 'toast-root');
     document.body.appendChild(container);
     render(
-      <ToastProvider>
-        <ToastTestComponent />
-      </ToastProvider>
+      <LightOrDarkThemeProvider>
+        <ToastProvider>
+          <ToastTestComponent />
+        </ToastProvider>
+      </LightOrDarkThemeProvider>      
     );
     const successBtn = screen.getByTestId('toast-trigger-success-btn');
     fireEvent.click(successBtn);
@@ -69,9 +72,11 @@ describe('Toast context', () => {
     container.setAttribute('id', 'toast-root');
     document.body.appendChild(container);
     render(
-      <ToastProvider>
-        <ToastTestComponent />
-      </ToastProvider>
+      <LightOrDarkThemeProvider>
+        <ToastProvider>
+          <ToastTestComponent />
+        </ToastProvider>
+      </LightOrDarkThemeProvider>   
     );
     const failBtn = screen.getByTestId('toast-trigger-fail-btn');
     fireEvent.click(failBtn);
@@ -86,9 +91,11 @@ describe('Toast context', () => {
     container.setAttribute('id', 'toast-root');
     document.body.appendChild(container);
     render(
-      <ToastProvider>
-        <ToastTestComponent />
-      </ToastProvider>
+      <LightOrDarkThemeProvider>
+        <ToastProvider>
+          <ToastTestComponent />
+        </ToastProvider>
+      </LightOrDarkThemeProvider>   
     );
     const successBtn = screen.getByTestId('toast-trigger-success-btn');
     fireEvent.click(successBtn);
@@ -108,9 +115,11 @@ describe('Toast context', () => {
     container.setAttribute('id', 'toast-root');
     document.body.appendChild(container);
     render(
-      <ToastProvider>
-        <ToastTestComponent />
-      </ToastProvider>
+      <LightOrDarkThemeProvider>
+        <ToastProvider>
+          <ToastTestComponent />
+        </ToastProvider>
+      </LightOrDarkThemeProvider>   
     );
     const successBtn = screen.getByTestId('toast-trigger-success-btn');
     fireEvent.click(successBtn);

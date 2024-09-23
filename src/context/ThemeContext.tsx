@@ -40,7 +40,7 @@ export { LightOrDarkThemeContext, LightOrDarkThemeProvider };
 export function useLightOrDarkTheme(): ThemeContextShape {
   const context = useContext(LightOrDarkThemeContext);
   if (context === undefined) {
-    throw new Error('useLightOrDarkTheme must be used within a ToastProvider');
+    throw new Error('useLightOrDarkTheme must be used within a LightOrDarkThemeProvider');
   }
   return context;
 }
