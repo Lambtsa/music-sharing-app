@@ -48,9 +48,19 @@ export const useUserData = (): UseUserDataReturnType => {
   }, []);
 
   const getIp = useCallback(async () => {
-    const response = await fetch('https://api.ipify.org?format=json	');
-    const { ip: responseIp } = await response.json();
-    setIp(responseIp);
+    try {
+      const response = await fetch('https://api.ipify.org?format=json	');
+
+      if (!response.ok) {
+        setIp('');
+        return;
+      }
+
+      const data: { ip: string } = await response.json();
+      setIp(data.ip);
+    } catch (_err) {
+      setIp('');
+    }
   }, []);
 
   useEffect(() => {

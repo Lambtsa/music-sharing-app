@@ -1,4 +1,5 @@
 import { type NextRequest } from 'next/server';
+import pino from 'pino';
 
 import { insert } from '@/core/db';
 import { BadRequestError, globalApiErrorHandler } from '@/core/errors';
@@ -34,32 +35,36 @@ export const POST = async (req: NextRequest): Promise<Response> => {
 
     await Promise.all([
       tracks.map(async (track) => {
-
-        const { data: artist } = await insert.artist({
-          name: track.artist
-        });
-
-        if (!artist?.[0]) {
-          return;
+        try {
+          const { data: artist } = await insert.artist({
+            name: track.artist
+          });
+  
+          if (!artist?.[0]) {
+            return;
+          }
+  
+          const { data: album } = await insert.album({
+            name: track.album.name,
+            artist_id: artist[0].id,
+            cover: track.album.cover
+          });
+  
+          if (!album?.[0]) {
+            return;
+          }
+  
+          await insert.track({
+            title: track.track.name,
+            artist_id: artist[0].id,
+            album_id: album[0].id,
+            duration: track.track.duration,
+            track_number: track.track.track_number
+          });
+        } catch (err) {
+          pino().error(err);
         }
 
-        const { data: album } = await insert.album({
-          name: track.album.name,
-          artist_id: artist[0].id,
-          cover: track.album.cover
-        });
-
-        if (!album?.[0]) {
-          return;
-        }
-
-        await insert.track({
-          title: track.track.name,
-          artist_id: artist[0].id,
-          album_id: album[0].id,
-          duration: track.track.duration,
-          track_number: track.track.track_number
-        });
       }),
       insert.search({
         search: body.searchTerm,
