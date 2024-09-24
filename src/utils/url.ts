@@ -97,16 +97,13 @@ export const getTrackId = (url: string, type: MusicProviders): string | null => 
  */
 export const buildUrl = (
   pathname: string,
-  baseUrl?: string
+  baseUrl: string
 ): string => {
-  const base = baseUrl ?? process.env.BASE_URL;
-  if (!base) {
+  if (!baseUrl) {
     throw Error('Internal Server Error');
   }
 
-  console.log('base', base);
-
-  const { pathname: initialPathnames } = new URL(base);
+  const { pathname: initialPathnames } = new URL(baseUrl);
 
   return new URL(
     path.join(initialPathnames, pathname.trim()),
