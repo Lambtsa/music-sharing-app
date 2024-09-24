@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useCopyToClipboard } from 'react-use';
 import { v4 as uuid } from 'uuid';
 
 import { Icon } from '@/components/icon';
@@ -19,7 +18,6 @@ export const MusicLinks = ({
   links,
 }: MusicLinksProps): JSX.Element => {
   // TODO: deal with copy to clipboard errors
-  const [_state, copyToClipboard] = useCopyToClipboard();
   const { addToast } = useToast();
   /* ############################## */
   /* State */
@@ -72,19 +70,36 @@ export const MusicLinks = ({
       .join('\n \n');
   }, [links, selectedProviders]);
 
-  const handleCopyLink = useCallback(() => {
-    if (isCopied) {
+  const handleCopyLink = useCallback(async () => {
+    if (!navigator.share) {
+      addToast({
+        message: 'Unfortunately, your browser does not support sharing',
+        type: 'warning',
+        title: 'Cannot share',
+        id: uuid()
+      });
       return;
     }
-    copyToClipboard(createCopyString());
-    addToast({
-      message: `You have copied the link${selectedProviders.length > 1 ? 's' : ''}`,
-      type: 'success',
-      title: 'Copied',
-      id: uuid()
-    });
-    setIsCopied(!isCopied);
-  }, [addToast, copyToClipboard, createCopyString, isCopied, selectedProviders.length]);
+
+    try {
+      await navigator.share({
+        text: createCopyString().trim()
+      });
+      addToast({
+        message: `You have shared your link${selectedProviders.length > 1 ? 's' : ''}`,
+        type: 'success',
+        title: 'Copied',
+        id: uuid()
+      });
+    } catch (err) {
+      addToast({
+        message: 'There has been an error sharing the link',
+        type: 'warning',
+        title: 'Not shared',
+        id: uuid()
+      });
+    }
+  }, [addToast, createCopyString, selectedProviders.length]);
 
   const hasProviders = !!selectedProviders.length;
   return (
@@ -105,8 +120,8 @@ export const MusicLinks = ({
         disabled={!hasProviders}
         onClick={handleCopyLink}
       >
-        <Icon icon='link' color='#FFFEED' height={20} />
-        {selectedProviders.length > 1 ? 'Copy Links' : 'Copy Link'}
+        <Icon icon='share' color='#FFFEED' height={20} />
+        {selectedProviders.length > 1 ? 'Share Links' : 'Share Link'}
       </button>
     </>
   );

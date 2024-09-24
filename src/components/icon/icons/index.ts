@@ -11,6 +11,7 @@ export { MoonIcon } from './MoonIcon';
 export { MusicIcon } from './MusicIcon';
 export { PlaceholderIcon } from './PlaceholderIcon';
 export { SearchIcon } from './SearchIcon';
+export { ShareIcon } from './ShareIcon';
 export { SpotifyIcon } from './SpotifyIcon';
 export { SunIcon } from './SunIcon';
 export { TickIcon } from './TickIcon';
