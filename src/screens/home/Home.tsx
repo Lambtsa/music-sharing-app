@@ -18,16 +18,13 @@ import { MusicLinks } from '@/components/MusicLinks';
 import { Selector } from '@/components/Selector';
 import { TrackBtn } from '@/components/TrackBtn';
 import { CONTAINER } from '@/constants/layout';
-import urls from '@/constants/url';
 import { useLightOrDarkTheme } from '@/context/ThemeContext';
 import { useToast } from '@/context/ToastContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUserData } from '@/hooks/useUserData';
 import type { AlbumReturnType, LinkListReturnType, MusicDetails, SearchInputType, TrackReturnType } from '@/types/api';
 import type { SearchType } from '@/types/music';
-import { isValidInput, isValidMusicStreamingUrl } from '@/utils/url';
-
-const isProd = process.env.NODE_ENV === 'production';
+import { buildUrl, isValidInput, isValidMusicStreamingUrl } from '@/utils/url';
 
 export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
@@ -163,7 +160,7 @@ export const HomeScreen = (): JSX.Element => {
                   },
                 };
                 const response = await fetch(
-                  `${isProd ? urls.PROD : urls.DEV}/api/albums`,
+                  buildUrl('/api/albums'),
                   {
                     method: 'POST',
                     headers: {
@@ -200,7 +197,7 @@ export const HomeScreen = (): JSX.Element => {
                   },
                 };
                 const response = await fetch(
-                  `${isProd ? urls.PROD : urls.DEV}/api/tracks`,
+                  buildUrl('/api/tracks'),
                   {
                     method: 'POST',
                     headers: {
@@ -237,7 +234,7 @@ export const HomeScreen = (): JSX.Element => {
                   },
                 };
                 const response = await fetch(
-                  `${isProd ? urls.PROD : urls.DEV}/api/links`,
+                  buildUrl('/api/links'),
                   {
                     method: 'POST',
                     headers: {
@@ -298,7 +295,7 @@ export const HomeScreen = (): JSX.Element => {
         };
 
         const response = await fetch(
-          `${isProd ? urls.PROD : urls.DEV}/api/links`,
+          buildUrl('/api/links'),
           {
             method: 'POST',
             headers: {

@@ -1,14 +1,9 @@
 import type { Metadata } from 'next';
 
-import URL from '@/constants/url';
 import { routes } from '@/utils/routes';
 
+import { buildUrl } from './url';
 
-const buildUrl = (path: string): string => {
-  return process.env.NODE_ENV === 'production'
-    ? `${URL.PROD}${path}`
-    : `${URL.DEV}${path}`;
-};
 export interface MetaData {
   title: string;
   description: string;
