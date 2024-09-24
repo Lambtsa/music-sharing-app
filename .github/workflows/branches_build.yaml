@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+      - develop
+      - stable
   pull_request:
     types: [opened, synchronize, reopened, edited]
 
@@ -13,8 +15,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  publish_to_qual:
+    if: ${{ github.ref_name == 'develop' }}
+    name: Publish to Qual
+    uses: ./.github/workflows/project_build.yaml
+    with:
+      deploy-env: qual
+      publish: true
+    secrets: inherit
+
+  publish_to_stable:
+    if: ${{ github.ref_name == 'stable' }}
+    name: Publish to UAT
+    uses: ./.github/workflows/project_build.yaml
+    with:
+      deploy-env: stable
+      publish: true
+    secrets: inherit
+  
   build:
     name: Build - Test
+    if: ${{ github.ref_name == 'main' }}
     uses: ./.github/workflows/project_build.yaml
     with:
       deploy-env: prod

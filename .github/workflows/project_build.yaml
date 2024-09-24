@@ -78,14 +78,14 @@ jobs:
           chmod 700 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_IP }} >> ~/.ssh/known_hosts
           echo "Pushing the build app to the remote server"
-          scp -o StrictHostKeyChecking=yes -r ./.next/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}:/home/${{ secrets.SSH_USER }}/client/.next
+          scp -o StrictHostKeyChecking=yes -r ./.next/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}:/home/${{ secrets.SSH_USER }}/${{ inputs.deploy-env }}/.next
         shell: bash
 
-      - name: Restart the audiolinx-client process on server
+      - name: Restart the audiolinx-${{ inputs.deploy-env }} process on server
         if: ${{ inputs.publish == true }}
         run: |
-          echo "Restarting the audiolinx-client process on server..."
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "source ~/.nvm/nvm.sh; cd client; npm i; pm2 restart audiolinx-client; exit"
+          echo "Restarting the audiolinx-${{ inputs.deploy-env }} process on server..."
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "source ~/.nvm/nvm.sh; cd ${{ inputs.deploy-env }}; npm i; pm2 restart audiolinx-${{ inputs.deploy-env }}; exit"
         shell: bash
 
 
