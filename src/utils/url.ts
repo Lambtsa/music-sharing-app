@@ -107,6 +107,6 @@ export const buildUrl = (
 
   return new URL(
     path.join(initialPathnames, pathname.trim()),
-    baseUrl
+    base
   ).toString();
 };
