@@ -102,7 +102,6 @@ export const buildUrl = (
   if (!baseUrl) {
     throw Error('Internal Server Error');
   }
-  console.log({ pathname, baseUrl });
   const { pathname: initialPathnames } = new URL(baseUrl);
 
   return new URL(
