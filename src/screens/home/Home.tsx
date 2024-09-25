@@ -160,7 +160,7 @@ export const HomeScreen = (): JSX.Element => {
                   },
                 };
                 const response = await fetch(
-                  buildUrl('/api/albums', process.env.BASE_URL),
+                  buildUrl('/api/albums', process.env.NEXT_PUBLIC_BASE_URL),
                   {
                     method: 'POST',
                     headers: {
@@ -197,7 +197,7 @@ export const HomeScreen = (): JSX.Element => {
                   },
                 };
                 const response = await fetch(
-                  buildUrl('/api/tracks', process.env.BASE_URL),
+                  buildUrl('/api/tracks', process.env.NEXT_PUBLIC_BASE_URL),
                   {
                     method: 'POST',
                     headers: {
@@ -234,7 +234,7 @@ export const HomeScreen = (): JSX.Element => {
                   },
                 };
                 const response = await fetch(
-                  buildUrl('/api/links', process.env.BASE_URL),
+                  buildUrl('/api/links', process.env.NEXT_PUBLIC_BASE_URL),
                   {
                     method: 'POST',
                     headers: {
@@ -295,7 +295,7 @@ export const HomeScreen = (): JSX.Element => {
         };
 
         const response = await fetch(
-          buildUrl('/api/links', process.env.BASE_URL),
+          buildUrl('/api/links', process.env.NEXT_PUBLIC_BASE_URL),
           {
             method: 'POST',
             headers: {

@@ -3,7 +3,7 @@ declare namespace NodeJS {
    * Add custom environment variables
    */
   interface ProcessEnv {
-    readonly BASE_URL: string;
+    readonly NEXT_PUBLIC_BASE_URL: string;
     readonly GTAG: string;
 
     readonly SPOTIFY_CLIENT_ID: string;
