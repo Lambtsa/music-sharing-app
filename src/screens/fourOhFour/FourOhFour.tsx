@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
+import { type ReactElement, useCallback } from 'react';
 
 import { Button } from '@/components/Button';
 import { Container } from '@/components/Container';
@@ -12,7 +12,7 @@ import { useLightOrDarkTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { routes } from '@/utils/routes';
 
-export const FourOhFour = (): JSX.Element => {
+export const FourOhFour = (): ReactElement => {
   const { isLight } = useLightOrDarkTheme();
   const { t } = useTranslation();
   const router = useRouter();

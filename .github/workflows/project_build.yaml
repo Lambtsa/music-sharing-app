@@ -69,7 +69,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ENVIRONMENT: ${{ inputs.deploy-env }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          BASE_URL: ${{ secrets.BASE_URL }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
         run: npm run build
         shell: bash
 
