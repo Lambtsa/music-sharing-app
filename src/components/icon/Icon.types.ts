@@ -27,6 +27,7 @@ export type IconType =
   | 'music'
   | 'placeholder'
   | 'search'
+  | 'share'
   | 'spotify'
   | 'sun'
   | 'tick'
