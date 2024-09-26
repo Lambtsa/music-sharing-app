@@ -98,7 +98,7 @@ export const HomeScreen = (): JSX.Element => {
         message: createErrorMessage('url'),
       }),
   }).refine((schema) => {
-    return !!schema.track;
+    return !(!schema.track && !schema.artist && !schema.url);
   }, {
     message: t({ id: 'error.message.requiredTitle' }),
     path: ['track']
