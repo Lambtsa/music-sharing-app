@@ -88,7 +88,7 @@ jobs:
         if: ${{ inputs.publish == true }}
         run: |
           echo "Restarting the audiolinx-${{ inputs.deploy-env }} process on server..."
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "source ~/.nvm/nvm.sh; cd ${{ inputs.deploy-env }}; npm i; pm2 restart audiolinx-${{ inputs.deploy-env }}; exit"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "source ~/.nvm/nvm.sh; cd ${{ inputs.deploy-env }}; git pull; npm i; pm2 restart audiolinx-${{ inputs.deploy-env }}; exit"
         shell: bash
 
 
