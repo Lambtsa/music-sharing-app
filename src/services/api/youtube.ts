@@ -14,15 +14,13 @@ export class YoutubeWebApi {
   private buildYoutubeApiUrl({
     artist,
     track,
-  }: Pick<MusicDetails, 'artist' | 'track'>): URL {
+  }: Pick<MusicDetails, 'artist' | 'track'>): string {
     const url = new URL(this.#searchUrl);
     url.searchParams.append('key', process.env.YOUTUBE_API_KEY);
-    url.searchParams.append('part', 'snippet');
     url.searchParams.append('type', 'video');
     url.searchParams.append('videoCategory', '10');
-    url.searchParams.append('order', 'rating');
     url.searchParams.append('q', `${artist}|${track}`);
-    return url;
+    return url.toString();
   }
 
   /**
@@ -30,7 +28,7 @@ export class YoutubeWebApi {
    * No testing whether id is actually valid
    * @example https://www.youtube.com/watch?v=8rNuzOUjtE8
    */
-  private buildYoutubeVideoUrl(videoId: string) {
+  private buildYoutubeVideoUrl(videoId: string): string {
     const youtubeUrl = new URL('https://www.youtube.com/watch');
     youtubeUrl.searchParams.append('v', videoId);
     return youtubeUrl.toString();
@@ -44,7 +42,7 @@ export class YoutubeWebApi {
   async searchYoutube(input: MusicDetails): Promise<string | null> {
     const youtubeUri = this.buildYoutubeApiUrl(input);
 
-    const response = await fetch(youtubeUri.toString(), {
+    const response = await fetch(youtubeUri, {
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },

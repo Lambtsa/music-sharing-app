@@ -11,12 +11,13 @@ import type { MusicProviders, SearchType } from '@/types/music';
  * Will determine whether the url is one of the accepted types
  * @returns boolean
  */
-export const isValidMusicStreamingUrl = (url: string): boolean => {
+export const isValidMusicStreamingUrl = (url: string | undefined): boolean => {
   /* If one of these is a correct url then it will return true otherwise false */
   return (
-    spotifyUrlRegex.test(url) ||
+    !!url &&
+    (spotifyUrlRegex.test(url) ||
     deezerUrlRegex.test(url) ||
-    youtubeUrlRegex.test(url)
+    youtubeUrlRegex.test(url))
   );
 };
 
@@ -29,14 +30,18 @@ export const isValidMusicStreamingUrl = (url: string): boolean => {
  * isValidInput("", "artist") // false
  */
 export const isValidInput = (
-  input: string,
+  input: string | undefined,
   selected: SearchType,
 ): boolean => {
+  if (!input) {
+    return true;
+  }
+  /* Optional */
   switch (selected) {
     case 'artist':
     case 'track': {
       // TODO: valid string to avoid urls, js,...
-      return input.length >= 1;
+      return true;
     }
     case 'url': {
       /* If one of these is a correct url then it will return true otherwise false */
