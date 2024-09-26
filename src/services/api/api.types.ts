@@ -7,8 +7,8 @@ export interface AccessTokenBody {
 export type BuildSpotifySearchApiUrlInput = {
   searchBy: 'track' | 'artist' | 'album';
   with: {
-    artist?: string;
-    track?: string;
-    album?: string;
+    artist: string | null;
+    track: string | null;
+    album: string | null;
   };
 };

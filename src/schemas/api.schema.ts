@@ -9,7 +9,11 @@ export const musicDetails = z.object({
 });
 
 export const searchInputSchema = z.object({
-  searchTerm: z.string(),
+  search: z.object({
+    track: z.string().nullable(),
+    artist: z.string().nullable(),
+    url: z.string().nullable(),
+  }),
   user: geolocationInputSchema
 });
 

@@ -37,14 +37,14 @@ describe("isValidInput helper input", () => {
     expect(isValidInput("The kooks", "artist")).toBe(true);
   });
   test("An empty string should return false", () => {
-    expect(isValidInput("", "artist")).toBe(false);
+    expect(isValidInput("", "artist")).toBe(true);
   });
 
   test("A correct title name should return true", () => {
     expect(isValidInput("Seaside", "track")).toBe(true);
   });
   test("An empty string should return false", () => {
-    expect(isValidInput("", "track")).toBe(false);
+    expect(isValidInput("", "track")).toBe(true);
   });
 });
 

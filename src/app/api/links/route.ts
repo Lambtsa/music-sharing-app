@@ -19,7 +19,8 @@ export const POST = async (req: NextRequest): Promise<Response> => {
 
     const linkSafeParse = searchInputSchema.safeParse(body);
 
-    if (!linkSafeParse.success) {
+
+    if (!linkSafeParse.success || !body.search.url) {
       throw new BadRequestError({
         message: 'Please provide valid input',
         statusCode: 400,
@@ -28,7 +29,7 @@ export const POST = async (req: NextRequest): Promise<Response> => {
       });
     }
 
-    const urlType = determineUrlType(body.searchTerm);
+    const urlType = determineUrlType(body.search.url);
 
     if (urlType === 'youtube') {
       throw new BadRequestError({
@@ -47,7 +48,7 @@ export const POST = async (req: NextRequest): Promise<Response> => {
         userAgentInfo,
       });
     }
-    const trackId = getTrackId(body.searchTerm, urlType);
+    const trackId = getTrackId(body.search.url, urlType);
 
     if (!trackId) {
       return new Response(JSON.stringify([]), {
@@ -94,7 +95,7 @@ export const POST = async (req: NextRequest): Promise<Response> => {
     };
 
     await insert.search({
-      search: body.searchTerm,
+      search: body.search.url,
       search_type: 'url',
       ip: body.user.ip ?? null,
       city: body.user.geolocation?.city ?? null,

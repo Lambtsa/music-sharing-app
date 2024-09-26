@@ -17,7 +17,7 @@ export const POST = async (req: NextRequest): Promise<Response> => {
 
     const trackSafeParse = searchInputSchema.safeParse(body);
 
-    if (!trackSafeParse.success) {
+    if (!trackSafeParse.success || !body.search.track) {
       throw new BadRequestError({
         message: 'Please provide valid input',
         statusCode: 400,
@@ -31,7 +31,7 @@ export const POST = async (req: NextRequest): Promise<Response> => {
     /* ############################## */
     const spotifyApi = new SpotifyWebApi();
 
-    const tracks = await spotifyApi.getTrackList(body.searchTerm);
+    const tracks = await spotifyApi.getTrackList(body.search.track, body.search.artist);
 
     await Promise.all([
       tracks.map(async (track) => {
@@ -67,7 +67,7 @@ export const POST = async (req: NextRequest): Promise<Response> => {
 
       }),
       insert.search({
-        search: body.searchTerm,
+        search: body.search.track,
         search_type: 'track',
         ip: body.user.ip ?? null,
         city: body.user.geolocation?.city ?? null,

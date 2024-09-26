@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
 import z, { type TypeOf} from 'zod';
@@ -15,7 +15,6 @@ import { InputText } from '@/components/Inputs/InputText';
 import { Loader } from '@/components/Loader';
 import { Main } from '@/components/Main';
 import { MusicLinks } from '@/components/MusicLinks';
-import { Selector } from '@/components/Selector';
 import { TrackBtn } from '@/components/TrackBtn';
 import { CONTAINER } from '@/constants/layout';
 import { useLightOrDarkTheme } from '@/context/ThemeContext';
@@ -30,6 +29,7 @@ export const HomeScreen = (): JSX.Element => {
   const { t } = useTranslation();
   const { ip, geolocation } = useUserData();
   const { addToast } = useToast();
+  const itemsRef = useRef<HTMLDivElement>(null);
 
   /* ################################################## */
   /* State */
@@ -39,7 +39,7 @@ export const HomeScreen = (): JSX.Element => {
   const [tracks, setTracks] = useState<TrackReturnType[]>([]);
   const [albums, setAlbums] = useState<AlbumReturnType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selected, setSelected] = useState<SearchType>('artist');
+  const [selected, setSelected] = useState<SearchType>('url');
   const [details, setDetails] = useState<MusicDetails | undefined>(
     undefined,
   );
@@ -76,21 +76,41 @@ export const HomeScreen = (): JSX.Element => {
   /* Forms */
   /* ################################################## */
   const validationSchema = z.object({
-    search: z
-      .string({
-        required_error: t({ id: 'error.message.requiredArtist' }),
-      })
+    track: z
+      .string()
       .trim()
-      .refine((val) => isValidInput(val, selected), {
-        message: createErrorMessage(selected),
+      .optional()
+      .refine((val) => isValidInput(val, 'track'), {
+        message: createErrorMessage('track'),
       }),
+    artist: z
+      .string()
+      .trim()
+      .optional()
+      .refine((val) => isValidInput(val, 'artist'), {
+        message: createErrorMessage('artist'),
+      }),
+    url: z
+      .string()
+      .trim()
+      .optional()
+      .refine((val) => isValidInput(val, 'url'), {
+        message: createErrorMessage('url'),
+      }),
+  }).refine((schema) => {
+    return !!schema.track;
+  }, {
+    message: t({ id: 'error.message.requiredTitle' }),
+    path: ['track']
   });
 
   type FormFields = TypeOf<typeof validationSchema>;
 
   const defaultValues: FormFields = useMemo(
     () => ({
-      search: '',
+      track: '',
+      artist: '',
+      url: '',
     }),
     [],
   );
@@ -107,7 +127,9 @@ export const HomeScreen = (): JSX.Element => {
     criteriaMode: 'all',
     resolver: zodResolver(validationSchema),
   });
-  const url = watch('search');
+  const url = watch('url');
+  const artist = watch('artist');
+  const track = watch('track');
 
   const formErrors = useMemo(() => {
     return formState.errors;
@@ -116,6 +138,20 @@ export const HomeScreen = (): JSX.Element => {
   useEffect(() => {
     reset(defaultValues, { keepDefaultValues: true });
   }, [reset, defaultValues]);
+
+  useEffect(() => {
+    if ((tracks.length || albums.length || links) && itemsRef.current) {
+      itemsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [albums.length, links, tracks.length]);
+
+  useEffect(() => {
+    if (artist && !track && !url) {
+      setSelected('artist');
+    } else if (track && !url) {
+      setSelected('track');
+    }
+  }, [artist, track, url]);
 
   useEffect(() => {
     /* Will automatically change the selected input to url if a valid url is passed into the field */
@@ -141,24 +177,33 @@ export const HomeScreen = (): JSX.Element => {
       }
 
       /* Reset states */
-      setIsLoading(true);
       setLinks(undefined);
       setTracks([]);
       setAlbums([]);
 
       handleSubmit(
         async (formFields) => {
+          if (!formFields.track && !formFields.artist && !formFields.url) {
+            // TODO: add toast
+            return;
+          }
+
+          setIsLoading(true);
           try {
+            const body: SearchInputType = {
+              search: {
+                artist: formFields.artist ?? null,
+                track: formFields.track ?? null,
+                url: formFields.url ?? null,
+              },
+              user: {
+                ip,
+                geolocation,
+              },
+            };
             switch (selected) {
               /* Artist will return a list of tracks sorted by album. User can then select a track */
               case 'artist': {
-                const body: SearchInputType = {
-                  searchTerm: formFields.search,
-                  user: {
-                    ip,
-                    geolocation,
-                  },
-                };
                 const response = await fetch(
                   buildUrl('/api/albums', process.env.NEXT_PUBLIC_BASE_URL),
                   {
@@ -189,13 +234,6 @@ export const HomeScreen = (): JSX.Element => {
               }
               /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
               case 'track': {
-                const body: SearchInputType = {
-                  searchTerm: formFields.search,
-                  user: {
-                    ip,
-                    geolocation,
-                  },
-                };
                 const response = await fetch(
                   buildUrl('/api/tracks', process.env.NEXT_PUBLIC_BASE_URL),
                   {
@@ -226,13 +264,6 @@ export const HomeScreen = (): JSX.Element => {
               }
               /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
               case 'url': {
-                const body: SearchInputType = {
-                  searchTerm: formFields.search,
-                  user: {
-                    ip,
-                    geolocation,
-                  },
-                };
                 const response = await fetch(
                   buildUrl('/api/links', process.env.NEXT_PUBLIC_BASE_URL),
                   {
@@ -287,7 +318,11 @@ export const HomeScreen = (): JSX.Element => {
 
       try {
         const body: SearchInputType = {
-          searchTerm: url,
+          search: {
+            artist: details?.artist ?? null,
+            track: details?.track ?? null,
+            url,
+          },
           user: {
             ip,
             geolocation,
@@ -332,7 +367,7 @@ export const HomeScreen = (): JSX.Element => {
         setIsLoading(false);
       }
     },
-    [addToast, defaultValues, geolocation, ip, isLoading, reset, scrollToTop],
+    [addToast, defaultValues, details?.artist, details?.track, geolocation, ip, isLoading, reset, scrollToTop],
   );
 
   const hasTracks = !!tracks.length;
@@ -355,24 +390,37 @@ export const HomeScreen = (): JSX.Element => {
             className={`flex flex-col justify-center w-full max-w-[${CONTAINER.MOBILE}px] gap-4`} 
             onSubmit={onSubmit}
           >
-            <InputText
-              isLight={isLight}
-              type="text"
-              control={control}
-              name="search"
-              placeholder={t({ id: 'label.search' })}
-              error={formErrors.search}
-            />
-            <Selector
-              isLight={isLight}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            <div className='flex flex-col justify-center w-full gap-1'>
+              <InputText
+                isLight={isLight}
+                type="text"
+                control={control}
+                name="track"
+                placeholder={t({ id: 'label.track' })}
+                error={formErrors.track}
+              />
+              <InputText
+                isLight={isLight}
+                type="text"
+                control={control}
+                name="artist"
+                placeholder={t({ id: 'label.artist' })}
+                error={formErrors.artist}
+              />
+              <InputText
+                isLight={isLight}
+                type="text"
+                control={control}
+                name="url"
+                placeholder={t({ id: 'label.url' })}
+                error={formErrors.url}
+              />
+            </div>
             <Button type="submit">
               {t({ id: 'home.cta' })}
             </Button>
           </form>
-          <div className='flex flex-col gap-2 w-full mx-6 my-0 pb-[40px]'>
+          <div ref={itemsRef} className='flex flex-col gap-2 w-full mx-6 my-0 pb-[40px]'>
             {isLoading && <Loader isLight={isLight} />}
             {!isLoading && links && (
               <>

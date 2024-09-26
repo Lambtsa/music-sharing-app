@@ -37,6 +37,7 @@ export class SpotifyWebApi {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
       body: 'grant_type=client_credentials',
+      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {
@@ -91,12 +92,12 @@ export class SpotifyWebApi {
    * @returns spotify uri and input
    * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/search
    */
-  async getTrackList(track: string): Promise<TrackReturnType[]> {
+  async getTrackList(track: string, artist: string | null): Promise<TrackReturnType[]> {
     const accessToken = await this.getAccessToken();
 
     const spotifyUrl = this.buildSpotifySearchApiUrl({
       searchBy: 'track',
-      with: { track },
+      with: { track, artist, album: null },
     });
 
     const response = await fetch(spotifyUrl, {
@@ -135,7 +136,7 @@ export class SpotifyWebApi {
 
     const spotifyUrl = this.buildSpotifySearchApiUrl({
       searchBy: 'album',
-      with: { artist },
+      with: { artist, track: null, album: null },
     });
 
     const response = await fetch(spotifyUrl.toString(), {
