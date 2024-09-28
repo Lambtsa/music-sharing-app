@@ -48,17 +48,22 @@ jobs:
         uses: actions/setup-node@v4.0.2
         with:
           node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4.0.0
+        with:
+          version: 9
     
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
         shell: bash
   
       - name: Run Unit Tests
-        run: npm run test
+        run: pnpm test
         shell: bash
   
       - name: Run linter
-        run: npm run lint
+        run: pnpm lint
         shell: bash
   
       - name: Run build
@@ -70,7 +75,7 @@ jobs:
           SENTRY_ENVIRONMENT: ${{ inputs.deploy-env }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
-        run: npm run build
+        run: pnpm build
         shell: bash
 
       - name: Deploy to VPS
@@ -88,7 +93,7 @@ jobs:
         if: ${{ inputs.publish == true }}
         run: |
           echo "Restarting the audiolinx-${{ inputs.deploy-env }} process on server..."
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "source ~/.nvm/nvm.sh; cd ${{ inputs.deploy-env }}; git pull; npm i; pm2 restart audiolinx-${{ inputs.deploy-env }}; exit"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "source ~/.nvm/nvm.sh; cd ${{ inputs.deploy-env }}; git pull; pnpm i; pm2 restart audiolinx-${{ inputs.deploy-env }}; exit"
         shell: bash
 
 
