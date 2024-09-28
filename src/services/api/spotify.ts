@@ -37,7 +37,7 @@ export class SpotifyWebApi {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
       body: 'grant_type=client_credentials',
-      next: { revalidate: 3600 }
+      next: { revalidate: 3000 }
     });
 
     if (!response.ok) {
