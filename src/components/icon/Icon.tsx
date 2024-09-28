@@ -63,7 +63,7 @@ export const Icon = ({
     return icons[icon];
   }, [icon]);
 
-  const { 'data-testid': testid, ...rest } = props;
+  const { ...rest } = props;
 
   const buttonClassName = useMemo((): string => {
     let btnClass = `${className ?? ''} p-1.5`;
@@ -82,9 +82,9 @@ export const Icon = ({
   const hasOnClick = useMemo(() => !!onClick, [onClick]);
 
   return (
-    <div className="flex">
+    <>
       {hasOnClick && (
-        <button data-testid={testid} type="button" disabled={disabled} className={buttonClassName} onClick={onClick}>
+        <button type="button" disabled={disabled} className={buttonClassName} onClick={onClick}>
           <IconComponent
             id={id}
             rotate={rotate}
@@ -105,10 +105,9 @@ export const Icon = ({
           width={width}
           className={className}
           opacity={disabled ? 0.6 : 1}
-          data-testid={testid}
           {...rest}
         />
       )}
-    </div>
+    </>
   );
 };

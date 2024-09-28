@@ -1,14 +1,22 @@
+import { useMemo } from 'react';
+
 import { Icon } from '@/components/icon';
 
+import type { IconProps } from '../icon/Icon.types';
 
-interface LogoProps {
+
+interface LogoProps extends Omit<IconProps, 'children'> {
   isLight: boolean;
 }
 
-export const Logo = ({ isLight }: LogoProps): JSX.Element => {
-  return (
-    <div className='flex justify-center items-center absolute left-4 top-0'>
-      {isLight ? <Icon icon='dark' width={60} height={60} /> : <Icon icon='light' width={60} height={60} />}
-    </div>
-  );
+export const Logo = (props: LogoProps): JSX.Element => {
+
+  const { isLight, ...rest } = useMemo(() => props, [props]);
+
+  if (isLight) { 
+    return (
+      <Icon {...rest} icon='dark' width={60} height={60} />
+    );
+  }
+  return <Icon {...rest} icon='light' width={60} height={60} />;
 };

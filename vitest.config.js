@@ -22,6 +22,7 @@ export default defineConfig({
       '**/.next/**',
       '**/coverage/**',
       './src/mock/**',
+      '**/playwright/**',
     ],
     globals: true,
     setupFiles: './setupTest.ts',

@@ -1,0 +1,76 @@
+name: e2e Tests
+on:
+  workflow_call:
+    inputs:
+      timeout-minutes:
+        required: false
+        type: number
+        default: 60
+      deploy-env:
+        required: true
+        type: string
+        default: qual
+
+jobs:
+  e2e_tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.deploy-env }}
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+      checks: write
+      deployments: write
+      issues: write
+      packages: write
+      pull-requests: write
+      repository-projects: write
+      security-events: write
+      statuses: write
+
+    steps:
+      ##############################
+      # E2E Tests
+      ##############################
+      # Clean worker
+      - name: pre/post clean
+        id: clean
+        uses: dktunited/.github/actions/cleaner@main
+
+      # Get access to github repository
+      - uses: actions/checkout@v4
+        id: checkout
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.0.3
+        with:
+          node-version: 20
+    
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4.0.0
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install @playwright/test
+        shell: bash
+    
+      - name: Install Playwright dependencies
+        run: pnpm playwright install --with-deps
+        shell: bash
+
+      - name: Run Playwright tests
+        run: pnpm playwright test
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+        shell: bash
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

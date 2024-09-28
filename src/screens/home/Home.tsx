@@ -379,19 +379,21 @@ export const HomeScreen = (): JSX.Element => {
         <Container size="mobile">
           <Header />
           <div className='flex flex-col justify-center gap-4 w-full mb-4'>
-            <h1 className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} font-bold text-center text-5xl leading-[48px]`}>
+            <h1 data-testid='home-title' className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} font-bold text-center text-5xl leading-[48px]`}>
               {t({ id: 'home.title' })}
             </h1>
-            <p className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-center text-base leading-[20px]`}>
+            <p data-testid='home-subtitle' className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-center text-base leading-[20px]`}>
               {t({ id: 'home.subtitle' })}
             </p>
           </div>
-          <form 
+          <form
+            data-testid='home-form' 
             className={`flex flex-col justify-center w-full max-w-[${CONTAINER.MOBILE}px] gap-4`} 
             onSubmit={onSubmit}
           >
             <div className='flex flex-col justify-center w-full gap-1'>
               <InputText
+                data-testid='home-input-track'
                 isLight={isLight}
                 type="text"
                 control={control}
@@ -400,6 +402,7 @@ export const HomeScreen = (): JSX.Element => {
                 error={formErrors.track}
               />
               <InputText
+                data-testid='home-input-artist'
                 isLight={isLight}
                 type="text"
                 control={control}
@@ -408,6 +411,7 @@ export const HomeScreen = (): JSX.Element => {
                 error={formErrors.artist}
               />
               <InputText
+                data-testid='home-input-url'
                 isLight={isLight}
                 type="text"
                 control={control}
@@ -416,7 +420,7 @@ export const HomeScreen = (): JSX.Element => {
                 error={formErrors.url}
               />
             </div>
-            <Button type="submit">
+            <Button data-testid='home-form-submit-button' type="submit">
               {t({ id: 'home.cta' })}
             </Button>
           </form>
