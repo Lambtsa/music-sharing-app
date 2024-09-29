@@ -20,9 +20,13 @@ export const Header = (): JSX.Element => {
   }, [router]);
 
   return (
-    <div>
-      <button type='button' onClick={handleOnClick}>
-        <Logo isLight={isLight} />
+    <div data-testid='header--wrapper-div' className='flex justify-between items-center fixed top-0 left-0 w-full px-4'>
+      <button 
+        data-testid='header-logo-button'
+        type='button' 
+        onClick={handleOnClick}
+      >
+        <Logo data-testid='header-logo-svg' isLight={isLight} />
       </button>
       <Toggle />
     </div>

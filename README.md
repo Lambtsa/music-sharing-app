@@ -1,6 +1,14 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-<!-- [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dktunited_smart-supply-front&metric=alert_status&token=26834b3fa98e4c60dde1e1105d23f5da9bcd75ab)](https://sonarcloud.io/summary/new_code?id=dktunited_smart-supply-front) -->
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Lambtsa_music-sharing-app&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Lambtsa_music-sharing-app)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Lambtsa_music-sharing-app&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Lambtsa_music-sharing-app)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Lambtsa_music-sharing-app&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Lambtsa_music-sharing-app)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Lambtsa_music-sharing-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Lambtsa_music-sharing-app)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Lambtsa_music-sharing-app&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Lambtsa_music-sharing-app)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Lambtsa_music-sharing-app&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Lambtsa_music-sharing-app)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Lambtsa_music-sharing-app&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Lambtsa_music-sharing-app)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Lambtsa_music-sharing-app&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Lambtsa_music-sharing-app)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Lambtsa_music-sharing-app&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Lambtsa_music-sharing-app)
 
 ## Description
 For more information about technical topics, go to check the docs/ folder in the repos.

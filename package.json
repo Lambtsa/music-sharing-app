@@ -1,9 +1,9 @@
 {
   "name": "music-sharing-app",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -13,6 +13,7 @@
     "test:fast": "vitest --no-watch",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
     "remote:restart": "bash ./deploy/restart.sh",
     "remote:destroy": "bash ./deploy/delete.sh",
     "remote:start": "bash ./deploy/start.sh",
@@ -41,7 +42,7 @@
     "@commitlint/config-conventional": "^19.2.2",
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.7.0",
-    "@playwright/test": "^1.47.0",
+    "@playwright/test": "^1.47.2",
     "@stylistic/eslint-plugin-js": "^2.7.2",
     "@stylistic/eslint-plugin-ts": "^2.6.4",
     "@svgr/webpack": "^8.1.0",

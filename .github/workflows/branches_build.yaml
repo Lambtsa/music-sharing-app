@@ -22,6 +22,15 @@ jobs:
       deploy-env: stable
       publish: true
     secrets: inherit
+
+  tests_in_stable:
+    if: ${{ github.ref_name == 'stable' }}
+    needs: publish_to_stable
+    name: Tests in stable
+    uses: ./.github/workflows/playwright.yaml
+    with:
+      deploy-env: stable
+    secrets: inherit
   
   build:
     name: Build - Test

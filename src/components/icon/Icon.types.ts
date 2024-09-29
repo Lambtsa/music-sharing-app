@@ -11,7 +11,6 @@ export interface IconProps extends SVGProps<SVGSVGElement> {
   viewBox?: string;
   xmlns?: string;
   fill?: string;
-  'data-testid'?: string;
   children: ReactNode;
 }
 export type IconType =
