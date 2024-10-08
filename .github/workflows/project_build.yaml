@@ -78,6 +78,12 @@ jobs:
         run: pnpm build
         shell: bash
 
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
       - name: Deploy to VPS
         if: ${{ inputs.publish == true }}
         run: |

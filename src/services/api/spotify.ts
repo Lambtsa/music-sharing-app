@@ -1,5 +1,6 @@
 import { GatewayError } from '@/core/errors';
-import type { AlbumReturnType, MusicDetails, SpotifyAlbumListApiResponseType, SpotifyTrackApiResponseType, SpotifyTrackListApiResponseType, TrackReturnType } from '@/types/api';
+import { mockAlbums } from '@/mocks/bff/album';
+import type { AlbumReturnType, MusicDetails, SpotifyAlbumListApiResponseType, SpotifyArtistListApiResponseType, SpotifyTrackApiResponseType, SpotifyTrackListApiResponseType, TrackReturnType } from '@/types/api';
 import { albumMapper } from '@/utils/mappers/albumMapper';
 import { trackMapper } from '@/utils/mappers/trackMapper';
 
@@ -58,11 +59,11 @@ export class SpotifyWebApi {
    * @returns Spotify API URL
    */
   private buildSpotifySearchApiUrl({
-    searchBy,
+    searchFor,
     with: { artist, track, album },
   }: BuildSpotifySearchApiUrlInput): string {
     const url = new URL(this.#searchUrl);
-    url.searchParams.append('type', searchBy);
+    url.searchParams.append('type', searchFor);
     const search: string[] = [];
 
     if (artist) {
@@ -96,7 +97,7 @@ export class SpotifyWebApi {
     const accessToken = await this.getAccessToken();
 
     const spotifyUrl = this.buildSpotifySearchApiUrl({
-      searchBy: 'track',
+      searchFor: 'track',
       with: { track, artist, album: null },
     });
 
@@ -135,7 +136,7 @@ export class SpotifyWebApi {
     const accessToken = await this.getAccessToken();
 
     const spotifyUrl = this.buildSpotifySearchApiUrl({
-      searchBy: 'album',
+      searchFor: 'album',
       with: { artist, track: null, album: null },
     });
 
@@ -189,6 +190,70 @@ export class SpotifyWebApi {
 
 
   /**
+   * Given an artist or a track this helper will return a list of the songs
+   * @returns spotify uri and input
+   * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/search
+   */
+  async getArtistList(
+    artist: string,
+  ): Promise<AlbumReturnType[]> {
+    const accessToken = await this.getAccessToken();
+
+    const spotifyUrl = this.buildSpotifySearchApiUrl({
+      searchFor: 'artist',
+      with: { artist, track: null, album: null },
+    });
+
+    const response = await fetch(spotifyUrl.toString(), {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new GatewayError({
+        message: response.statusText,
+        statusCode: response.status,
+        type: 'spotify',
+      });
+    }
+
+    const { artists: artistData } = (await response.json()) as SpotifyArtistListApiResponseType;
+
+    if (!artistData.items.length) {
+      return [];
+    }
+
+    // const albums = await Promise.all(
+    //   albumData.items.map(async (album) => {
+    //     const spotifyUrl = this.buildSpotifyAlbumTracksListApiUrl(album.id);
+
+    //     const response = await fetch(spotifyUrl, {
+    //       headers: {
+    //         Authorization: `Bearer ${accessToken}`,
+    //         'Content-Type': 'application/json',
+    //       },
+    //     });
+
+    //     if (!response.ok) {
+    //       throw new GatewayError({
+    //         message: response.statusText,
+    //         statusCode: response.status,
+    //         type: 'spotify',
+    //       });
+    //     }
+    //     const trackdata = (await response.json()) as SpotifyTrackListApiResponseType['tracks'];
+
+    //     return albumMapper(album, trackdata);
+    //   }),
+    // );
+
+    return mockAlbums();
+  }
+
+
+  /**
    * Helper function to get the song details from spotify API given a track id
    * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/get-track
    */
@@ -233,7 +298,7 @@ export class SpotifyWebApi {
 
     /* Will return TrackResponse response */
     const spotifyUrl = this.buildSpotifySearchApiUrl({
-      searchBy: 'track',
+      searchFor: 'track',
       with: input
     });
 

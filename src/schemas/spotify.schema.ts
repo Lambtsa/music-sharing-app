@@ -16,6 +16,41 @@ export const spotifySimplifiedArtistApiResponseSchema = z.object({
   uri: z.string(),
 });
 
+export const spotifyArtistApiResponseSchema = z.object({
+  external_urls: z.object({
+    /* Basic Url */
+    spotify: z.string(),
+  }),
+  followers: z.object({
+    href: z.string().nullable(),
+    total: z.number(),
+  }),
+  genres: z.array(z.string()),
+  href: z.string(),
+  id: z.string(),
+  images: z.array(z.object({
+    url: z.string(),
+    height: z.number().nullable(),
+    weight: z.number().nullable(),
+  })),
+  name: z.string(),
+  popularity: z.number(),
+  type: z.literal('artist'),
+  uri: z.string(),
+});
+
+export const spotifyArtistListApiResponseSchema = z.object({
+  artists: z.object({
+    href: z.string(),
+    limit: z.number(),
+    next: z.string().nullable(),
+    offset: z.number(),
+    previous: z.string().nullable(),
+    total: z.number(),
+    items: z.array(spotifyArtistApiResponseSchema)
+  })
+});
+
 /* ############################## */
 /* Albums */
 /* ############################## */

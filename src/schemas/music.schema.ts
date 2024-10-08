@@ -18,6 +18,13 @@ export const trackReturnSchema = z.object({
   imageUrl: z.string().optional(),
 });
 
+export const artistReturnSchema = z.object({
+  id: z.string(),
+  artist: z.string(),
+  url: z.string(),
+  imageUrl: z.string().optional(),
+});
+
 export const albumReturnSchema = z.object({
   id: z.string(),
   artist: z.string(),

@@ -1,21 +1,18 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type FormEvent, type ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
 import z, { type TypeOf} from 'zod';
 
-import { AlbumBtn } from '@/components/AlbumBtn';
-import { Button } from '@/components/Button';
-import { Container } from '@/components/Container';
-import { Footer } from '@/components/Footer';
-import { Header } from '@/components/Header';
-import { InputText } from '@/components/Inputs/InputText';
-import { Loader } from '@/components/Loader';
-import { Main } from '@/components/Main';
-import { MusicLinks } from '@/components/MusicLinks';
-import { TrackBtn } from '@/components/TrackBtn';
+import { Albumlist } from '@/components/albumlist';
+import { Button } from '@/components/button';
+import { Container } from '@/components/container';
+import { InputText } from '@/components/inputs/input_text';
+import { Loader } from '@/components/loader';
+import { MusicLinks } from '@/components/music_links';
+import { Tracklist } from '@/components/tracklist';
 import { CONTAINER } from '@/constants/layout';
 import { useLightOrDarkTheme } from '@/context/ThemeContext';
 import { useToast } from '@/context/ToastContext';
@@ -25,7 +22,7 @@ import type { AlbumReturnType, LinkListReturnType, MusicDetails, SearchInputType
 import type { SearchType } from '@/types/music';
 import { buildUrl, isValidInput, isValidMusicStreamingUrl } from '@/utils/url';
 
-export const HomeScreen = (): JSX.Element => {
+export const HomeScreen = (): ReactElement => {
   const { t } = useTranslation();
   const { ip, geolocation } = useUserData();
   const { addToast } = useToast();
@@ -374,94 +371,73 @@ export const HomeScreen = (): JSX.Element => {
   const hasAlbums = !!albums.length;
 
   return (
-    <>
-      <Main>
-        <Container size="mobile">
-          <Header />
-          <div className='flex flex-col justify-center gap-4 w-full mb-4'>
-            <h1 data-testid='home-title' className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} font-bold text-center text-5xl leading-[48px]`}>
-              {t({ id: 'home.title' })}
-            </h1>
-            <p data-testid='home-subtitle' className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-center text-base leading-[20px]`}>
-              {t({ id: 'home.subtitle' })}
-            </p>
+    <main className={`flex-1 overflow-x-hidden min-w-full max-w-screen ${isLight ? 'bg-ivory' : 'bg-eerieBlack'}`}>
+      <Container size="mobile">
+        <div className='flex flex-col justify-center gap-4 w-full mb-4'>
+          <h1 data-testid='home-title' className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} font-bold text-center text-5xl leading-[48px]`}>
+            {t({ id: 'home.title' })}
+          </h1>
+          <p data-testid='home-subtitle' className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-center text-base leading-[20px]`}>
+            {t({ id: 'home.subtitle' })}
+          </p>
+        </div>
+        <form
+          data-testid='home-form' 
+          className={`flex flex-col justify-center w-full max-w-[${CONTAINER.MOBILE}px] gap-4`} 
+          onSubmit={onSubmit}
+        >
+          <div className='flex flex-col justify-center w-full gap-1'>
+            <InputText
+              data-testid='home-input-track'
+              isLight={isLight}
+              type="text"
+              control={control}
+              name="track"
+              placeholder={t({ id: 'label.track' })}
+              error={formErrors.track}
+            />
+            <InputText
+              data-testid='home-input-artist'
+              isLight={isLight}
+              type="text"
+              control={control}
+              name="artist"
+              placeholder={t({ id: 'label.artist' })}
+              error={formErrors.artist}
+            />
+            <InputText
+              data-testid='home-input-url'
+              isLight={isLight}
+              type="text"
+              control={control}
+              name="url"
+              placeholder={t({ id: 'label.url' })}
+              error={formErrors.url}
+            />
           </div>
-          <form
-            data-testid='home-form' 
-            className={`flex flex-col justify-center w-full max-w-[${CONTAINER.MOBILE}px] gap-4`} 
-            onSubmit={onSubmit}
-          >
-            <div className='flex flex-col justify-center w-full gap-1'>
-              <InputText
-                data-testid='home-input-track'
-                isLight={isLight}
-                type="text"
-                control={control}
-                name="track"
-                placeholder={t({ id: 'label.track' })}
-                error={formErrors.track}
-              />
-              <InputText
-                data-testid='home-input-artist'
-                isLight={isLight}
-                type="text"
-                control={control}
-                name="artist"
-                placeholder={t({ id: 'label.artist' })}
-                error={formErrors.artist}
-              />
-              <InputText
-                data-testid='home-input-url'
-                isLight={isLight}
-                type="text"
-                control={control}
-                name="url"
-                placeholder={t({ id: 'label.url' })}
-                error={formErrors.url}
-              />
-            </div>
-            <Button data-testid='home-form-submit-button' type="submit">
-              {t({ id: 'home.cta' })}
-            </Button>
-          </form>
-          <div ref={itemsRef} className='flex flex-col gap-2 w-full mx-6 my-0 pb-[40px]'>
-            {isLoading && <Loader isLight={isLight} />}
-            {!isLoading && links && (
-              <>
-                <p className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-left text-base leading-5 mb-4`}>
-                  {t(
-                    { id: 'home.showingResults' },
-                    { artist: details?.artist, track: details?.track },
-                  )}
-                </p>
-                {/* TODO: make this button trigger shareto @see https://developer.mozilla.org/en-US/docs/Web/API/Web_Share_API */}
-                <MusicLinks isLight={isLight} links={links} />
-              </>
-            )}
-            {!isLoading &&
-              hasTracks &&
-              tracks.map((track) => (
-                <TrackBtn
-                  key={track.id}
-                  track={track}
-                  handleOnClick={handleOnClick}
-                  isLight={isLight}
-                />
-              ))}
-            {!isLoading &&
-              hasAlbums &&
-              albums.map((album) => (
-                <AlbumBtn
-                  handleOnClick={handleOnClick}
-                  key={album.id}
-                  album={album}
-                  isLight={isLight}
-                />
-              ))}
-          </div>
-        </Container>
-      </Main>
-      <Footer isLight={isLight} />
-    </>
+          <Button data-testid='home-form-submit-button' type="submit">
+            {t({ id: 'home.cta' })}
+          </Button>
+        </form>
+        <div ref={itemsRef} className='flex flex-col gap-2 w-full mx-6 my-0 pb-[40px]'>
+          {isLoading && <Loader isLight={isLight} />}
+
+          {/* Music Links */}
+          {!isLoading && links && (
+            <MusicLinks details={details} isLight={isLight} links={links} />
+          )}
+
+          {/* Tracklist */}
+          {!isLoading && hasTracks && (
+            <Tracklist tracks={tracks} handleOnClick={handleOnClick} isLight={isLight} />
+          )}
+
+          {/* Albumlist */}
+          {!isLoading && hasAlbums && (
+            <Albumlist albums={albums} handleOnClick={handleOnClick} isLight={isLight} />
+          )}
+        </div>
+      </Container>
+    </main>
   );
 };
