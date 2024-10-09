@@ -34,7 +34,7 @@ jobs:
   
   build:
     name: Build - Test
-    if: ${{ github.ref_name == 'main' }}
+    if: ${{ github.ref_name != 'stable' }}
     uses: ./.github/workflows/project_build.yaml
     with:
       deploy-env: prod

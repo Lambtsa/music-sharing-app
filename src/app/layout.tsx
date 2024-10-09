@@ -2,6 +2,9 @@ import './globals.css';
 
 import { type ReactNode } from 'react';
 
+import { Footer } from '@/components/footer';
+import { Header } from '@/components/header';
+
 import { AppProviders } from './AppProviders';
 
 
@@ -37,7 +40,9 @@ const RootLayout = ({ children }: LayoutProps) => (
     </head>
     <body className="flex h-screen flex-col overflow-hidden bg-[#F7F8F9]">
       <AppProviders>
+        <Header />
         {children}
+        <Footer />
       </AppProviders>
       <div
         id="toast-root"

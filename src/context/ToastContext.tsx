@@ -11,7 +11,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { Toast, type ToastProps } from '@/components/Toast';
+import { Toast, type ToastProps } from '@/components/toast';
 import { createStableUUID } from '@/utils/uuid';
 
 export type ToastType = Pick<ToastProps, 'message' | 'type' | 'title'> & { id: string };

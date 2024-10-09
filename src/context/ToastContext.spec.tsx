@@ -1,5 +1,5 @@
 import { ToastProvider, useToast } from './ToastContext';
-import { type ToastProps } from '@/components/Toast';
+import { type ToastProps } from '@/components/toast';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useCallback } from 'react';
 import { LightOrDarkThemeProvider } from './ThemeContext';

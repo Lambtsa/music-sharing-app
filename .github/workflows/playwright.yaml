@@ -33,11 +33,6 @@ jobs:
       ##############################
       # E2E Tests
       ##############################
-      # Clean worker
-      - name: pre/post clean
-        id: clean
-        uses: dktunited/.github/actions/cleaner@main
-
       # Get access to github repository
       - uses: actions/checkout@v4
         id: checkout
