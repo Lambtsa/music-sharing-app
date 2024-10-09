@@ -20,7 +20,8 @@ export const trackReturnSchema = z.object({
 
 export const artistReturnSchema = z.object({
   id: z.string(),
-  artist: z.string(),
+  name: z.string(),
+  followers: z.number(),
   url: z.string(),
   imageUrl: z.string().optional(),
 });
@@ -32,6 +33,7 @@ export const albumReturnSchema = z.object({
     name: z.string(),
     cover: z.string().nullable(),
   }),
+  release_date: z.string(),
   imageUrl: z.string().optional(),
   tracks: z.array(z.object({
     id: z.string(),

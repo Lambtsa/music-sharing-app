@@ -8,6 +8,7 @@ export const albumMapper = (album: SpotifyAlbumApiResponseType, tracks: SpotifyT
       name: album.name,
       cover: album.images.find((image) => image.height === 300)?.url ?? null,
     },
+    release_date: album.release_date.slice(0, 4),
     imageUrl: album.images.find((image) => image.height === 300)?.url,
     tracks: tracks.items.map((track) => ({
       id: track.id,

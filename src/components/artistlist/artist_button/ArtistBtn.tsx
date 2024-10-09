@@ -4,32 +4,31 @@ import type { ReactElement } from 'react';
 import { Icon } from '@/components/icon';
 import { useTranslation } from '@/hooks/useTranslation';
 
-import type { TrackBtnProps } from './TrackBtn.types';
+import type { ArtistBtnProps } from './ArtistBtn.types';
 
-export const TrackBtn = ({
-  track,
+export const ArtistBtn = ({
+  artist,
   handleOnClick,
   isLight,
-}: TrackBtnProps): ReactElement => {
+}: ArtistBtnProps): ReactElement => {
   const { t } = useTranslation();
 
   return (
     <div 
       className={`grid grid-cols-[50px_1fr_80px] justify-center items-center gap-4 ${isLight ? 'bg-tiffanyBlue20' : 'bg-onyx'} rounded-[10px] w-full px-3 py-4`}
     >
-      {track.imageUrl ? (
+      {artist.imageUrl ? (
         <div className='relative h-[50px] w-[50px] overflow-hidden rounded-[7px]'>
-          <Image
-            className='rounded-[7px]'
+          <Image           
             height={50}
             width={50}
             object-fit="cover"
-            src={track.imageUrl}
-            alt={track.album.name}
+            src={artist.imageUrl}
+            alt={artist.name}
             placeholder="blur"
             blurDataURL="/placeholder.svg"
           />
-        </div>
+        </div>  
       ) : (
         <Icon icon='placeholder' height={50} width={50} />
       )
@@ -38,15 +37,14 @@ export const TrackBtn = ({
       >
         <h3 className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-bold text-sm overflow-hidden whitespace-nowrap text-ellipsis`}
         >
-          {track.track.name}
+          {artist.name}
         </h3>
-        <p className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>{track.artist}</p>
-        <p className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>{track.album.name}</p>
+        <p className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>{artist.followers} followers</p>
       </div>
       <button 
         className = 'px-4 py-2 rounded-[7px] bg-pastelPink text-ivory font-bold hover:text-ivory hover:bg-oldRose text-sm'
         type="button" 
-        onClick={() => handleOnClick(track.url)}
+        onClick={() => handleOnClick(artist.id)}
       >
         {t({ id: 'label.select' })}
       </button>

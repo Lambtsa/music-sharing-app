@@ -13,6 +13,7 @@ export const mockAlbums = (): AlbumReturnType[] => {
       cover: '',
     },
     imageUrl: '',
+    release_date: faker.date.recent().toISOString(),
     tracks: Array.from(Array(faker.number.int({ max: 5 }))).map((_) => ({
       id: uuid(),
       artist: faker.music.artist(),

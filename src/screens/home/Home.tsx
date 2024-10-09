@@ -7,6 +7,7 @@ import { v4 as uuid } from 'uuid';
 import z, { type TypeOf} from 'zod';
 
 import { Albumlist } from '@/components/albumlist';
+import { ArtistList } from '@/components/artistlist';
 import { Button } from '@/components/button';
 import { Container } from '@/components/container';
 import { InputText } from '@/components/inputs/input_text';
@@ -18,7 +19,7 @@ import { useLightOrDarkTheme } from '@/context/ThemeContext';
 import { useToast } from '@/context/ToastContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUserData } from '@/hooks/useUserData';
-import type { AlbumReturnType, LinkListReturnType, MusicDetails, SearchInputType, TrackReturnType } from '@/types/api';
+import type { AlbumInputType, AlbumReturnType, ArtistReturnType, LinkListReturnType, MusicDetails, SearchInputType, TrackReturnType } from '@/types/api';
 import type { SearchType } from '@/types/music';
 import { buildUrl, isValidInput, isValidMusicStreamingUrl } from '@/utils/url';
 
@@ -35,6 +36,7 @@ export const HomeScreen = (): ReactElement => {
   const [links, setLinks] = useState<LinkListReturnType['links'] | undefined>(undefined);
   const [tracks, setTracks] = useState<TrackReturnType[]>([]);
   const [albums, setAlbums] = useState<AlbumReturnType[]>([]);
+  const [artists, setArtists] = useState<ArtistReturnType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selected, setSelected] = useState<SearchType>('url');
   const [details, setDetails] = useState<MusicDetails | undefined>(
@@ -166,6 +168,13 @@ export const HomeScreen = (): ReactElement => {
   /* ################################################## */
   /* Actions */
   /* ################################################## */
+  const resetStates = useCallback(() => {
+    setLinks(undefined);
+    setTracks([]);
+    setAlbums([]);
+    setArtists([]);
+  }, []);
+
   const onSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -174,9 +183,7 @@ export const HomeScreen = (): ReactElement => {
       }
 
       /* Reset states */
-      setLinks(undefined);
-      setTracks([]);
-      setAlbums([]);
+      resetStates();
 
       handleSubmit(
         async (formFields) => {
@@ -202,7 +209,7 @@ export const HomeScreen = (): ReactElement => {
               /* Artist will return a list of tracks sorted by album. User can then select a track */
               case 'artist': {
                 const response = await fetch(
-                  buildUrl('/api/albums', process.env.NEXT_PUBLIC_BASE_URL),
+                  buildUrl('/api/artists', process.env.NEXT_PUBLIC_BASE_URL),
                   {
                     method: 'POST',
                     headers: {
@@ -222,8 +229,8 @@ export const HomeScreen = (): ReactElement => {
                   break;
                 }
 
-                const data: AlbumReturnType[] = await response.json();
-                setAlbums(data);
+                const data: ArtistReturnType[] = await response.json();
+                setArtists(data);
                 reset(defaultValues, { keepDefaultValues: true });
                 scrollToTop();
 
@@ -301,17 +308,73 @@ export const HomeScreen = (): ReactElement => {
         },
       )();
     },
-    [addToast, defaultValues, geolocation, handleSubmit, ip, isLoading, reset, scrollToTop, selected],
+    [addToast, defaultValues, geolocation, handleSubmit, ip, isLoading, reset, resetStates, scrollToTop, selected],
   );
 
-  const handleOnClick = useCallback(
+  const handleOnArtistClick = useCallback(
+    async (artistId: string) => {
+      if (isLoading) {
+        return;
+      }
+      setIsLoading(true);
+      /* Reset states */
+      resetStates();
+
+      try {
+        const body: AlbumInputType = {
+          artistId,
+          user: {
+            ip,
+            geolocation,
+          },
+        };
+
+        const response = await fetch(
+          buildUrl('/api/albums', process.env.NEXT_PUBLIC_BASE_URL),
+          {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json',
+            },
+            body: JSON.stringify(body),
+          },
+        );
+
+        if (!response.ok) {
+          addToast({
+            message: response.statusText,
+            type: 'warning',
+            title: 'Issue getting tracks',
+            id: uuid()
+          });
+        } else {
+          const data: AlbumReturnType[] = await response.json();
+  
+          setAlbums(data);
+          reset(defaultValues, { keepDefaultValues: true });
+          scrollToTop();
+        }
+      } catch (err) {
+        addToast({
+          message: (err as Error).message,
+          type: 'warning',
+          title: 'Issue getting tracks',
+          id: uuid()
+        });
+        console.log({ err });
+      } finally {
+        setIsLoading(false);
+      }
+    }, [addToast, defaultValues, geolocation, ip, isLoading, reset, resetStates, scrollToTop]);
+
+  const handleOnTrackClick = useCallback(
     async (url: string) => {
       if (isLoading) {
         return;
       }
       setIsLoading(true);
-      setTracks([]);
-      setAlbums([]);
+      /* Reset states */
+      resetStates();
 
       try {
         const body: SearchInputType = {
@@ -364,11 +427,12 @@ export const HomeScreen = (): ReactElement => {
         setIsLoading(false);
       }
     },
-    [addToast, defaultValues, details?.artist, details?.track, geolocation, ip, isLoading, reset, scrollToTop],
+    [addToast, defaultValues, details?.artist, details?.track, geolocation, ip, isLoading, reset, resetStates, scrollToTop],
   );
 
-  const hasTracks = !!tracks.length;
-  const hasAlbums = !!albums.length;
+  const hasTracks = useMemo(() => !!tracks.length, [tracks]);
+  const hasAlbums = useMemo(() => !!albums.length, [albums]);
+  const hasArtists = useMemo(() => !!artists.length, [artists]);
 
   return (
     <main className={`flex-1 overflow-x-hidden min-w-full max-w-screen ${isLight ? 'bg-ivory' : 'bg-eerieBlack'}`}>
@@ -429,12 +493,17 @@ export const HomeScreen = (): ReactElement => {
 
           {/* Tracklist */}
           {!isLoading && hasTracks && (
-            <Tracklist tracks={tracks} handleOnClick={handleOnClick} isLight={isLight} />
+            <Tracklist tracks={tracks} handleOnClick={handleOnTrackClick} isLight={isLight} />
+          )}
+
+          {/* Artistlist */}
+          {!isLoading && hasArtists && (
+            <ArtistList artists={artists} handleOnClick={handleOnArtistClick} isLight={isLight} />
           )}
 
           {/* Albumlist */}
           {!isLoading && hasAlbums && (
-            <Albumlist albums={albums} handleOnClick={handleOnClick} isLight={isLight} />
+            <Albumlist albums={albums} handleOnClick={handleOnTrackClick} isLight={isLight} />
           )}
         </div>
       </Container>

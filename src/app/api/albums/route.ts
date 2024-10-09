@@ -3,21 +3,21 @@ import pino from 'pino';
 
 import { insert } from '@/core/db';
 import { BadRequestError, globalApiErrorHandler } from '@/core/errors';
-import { searchInputSchema } from '@/schemas/api.schema';
+import { albumInputSchema } from '@/schemas/api.schema';
 import { SpotifyWebApi } from '@/services/api/spotify';
-import type { SearchInputType } from '@/types/api';
+import type { AlbumInputType } from '@/types/api';
 import { getUserAgentInfo } from '@/utils/userAgentInfo';
 
 export const dynamic = 'force-dynamic';
 
 export const POST = async (req: NextRequest): Promise<Response> => {
   try {
-    const body: SearchInputType = await req.json();
+    const body: AlbumInputType = await req.json();
     const userAgentInfo = getUserAgentInfo(req);
 
-    const albumSafeParse = searchInputSchema.safeParse(body);
+    const albumSafeParse = albumInputSchema.safeParse(body);
 
-    if (!albumSafeParse.success || !body.search.artist) {
+    if (!albumSafeParse.success || !body.artistId) {
       throw new BadRequestError({
         message: 'Please provide valid input',
         statusCode: 400,
@@ -30,7 +30,7 @@ export const POST = async (req: NextRequest): Promise<Response> => {
     /* FETCH DATA */
     /* ############################## */
     const spotifyApi = new SpotifyWebApi();
-    const albums = await spotifyApi.getAlbumList(body.search.artist);
+    const albums = await spotifyApi.getAlbumList(body.artistId);
 
     await Promise.all([
       albums.map(async (album) => {
@@ -70,7 +70,7 @@ export const POST = async (req: NextRequest): Promise<Response> => {
         }
       }),
       insert.search({
-        search: body.search.artist,
+        search: body.artistId,
         search_type: 'artist',
         ip: body.user.ip ?? null,
         city: body.user.geolocation?.city ?? null,
