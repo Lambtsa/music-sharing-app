@@ -6,39 +6,6 @@ import { trackMapper } from '@/utils/mappers/trackMapper';
 
 import type { AccessTokenBody, BuildSpotifySearchApiUrlInput } from './api.types';
 
-const fetchWithRetry = async (url: string, auth: string): Promise<Response> => {
-  let response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: auth,
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-    },
-    body: 'grant_type=client_credentials',
-    next: { revalidate: 3000 }
-  });
-
-  if (!response.ok) {  
-    response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: auth,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body: 'grant_type=client_credentials',
-      next: { revalidate: 3000 }
-    });
-
-    if (!response.ok) {
-      throw new GatewayError({
-        message: 'Issue authenticating spotify API',
-        statusCode: response.status,
-        type: 'spotify',
-      });
-    }
-  }
-  return response;
-};
-
 export class SpotifyWebApi {
   #baseUrl = 'https://api.spotify.com/v1';
   #tokenUrl = 'https://accounts.spotify.com/api/token';
@@ -64,7 +31,23 @@ export class SpotifyWebApi {
   private async getAccessToken(): Promise<string> {
     const auth = this.encodeBearer();
 
-    const response = await fetchWithRetry(this.#tokenUrl, auth);
+    const response = await fetch(this.#tokenUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: auth,
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: 'grant_type=client_credentials',
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new GatewayError({
+        message: 'Issue authenticating spotify API',
+        statusCode: response.status,
+        type: 'spotify',
+      });
+    }
 
     const body = (await response.json()) as AccessTokenBody;
 
