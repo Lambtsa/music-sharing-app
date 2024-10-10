@@ -71,23 +71,38 @@ export const spotifyAlbumApiResponseSchema = z.object({
   })),
   name: z.string(),
   release_date: z.string(),
-  release_date_precision: z.union([z.literal('year'), z.literal('month'), z.literal('day')]),
+  release_date_precision: z.union([
+    z.literal('year'), 
+    z.literal('month'), 
+    z.literal('day')
+  ]),
+  restrictions: z.object({
+    reason: z.union([
+      z.literal('market'), 
+      z.literal('product'), 
+      z.literal('explicit')
+    ])
+  }),
   type: z.literal('album'),
   /* Opens application */
   uri: z.string(),
   artists: z.array(spotifySimplifiedArtistApiResponseSchema),
+  album_group: z.union([
+    z.literal('album'), 
+    z.literal('single'), 
+    z.literal('compilation'),
+    z.literal('appears_on'),
+  ]),
 });
 
 export const spotifyAlbumListApiResponseSchema = z.object({
-  albums: z.object({
-    href: z.string(),
-    limit: z.number(),
-    next: z.string().nullable(),
-    offset: z.number(),
-    previous: z.string().nullable(),
-    total: z.number(),
-    items: z.array(spotifyAlbumApiResponseSchema),
-  })
+  href: z.string(),
+  limit: z.number(),
+  next: z.string().nullable(),
+  offset: z.number(),
+  previous: z.string().nullable(),
+  total: z.number(),
+  items: z.array(spotifyAlbumApiResponseSchema),
 });
 
 /* ############################## */

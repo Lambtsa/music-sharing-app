@@ -26,20 +26,22 @@ export const AlbumBtn = ({
 
   return (
     <>
-      <div className={`flex justify-center items-center gap-4 [&>svg]:min-w-[30px] ${isLight ? 'bg-tiffanyBlue20 [&>svg>path]:stroke-eerieBlack' : 'bg-onyx [&>svg>path]:stroke-ivory'} rounded-[10px] w-full px-3 py-4`}>
+      <div className={`grid grid-cols-[50px_1fr_40px] justify-center items-center gap-4 [&>svg]:min-w-[30px] ${isLight ? 'bg-tiffanyBlue20 [&>svg>path]:stroke-eerieBlack' : 'bg-onyx [&>svg>path]:stroke-ivory'} rounded-[10px] w-full px-3 py-4`}>
         {album.imageUrl ? (
-          <Image
-            className='rounded-[7px]'
-            width={60}
-            height={60}
-            object-fit="cover"
-            src={album.imageUrl}
-            alt={album.album.name}
-            placeholder="blur"
-            blurDataURL="/placeholder.svg"
-          />
+          <div className='relative h-[50px] w-[50px] overflow-hidden rounded-[7px]'>
+            <Image
+              className='rounded-[7px]'
+              height={50}
+              width={50}
+              object-fit="cover"
+              src={album.imageUrl}
+              alt={album.album.name}
+              placeholder="blur"
+              blurDataURL="/placeholder.svg"
+            />
+          </div>
         ) : (
-          <Icon icon='placeholder' width={60} height={60} />
+          <Icon icon='placeholder' width={50} height={50} />
         )
         }
         <div className = 'flex flex-auto flex-col justify-center items-start gap-1/2 w-full overflow-hidden whitespace-nowrap'>
@@ -49,8 +51,8 @@ export const AlbumBtn = ({
           <p className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
             {album.album.name}
           </p>
-          <p className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
-            {'Album'}
+          <p className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} text-left font-normal text-xs overflow-hidden whitespace-nowrap text-ellipsis`}>
+            {album.release_date}
           </p>
         </div>
         <button

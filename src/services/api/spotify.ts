@@ -1,7 +1,7 @@
 import { GatewayError } from '@/core/errors';
-import { mockAlbums } from '@/mocks/bff/album';
-import type { AlbumReturnType, MusicDetails, SpotifyAlbumListApiResponseType, SpotifyArtistListApiResponseType, SpotifyTrackApiResponseType, SpotifyTrackListApiResponseType, TrackReturnType } from '@/types/api';
+import type { AlbumReturnType, ArtistReturnType, MusicDetails, SpotifyAlbumListApiResponseType, SpotifyArtistListApiResponseType, SpotifyTrackApiResponseType, SpotifyTrackListApiResponseType, TrackReturnType } from '@/types/api';
 import { albumMapper } from '@/utils/mappers/albumMapper';
+import { artistMapper } from '@/utils/mappers/artistMapper';
 import { trackMapper } from '@/utils/mappers/trackMapper';
 
 import type { AccessTokenBody, BuildSpotifySearchApiUrlInput } from './api.types';
@@ -81,18 +81,30 @@ export class SpotifyWebApi {
   }: BuildSpotifySearchApiUrlInput): string {
     const url = new URL(this.#searchUrl);
     url.searchParams.append('type', searchFor);
+    url.searchParams.append('market', 'FR');
     const search: string[] = [];
 
     if (artist) {
-      search.push(`artist:"${artist}"`);
+      search.push(`artist:${artist}`);
     }
     if (track) {
-      search.push(`track:"${track}"`);
+      search.push(`track:${track}`);
     }
     if (album) {
-      search.push(`album:"${album}"`);
+      search.push(`album:${album}`);
     }
     url.searchParams.append('q', search.join(' '));
+    return url.toString();
+  }
+
+  /**
+   * Builds spotify URL for querying all tracks by album
+   * @returns Spotify API URL
+   */
+  private buildSpotifyTracksByAlbumListApiUrl(id: string): string {
+    const url = new URL(`${this.#baseUrl}/albums/${id}/tracks`);
+    url.searchParams.append('market', 'FR');
+    url.searchParams.append('limit', '30');
     return url.toString();
   }
 
@@ -100,8 +112,11 @@ export class SpotifyWebApi {
    * Builds spotify URL for querying all albums by artist
    * @returns Spotify API URL
    */
-  private buildSpotifyAlbumTracksListApiUrl(id: string): string {
-    const url = new URL(`${this.#baseUrl}/albums/${id}/tracks`);
+  private buildSpotifyAlbumListByArtistApiUrl(artistId: string): string {
+    const url = new URL(`${this.#baseUrl}/artists/${artistId}/albums`);
+    url.searchParams.append('include_groups', 'album,single');
+    url.searchParams.append('market', 'FR');
+    url.searchParams.append('limit', '50');
     return url.toString();
   }
 
@@ -143,19 +158,16 @@ export class SpotifyWebApi {
   }
 
   /**
-   * Given an artist or a track this helper will return a list of the songs
+   * Given an artist this helper will return a list of the albums
    * @returns spotify uri and input
    * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/search
    */
   async getAlbumList(
-    artist: string,
+    artistId: string,
   ): Promise<AlbumReturnType[]> {
     const accessToken = await this.getAccessToken();
 
-    const spotifyUrl = this.buildSpotifySearchApiUrl({
-      searchFor: 'album',
-      with: { artist, track: null, album: null },
-    });
+    const spotifyUrl = this.buildSpotifyAlbumListByArtistApiUrl(artistId);
 
     const response = await fetch(spotifyUrl.toString(), {
       headers: {
@@ -172,15 +184,15 @@ export class SpotifyWebApi {
       });
     }
 
-    const { albums: albumData } = (await response.json()) as SpotifyAlbumListApiResponseType;
+    const { items: albumData } = (await response.json()) as SpotifyAlbumListApiResponseType;
 
-    if (!albumData.items.length) {
+    if (!albumData.length) {
       return [];
     }
 
     const albums = await Promise.all(
-      albumData.items.map(async (album) => {
-        const spotifyUrl = this.buildSpotifyAlbumTracksListApiUrl(album.id);
+      albumData.map(async (album) => {
+        const spotifyUrl = this.buildSpotifyTracksByAlbumListApiUrl(album.id);
 
         const response = await fetch(spotifyUrl, {
           headers: {
@@ -202,7 +214,7 @@ export class SpotifyWebApi {
       }),
     );
 
-    return albums;
+    return albums.sort((a, b) => b.release_date.localeCompare(a.release_date));
   }
 
 
@@ -213,7 +225,7 @@ export class SpotifyWebApi {
    */
   async getArtistList(
     artist: string,
-  ): Promise<AlbumReturnType[]> {
+  ): Promise<ArtistReturnType[]> {
     const accessToken = await this.getAccessToken();
 
     const spotifyUrl = this.buildSpotifySearchApiUrl({
@@ -242,31 +254,7 @@ export class SpotifyWebApi {
       return [];
     }
 
-    // const albums = await Promise.all(
-    //   albumData.items.map(async (album) => {
-    //     const spotifyUrl = this.buildSpotifyAlbumTracksListApiUrl(album.id);
-
-    //     const response = await fetch(spotifyUrl, {
-    //       headers: {
-    //         Authorization: `Bearer ${accessToken}`,
-    //         'Content-Type': 'application/json',
-    //       },
-    //     });
-
-    //     if (!response.ok) {
-    //       throw new GatewayError({
-    //         message: response.statusText,
-    //         statusCode: response.status,
-    //         type: 'spotify',
-    //       });
-    //     }
-    //     const trackdata = (await response.json()) as SpotifyTrackListApiResponseType['tracks'];
-
-    //     return albumMapper(album, trackdata);
-    //   }),
-    // );
-
-    return mockAlbums();
+    return artistData.items.map((artist) => artistMapper(artist));
   }
 
 
