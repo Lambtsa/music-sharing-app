@@ -223,13 +223,23 @@ export const HomeScreen = (): ReactElement => {
                   addToast({
                     message: response.statusText,
                     type: 'warning',
-                    title: 'Issue getting albums',
+                    title: 'Issue getting artists',
                     id: uuid()
                   });
                   break;
                 }
 
                 const data: ArtistReturnType[] = await response.json();
+
+                if (!data.length) {
+                  addToast({
+                    message: response.statusText,
+                    type: 'warning',
+                    title: 'Search returned no artists',
+                    id: uuid()
+                  });
+                  break;
+                }
                 setArtists(data);
                 reset(defaultValues, { keepDefaultValues: true });
                 scrollToTop();
@@ -260,6 +270,16 @@ export const HomeScreen = (): ReactElement => {
                 }
 
                 const data: TrackReturnType[] = await response.json();
+
+                if (!data.length) {
+                  addToast({
+                    message: response.statusText,
+                    type: 'warning',
+                    title: 'Search returned no tracks',
+                    id: uuid()
+                  });
+                  break;
+                }
                 setTracks(data);
                 reset(defaultValues, { keepDefaultValues: true });
                 scrollToTop();
@@ -349,6 +369,16 @@ export const HomeScreen = (): ReactElement => {
           });
         } else {
           const data: AlbumReturnType[] = await response.json();
+
+          if (!data.length) {
+            addToast({
+              message: response.statusText,
+              type: 'warning',
+              title: 'Search returned no albums',
+              id: uuid()
+            });
+            return;
+          }
   
           setAlbums(data);
           reset(defaultValues, { keepDefaultValues: true });
