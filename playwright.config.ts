@@ -44,7 +44,7 @@ export default defineConfig({
   ],
 
   /* Only used in local dev environment */
-  ...(process.env.NODE_ENV === 'development' && { 
+  ...(!process.env.CI && { 
     webServer: {
       command: 'pnpm dev',
       reuseExistingServer: false,

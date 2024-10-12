@@ -233,7 +233,7 @@ export const HomeScreen = (): ReactElement => {
 
                 if (!data.length) {
                   addToast({
-                    message: response.statusText,
+                    message: artist ? `There were no results for "${artist}"` : 'There were no results for this artist',
                     type: 'warning',
                     title: 'Search returned no artists',
                     id: uuid()
@@ -273,7 +273,7 @@ export const HomeScreen = (): ReactElement => {
 
                 if (!data.length) {
                   addToast({
-                    message: response.statusText,
+                    message: track ? `There were no results for "${track}"` : 'There were no results for this track',
                     type: 'warning',
                     title: 'Search returned no tracks',
                     id: uuid()
@@ -328,7 +328,7 @@ export const HomeScreen = (): ReactElement => {
         },
       )();
     },
-    [addToast, defaultValues, geolocation, handleSubmit, ip, isLoading, reset, resetStates, scrollToTop, selected],
+    [addToast, artist, defaultValues, geolocation, handleSubmit, ip, isLoading, reset, resetStates, scrollToTop, selected, track],
   );
 
   const handleOnArtistClick = useCallback(
