@@ -1,14 +1,16 @@
 'use client';
 
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { type ReactElement, useCallback, useMemo } from 'react';
 
 import { Logo } from '@/components/logo';
+import { ProfileDropdown } from '@/components/profile-dropdown';
 import { Toggle } from '@/components/toggle';
 import { useLightOrDarkTheme } from '@/context/ThemeContext';
 import { routes } from '@/utils/routes';
+
+import type { ProfileDropdownMenu } from '../profile-dropdown/ProfileDropdown';
 
 export const Header = (): ReactElement => {
   /* ################################################## */
@@ -18,9 +20,40 @@ export const Header = (): ReactElement => {
   const router = useRouter();
   const { data: session } = useSession();
 
+  /* ################################################## */
+  /* Actions */
+  /* ################################################## */
   const handleOnClick = useCallback(() => {
     router.push(routes.index());
   }, [router]);
+
+
+  const profileOptions = useMemo((): ProfileDropdownMenu[] => ([
+    {
+      id: 'header.dropdown.profil.history.label',
+      label: 'History',
+      icon: 'music',
+      onClick: () => console.log('History clicked'),
+    },
+    {
+      id: 'header.dropdown.profil.privacy.label',
+      label: 'Privacy',
+      icon: 'privacy',
+      onClick: () => console.log('History clicked'),
+    },
+    {
+      id: 'header.dropdown.profil.terms.label',
+      label: 'Terms & conditions',
+      icon: 'terms',
+      onClick: () => console.log('History clicked'),
+    },
+    {
+      id: 'header.dropdown.profil.signout.label',
+      label: 'Sign out',
+      icon: 'signout',
+      onClick: () => console.log('History clicked'),
+    },
+  ]), []);
 
   const user = useMemo(() => session?.user, [session?.user]);
 
@@ -45,22 +78,10 @@ export const Header = (): ReactElement => {
           </button>
         )}
         {user && (
-          <button 
-            type='button' 
-            className='rounded-full flex justify-center items-center h-10 w-10 bg-tiffanyBlue text-base font-normal text-ivory'
-            onClick={() => console.log({ user })}
-          >
-            <Image
-              className='rounded-full'         
-              height={40}
-              width={40}
-              object-fit="cover"
-              src={user.picture}
-              alt={user.name}
-              placeholder="blur"
-              blurDataURL="/placeholder.svg"
-            />
-          </button>
+          <ProfileDropdown
+            user={user}
+            menu={profileOptions}
+          />
         )}
       </div>
     </div>

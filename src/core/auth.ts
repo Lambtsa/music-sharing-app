@@ -1,7 +1,7 @@
 import type { NextAuthOptions } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
-// import SpotifyProvider, { SpotifyProfile } from "next-auth/providers/spotify";
 import GoogleProvider, { type GoogleProfile } from 'next-auth/providers/google';
+import SpotifyProvider, { type SpotifyProfile } from 'next-auth/providers/spotify';
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -24,18 +24,19 @@ export const authOptions: NextAuthOptions = {
   //   signIn: '/auth/signin',
   // },
   providers: [
-    // SpotifyProvider({
-    //   clientId: process.env.SPOTIFY_CLIENT_ID,
-    //   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    //   profile(profile: SpotifyProfile) {
-    //     return {
-    //       id: profile.id,
-    //       name: profile.display_name,
-    //       email: profile.email,
-    //       image: profile.images?.[0]?.url,
-    //     }
-    //   },
-    // }),
+    SpotifyProvider({
+      clientId: process.env.SPOTIFY_CLIENT_ID,
+      clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+      profile(profile: SpotifyProfile) {
+        return {
+          id: profile.id,
+          name: profile.display_name,
+          email: profile.email,
+          picture: profile.images?.[0]?.url,
+          sub: profile.id,
+        };
+      },
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -44,9 +45,9 @@ export const authOptions: NextAuthOptions = {
           id: profile.sub,
           sub: profile.sub,
           email: profile.email,
-          email_verified: profile.email_verified,
-          family_name: profile.family_name,
-          given_name: profile.given_name,
+          // email_verified: profile.email_verified,
+          // family_name: profile.family_name,
+          // given_name: profile.given_name,
           name: profile.name,
           picture: profile.picture,
           iat: profile.iat,

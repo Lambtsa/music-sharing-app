@@ -1,0 +1,29 @@
+.dropdown {
+  box-shadow: 0px 24px 24px 0px rgba(0, 83, 125, 0.1);
+  animation: dropdown-appear 300ms linear;
+}
+
+.chevron {
+  transition: transform ease-in-out 300ms;
+}
+
+@keyframes dropdown-appear {
+  0% {
+    opacity: 0%;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+
+.center {
+  left: 50%;
+  right: 50%;
+  transform: translateX(-50%);
+}
+.left {
+  left: 0;
+}
+.right {
+  right: 0;
+}

@@ -17,11 +17,19 @@ const nextConfig = {
         port: "",
         pathname: "/image/**",
       },
+      /* Google API */
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
         port: "",
         pathname: "/a/**",
+      },
+      /* Spotify API */
+      {
+        protocol: "https",
+        hostname: "scontent-bru2-1.xx.fbcdn.net",
+        port: "",
+        pathname: "/v/**",
       },
     ],
   },
