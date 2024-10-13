@@ -12,6 +12,9 @@ declare namespace NodeJS {
     
     readonly YOUTUBE_API_KEY: string;
 
+    readonly GOOGLE_CLIENT_ID: string;
+    readonly GOOGLE_CLIENT_SECRET: string;
+
     readonly SUPABASE_PASSWORD: string;
     readonly SUPABASE_ANON_KEY: string;
 

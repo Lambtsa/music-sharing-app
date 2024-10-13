@@ -61,6 +61,7 @@ jobs:
         run: pnpm playwright test
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
         shell: bash
 
       - uses: actions/upload-artifact@v4
