@@ -1,14 +1,14 @@
 import type { SearchType } from '@/types/music';
 
 
-type Artist = {
+export type Artist = {
   id: string;
   name: string;
   created_at: string;
   updated_at: string;
 };
 
-type Album = {
+export type Album = {
   id: string;
   name: string;
   cover: string | null;
@@ -17,7 +17,7 @@ type Album = {
   updated_at: string;
 };
 
-type Track = {
+export type Track = {
   id: string;
   title: string;
   artist_id: string;
@@ -28,15 +28,17 @@ type Track = {
   updated_at: string;
 };
 
-type Search = {
+export type Search = {
   id: string;
   ip: string | null;
   city: string | null;
   country: string | null;
   coordinates: string | null;
-  search: string;
-  timezone: string | null;
   search_type: SearchType;
+  timezone: string | null;
+  artist: string | null;
+  track: string | null;
+  url: string | null;
   url_type: string | null;
   created_at: string;
   updated_at: string;
@@ -61,7 +63,7 @@ export type InsertReturnTypeMapper = {
 export type UpsertArtistInput = Pick<Artist, 'name'>;
 export type InsertAlbumInput = Pick<Album, 'name' | 'cover' | 'artist_id'>;
 export type InsertTrackInput = Pick<Track, 'title' | 'artist_id' | 'album_id' | 'duration' | 'track_number'>;
-export type InsertSearchInput = Pick<Search, 'ip' | 'city' | 'country' | 'coordinates' | 'search' | 'timezone' | 'search_type' | 'url_type'>;
+export type InsertSearchInput = Pick<Search, 'ip' | 'city' | 'country' | 'coordinates' | 'url' | 'artist' | 'track' | 'timezone' | 'search_type' | 'url_type'>;
 
 export interface Database {
   public: {

@@ -1,6 +1,6 @@
 import type { z } from 'zod';
 
-import type { albumInputSchema, linkListReturnSchema, musicDetails, searchInputSchema } from '@/schemas/api.schema';
+import type { albumInputSchema, linkListReturnSchema, musicDetails, searchInputSchema, searchReturnSchema } from '@/schemas/api.schema';
 import type { deezerSearchApiResponseSchema, deezerTrackApiResponseSchema } from '@/schemas/deezer.schema';
 import type { albumReturnSchema, artistReturnSchema, trackReturnSchema } from '@/schemas/music.schema';
 import type { spotifyAlbumApiResponseSchema, spotifyAlbumListApiResponseSchema, spotifyArtistApiResponseSchema, spotifyArtistListApiResponseSchema, spotifyTrackApiResponseSchema, spotifyTrackListApiResponseSchema } from '@/schemas/spotify.schema';
@@ -33,5 +33,6 @@ export type AlbumInputType = z.infer<typeof albumInputSchema>;
 export type TrackReturnType = z.infer<typeof trackReturnSchema>;
 export type ArtistReturnType = z.infer<typeof artistReturnSchema>;
 export type AlbumReturnType = z.infer<typeof albumReturnSchema>;
+export type SearchReturnType = z.infer<typeof searchReturnSchema>;
 
 export type LinkListReturnType = z.infer<typeof linkListReturnSchema>;

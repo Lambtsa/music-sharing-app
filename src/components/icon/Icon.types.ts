@@ -34,6 +34,8 @@ export type IconType =
   | 'sun'
   | 'terms'
   | 'tick'
+  | 'upArrow'
+  | 'upAndDown'
   | 'valid'
   | 'warning'
   | 'youtube';

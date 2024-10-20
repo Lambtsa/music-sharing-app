@@ -19,6 +19,8 @@ export { SpotifyIcon } from './SpotifyIcon';
 export { SunIcon } from './SunIcon';
 export { TermsIcon } from './TermsIcon';
 export { TickIcon } from './TickIcon';
+export { UpAndDownArrowIcon } from './UpAndDownArrowIcon';
+export { UpArrowIcon } from './UpArrowIcon';
 export { ValidIcon } from './ValidIcon';
 export { WarningIcon } from './WarningIcon';
 export { YoutubeIcon } from './YoutubeIcon';

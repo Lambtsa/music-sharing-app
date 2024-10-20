@@ -1,7 +1,6 @@
 import { type NextRequest } from 'next/server';
 
-// import pino from 'pino';
-// import { insert } from '@/core/db';
+import { insert } from '@/core/db';
 import { BadRequestError, globalApiErrorHandler } from '@/core/errors';
 import { searchInputSchema } from '@/schemas/api.schema';
 import { SpotifyWebApi } from '@/services/api/spotify';
@@ -31,6 +30,19 @@ export const POST = async (req: NextRequest): Promise<Response> => {
     /* ############################## */
     const spotifyApi = new SpotifyWebApi();
     const artists = await spotifyApi.getArtistList(body.search.artist);
+
+    await insert.search({
+      track: null,
+      artist: body.search.artist,
+      url: null,
+      search_type: 'artist',
+      ip: body.user.ip ?? null,
+      city: body.user.geolocation?.city ?? null,
+      country: body.user.geolocation?.country ?? null,
+      coordinates: body.user.geolocation?.coordinates ?? null,
+      timezone: body.user.geolocation?.timezone ?? null,
+      url_type: null,
+    });
 
     return new Response(JSON.stringify(artists), {
       status: 200,

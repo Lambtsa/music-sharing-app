@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import type { User } from 'next-auth';
-import { type ReactElement, useMemo, useRef, useState } from 'react';
+import { type ReactElement, useCallback, useMemo, useRef, useState } from 'react';
 
 import { Icon, type IconType } from '@/components/icon';
 import { useLightOrDarkTheme } from '@/context/ThemeContext';
@@ -38,6 +38,12 @@ export const ProfileDropdown = ({
     action: () => setIsExpanded(false),
   });
 
+  const handleOnClick = useCallback((onClick: ProfileDropdownMenu['onClick']) => {
+    setIsExpanded(false);
+    onClick();
+  }, 
+  []);
+
   const isOpen = useMemo(() => {
     return isExpanded && !!menu.length;
   }, [isExpanded, menu]);
@@ -65,23 +71,23 @@ export const ProfileDropdown = ({
 
       {isOpen && (
         <ul
-          className={`${styles['dropdown']} absolute right-0 mt-2 flex w-max flex-col gap-2 rounded ${isLight ? 'bg-eerieBlack' : 'bg-ivory'} py-2`}
+          className={`${styles['dropdown']} absolute min-w-[150px] right-0 mt-2 flex w-max flex-col gap-2 rounded ${isLight ? 'bg-eerieBlack' : 'bg-ivory'} py-2`}
         >
           {menu.map((item, index) => (
             <li
               key={item.label}
-              className="flex justify-start items-center gap-2 text-sm text-brand"
+              className="flex flex-col justify-start items-center gap-2 text-sm text-brand"
             >
               <button
-                onClick={item.onClick}
+                onClick={() => handleOnClick(item.onClick)}
                 className={`flex gap-2 w-full ${isLight ? 'text-ivory hover:bg-ivory20' : 'text-eerieBlack hover:bg-eerieBlack20'} items-center justify-start px-2 py-1 rounded`}
               >
                 <Icon icon={item.icon} height={16} width={16} color={isLight ? '#FFFEED' : '#262626'} />
                 {item.label}
               </button>
 
-              {index % 2 !== 0 && index !== menu.length - 1 && (
-                <div className="h-px bg-gray-200" />
+              {index === menu.length - 2 && (
+                <div className={`h-px w-full ${isLight ? 'bg-ivory20' : 'bg-eerieBlack20'}`} />
               )}
             </li>
           ))}

@@ -1,6 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type PostgrestSingleResponse } from '@supabase/supabase-js';
 
-import type { Database, InsertAlbumInput, InsertReturnTypeMapper, InsertSearchInput, InsertTrackInput, InsertType, InsertTypeMapper, UpsertArtistInput } from './schema/db.types';
+import type { Album, Artist, Database, InsertAlbumInput, InsertReturnTypeMapper, InsertSearchInput, InsertTrackInput, InsertType, InsertTypeMapper, Search, Track, UpsertArtistInput } from './schema/db.types';
 
 export const supabaseClient = createClient<Database>(
   process.env.SUPABASE_URL, 
@@ -15,9 +15,9 @@ const insertRow = async <T extends InsertType>(type: T, input: InsertTypeMapper[
 };
 
 export const insert = {
-  artist: (input: UpsertArtistInput | UpsertArtistInput[]) => insertRow('artist', input),
-  album: (input: InsertAlbumInput | InsertAlbumInput[]) => insertRow('album', input),
-  track: (input: InsertTrackInput | InsertTrackInput[]) => insertRow('track', input),
-  search: (input: InsertSearchInput | InsertSearchInput[]) => insertRow('search', input),
+  artist: (input: UpsertArtistInput | UpsertArtistInput[]): Promise<PostgrestSingleResponse<Artist[]>> => insertRow('artist', input),
+  album: (input: InsertAlbumInput | InsertAlbumInput[]): Promise<PostgrestSingleResponse<Album[]>> => insertRow('album', input),
+  track: (input: InsertTrackInput | InsertTrackInput[]): Promise<PostgrestSingleResponse<Track[]>> => insertRow('track', input),
+  search: (input: InsertSearchInput | InsertSearchInput[]): Promise<PostgrestSingleResponse<Search[]>> => insertRow('search', input),
 };
 

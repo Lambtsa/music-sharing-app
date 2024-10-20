@@ -17,6 +17,16 @@ export const searchInputSchema = z.object({
   user: geolocationInputSchema
 });
 
+export const searchReturnSchema = z.object({
+  id: z.string(),
+  search_type: z.union([z.literal('artist'), z.literal('track'), z.literal('url')]),
+  artist: z.string().nullable(),
+  track: z.string().nullable(),
+  url: z.string().nullable(),
+  url_type: z.string().nullable(),
+  created_at: z.string(),
+});
+
 export const albumInputSchema = z.object({
   artistId: z.string().nullable(),
   user: geolocationInputSchema

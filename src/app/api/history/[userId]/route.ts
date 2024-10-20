@@ -10,7 +10,14 @@ import { getUserAgentInfo } from '@/utils/userAgentInfo';
 
 export const dynamic = 'force-dynamic';
 
-export const POST = async (req: NextRequest): Promise<Response> => {
+type RouteParams = {
+  params: Record<string, string>;
+};
+
+export const GET = async (req: NextRequest, _routeParams: RouteParams): Promise<Response> => {
+  // const {
+  //   params: { userId },
+  // } = routeParams;
   try {
     const body: AlbumInputType = await req.json();
     const userAgentInfo = getUserAgentInfo(req);

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { type ReactElement, useCallback, useMemo } from 'react';
 
 import { Logo } from '@/components/logo';
@@ -33,27 +33,27 @@ export const Header = (): ReactElement => {
       id: 'header.dropdown.profil.history.label',
       label: 'History',
       icon: 'music',
-      onClick: () => console.log('History clicked'),
+      onClick: () => router.push(routes.history()),
     },
-    {
-      id: 'header.dropdown.profil.privacy.label',
-      label: 'Privacy',
-      icon: 'privacy',
-      onClick: () => console.log('History clicked'),
-    },
-    {
-      id: 'header.dropdown.profil.terms.label',
-      label: 'Terms & conditions',
-      icon: 'terms',
-      onClick: () => console.log('History clicked'),
-    },
+    // {
+    //   id: 'header.dropdown.profil.privacy.label',
+    //   label: 'Privacy',
+    //   icon: 'privacy',
+    //   onClick: () => console.log('History clicked'),
+    // },
+    // {
+    //   id: 'header.dropdown.profil.terms.label',
+    //   label: 'Terms & conditions',
+    //   icon: 'terms',
+    //   onClick: () => console.log('History clicked'),
+    // },
     {
       id: 'header.dropdown.profil.signout.label',
       label: 'Sign out',
       icon: 'signout',
-      onClick: () => console.log('History clicked'),
+      onClick: () => signOut(),
     },
-  ]), []);
+  ]), [router]);
 
   const user = useMemo(() => session?.user, [session?.user]);
 

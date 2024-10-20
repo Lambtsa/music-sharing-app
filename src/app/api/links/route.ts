@@ -95,7 +95,9 @@ export const POST = async (req: NextRequest): Promise<Response> => {
     };
 
     await insert.search({
-      search: body.search.url,
+      track: null,
+      artist: null,
+      url: body.search.url,
       search_type: 'url',
       ip: body.user.ip ?? null,
       city: body.user.geolocation?.city ?? null,
