@@ -1,7 +1,8 @@
 import { type NextRequest } from 'next/server';
 
-import { insert } from '@/core/db';
+import { insert, upsert } from '@/core/db';
 import { BadRequestError, globalApiErrorHandler } from '@/core/errors';
+import type { User } from '@/core/schema/db.types';
 import { searchInputSchema } from '@/schemas/api.schema';
 import { DeezerWebApi } from '@/services/api/deezer';
 import { SpotifyWebApi } from '@/services/api/spotify';
@@ -94,16 +95,30 @@ export const POST = async (req: NextRequest): Promise<Response> => {
       }
     };
 
+    let user: User | null = null;
+
+    if (body.user.id && body.user.name && body.user.email) {
+      const userResponse = await upsert.user({
+        user_id: body.user.id,
+        name: body.user.name,
+        picture: body.user.picture,
+        email: body.user.email
+      });
+
+      user = userResponse.data?.[0] ?? null;
+    }
+
     await insert.search({
       track: null,
       artist: null,
       url: body.search.url,
       search_type: 'url',
-      ip: body.user.ip ?? null,
-      city: body.user.geolocation?.city ?? null,
-      country: body.user.geolocation?.country ?? null,
-      coordinates: body.user.geolocation?.coordinates ?? null,
-      timezone: body.user.geolocation?.timezone ?? null,
+      user_id: user?.id ?? null,
+      ip: body.user.geolocation.ip ?? null,
+      city: body.user.geolocation?.location?.city ?? null,
+      country: body.user.geolocation?.location?.country ?? null,
+      coordinates: body.user.geolocation?.location?.coordinates ?? null,
+      timezone: body.user.geolocation?.location?.timezone ?? null,
       url_type: urlType,
     });
     

@@ -1,11 +1,8 @@
 import { type NextRequest } from 'next/server';
-import pino from 'pino';
 
-import { insert } from '@/core/db';
+import { selectSearch, selectUser } from '@/core/db';
 import { BadRequestError, globalApiErrorHandler } from '@/core/errors';
-import { albumInputSchema } from '@/schemas/api.schema';
-import { SpotifyWebApi } from '@/services/api/spotify';
-import type { AlbumInputType } from '@/types/api';
+import type { SearchReturnType } from '@/types/api';
 import { getUserAgentInfo } from '@/utils/userAgentInfo';
 
 export const dynamic = 'force-dynamic';
@@ -14,21 +11,18 @@ type RouteParams = {
   params: Record<string, string>;
 };
 
-export const GET = async (req: NextRequest, _routeParams: RouteParams): Promise<Response> => {
-  // const {
-  //   params: { userId },
-  // } = routeParams;
+export const GET = async (req: NextRequest, routeParams: RouteParams): Promise<Response> => {
+  const {
+    params: { userId },
+  } = routeParams;
   try {
-    const body: AlbumInputType = await req.json();
     const userAgentInfo = getUserAgentInfo(req);
 
-    const albumSafeParse = albumInputSchema.safeParse(body);
-
-    if (!albumSafeParse.success || !body.artistId) {
+    if (!userId) {
       throw new BadRequestError({
-        message: 'Please provide valid input',
-        statusCode: 400,
-        url: '/api/albums',
+        message: 'User is not authenticated',
+        statusCode: 401,
+        url: '/api/history/[userId]',
         userAgentInfo,
       });
     }
@@ -36,61 +30,33 @@ export const GET = async (req: NextRequest, _routeParams: RouteParams): Promise<
     /* ############################## */
     /* FETCH DATA */
     /* ############################## */
-    const spotifyApi = new SpotifyWebApi();
-    const albums = await spotifyApi.getAlbumList(body.artistId);
+    const userResponse = await selectUser(userId);
 
-    await Promise.all([
-      albums.map(async (album) => {
-        try {
-          const { data: artist } = await insert.artist({
-            name: album.artist
-          });
-  
-          if (!artist?.[0]) {
-            return;
-          }
-  
-          const { data: insertedAlbum } = await insert.album({
-            name: album.album.name,
-            artist_id: artist[0].id,
-            cover: album.album.cover
-          });
-  
-          if (!insertedAlbum?.[0]) {
-            return;
-          }
-  
-          await album.tracks.forEach(async (track) => {
-            if (!artist?.[0] || !insertedAlbum?.[0]) {
-              return;
-            }
-            await insert.track({
-              title: track.track.name,
-              artist_id: artist?.[0]?.id,
-              album_id: insertedAlbum?.[0].id,
-              duration: track.track.duration,
-              track_number: track.track.track_number
-            });
-          });
-        } catch (err) {
-          pino().error(err);
-        }
-      }),
-      insert.search({
-        artist: body.artistId,
-        track: null,
-        url: null,
-        search_type: 'artist',
-        ip: body.user.ip ?? null,
-        city: body.user.geolocation?.city ?? null,
-        country: body.user.geolocation?.country ?? null,
-        coordinates: body.user.geolocation?.coordinates ?? null,
-        timezone: body.user.geolocation?.timezone ?? null,
-        url_type: null,
-      }),
-    ]);
+    const user = userResponse.data?.[0];
 
-    return new Response(JSON.stringify(albums), {
+    if (!user?.id) {
+      throw new Error('User not found');
+    }
+
+    const searchResponse = await selectSearch(user?.id);
+
+    if (!searchResponse.data) {
+      return new Response(JSON.stringify([]), {
+        status: 200,
+      }); 
+    }
+
+    const searches: SearchReturnType[] = searchResponse.data.map(((search) => ({
+      id: search.id,
+      search_type: search.search_type,
+      artist: search.artist,
+      track: search.track,
+      url: search.url,
+      url_type: search.url_type,
+      created_at: search.created_at
+    })));
+
+    return new Response(JSON.stringify(searches), {
       status: 200,
     });
   } catch (err) {

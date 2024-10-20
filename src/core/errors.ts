@@ -1,8 +1,31 @@
 import { type userAgent } from 'next/server';
-import pino, { type Logger } from 'pino';
+import { type Logger } from 'pino';
 import { z } from 'zod';
 
 import type { MusicProviders } from '@/types/music';
+import { logger } from '@/utils/logger';
+
+type ClientFetchErrorInput = {
+  message: string;
+  status: number;
+  statusText: string;
+};
+
+export class ClientFetchError extends Error {
+  timestamp: Date;
+  status: number;
+  statusText: string;
+
+  constructor({ message, status, statusText }: ClientFetchErrorInput) {
+    super(message);
+    this.name = 'ClientFetchError';
+    this.timestamp = new Date();
+    this.status = status;
+    this.statusText = statusText;
+
+    Object.setPrototypeOf(this, ClientFetchError.prototype);
+  }
+}
 
 export enum ErrorMessages {
   AuthenticationError = 'Authentication failed',
@@ -20,7 +43,7 @@ type ErrorDetails = {
 };
 
 export class BaseError extends Error {
-  logger: Logger = pino();
+  logger: Logger = logger;
   timestamp: Date;
 
   constructor(message: string) {
@@ -30,10 +53,6 @@ export class BaseError extends Error {
     this.timestamp = new Date();
 
     Object.setPrototypeOf(this, BaseError.prototype);
-  }
-
-  log(input: Record<string, unknown>) {
-    this.logger.error(input);
   }
 }
 
@@ -51,7 +70,7 @@ export class GatewayError extends BaseError {
     this.name = 'InternalServerError';
     this.statusCode = statusCode;
     this.type = type;
-    this.log({
+    this.logger.error({
       statusCode: this.statusCode,
       name: this.name,
       type: this.type,
@@ -80,7 +99,7 @@ export class InternalServerError extends BaseError {
     this.statusCode = statusCode;
     this.url = url;
     this.userAgentInfo = userAgentInfo;
-    this.log({
+    this.logger.error({
       statusCode: this.statusCode,
       name: this.name,
       message: this.message,
@@ -110,7 +129,7 @@ export class BadRequestError extends BaseError {
     this.statusCode = statusCode;
     this.url = url;
     this.userAgentInfo = userAgentInfo;
-    this.log({
+    this.logger.error({
       statusCode: this.statusCode,
       name: this.name,
       message: this.message,
@@ -144,7 +163,7 @@ export const globalApiErrorHandler = (err: unknown): Response => {
       });
     }
     default: {
-      console.error({
+      logger.error({
         status: 500,
         err,
       });

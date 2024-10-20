@@ -1,77 +1,49 @@
 'use client';
 
+import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper, flexRender, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { type ReactElement, useMemo } from 'react';
+import { useSession } from 'next-auth/react';
+import { type ReactElement, useCallback, useMemo } from 'react';
 
 import { Container } from '@/components/container';
 import { Icon } from '@/components/icon';
 import { useLightOrDarkTheme } from '@/context/ThemeContext';
+import { ClientFetchError } from '@/core/errors';
 // import { useTranslation } from '@/hooks/useTranslation';
 import type { SearchReturnType } from '@/types/api';
 
 export const HistoryScreen = (): ReactElement => {
   const { isLight } = useLightOrDarkTheme();
+  const { data: session } = useSession();
   // const { t } = useTranslation();
 
-  const columnHelper = createColumnHelper<SearchReturnType>();
+  const user = useMemo(() => session?.user, [session]);
 
-  const data = useMemo((): SearchReturnType[] => ([
-    {
-      search_type: 'artist',
-      artist: 'Prince',
-      track: null,
-      url: null,
-      id: '1',
-      url_type: null,
-      created_at: '2024-09-08T08:57:09.223Z',
-    },
-    {
-      search_type: 'artist',
-      artist: 'Prince',
-      track: null,
-      url: null,
-      id: '1',
-      url_type: null,
-      created_at: '2024-09-08T08:57:09.223Z',
-    },
-    {
-      search_type: 'track',
-      artist: 'The Beatles',
-      track: 'Hey Jude',
-      url: null,
-      id: '2',
-      url_type: null,
-      created_at: '2024-10-08T08:57:09.223Z',
-    },
-    {
-      search_type: 'track',
-      artist: 'The Beatles',
-      track: 'Hey Jude',
-      url: null,
-      id: '2',
-      url_type: null,
-      created_at: '2024-10-08T08:57:09.223Z',
-    },
-    {
-      search_type: 'track',
-      artist: 'The Rolling Stones',
-      track: 'Sticky Fingers',
-      url: null,
-      id: '3',
-      url_type: null,
-      created_at: '2024-08-14T08:57:09.223Z',
-    },
-    {
-      search_type: 'url',
-      artist: 'Dire Straits',
-      track: 'Sultans Of Swing',
-      url: 'https://open.spotify.com/track/37Tmv4NnfQeb0ZgUC4fOJj?si=38f1ca8c7f3d4c51',
-      id: '3',
-      url_type: 'spotify',
-      created_at: '2024-10-14T08:57:09.223Z',
-    },
-  ]), []);
+  const { data } = useQuery<SearchReturnType[]>({ queryKey: ['todos'], queryFn: async () => {
+    if (!user?.sub) {
+      throw new ClientFetchError({
+        message: 'An error occured while fetching history',
+        status: 401,
+        statusText: 'User is not authenticated',
+      });
+    }
+    const res = await fetch(`/api/history/${user?.sub}`);
+
+    if (!res.ok) {
+      throw new ClientFetchError({
+        message: 'An error occured while fetching history',
+        status: res.status,
+        statusText: res.statusText,
+      });
+    }
+
+    return res.json();
+  }});
+
+  const searchHistory = useMemo(() => data ?? [], [data]);
+
+  const columnHelper = createColumnHelper<SearchReturnType>();
 
   const columns = useMemo(
     () => [
@@ -147,7 +119,7 @@ export const HistoryScreen = (): ReactElement => {
 
   const table = useReactTable({
     debugTable: false,
-    data,
+    data: searchHistory,
     // manualPagination: true,
     columns,
     defaultColumn: {
@@ -160,24 +132,20 @@ export const HistoryScreen = (): ReactElement => {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  // const getCanNextPage = useCallback(() => {
-  //   if (table.getState(). === 1) {
-  //     return false;
-  //   }
-  //   if (pageState.currentIndex < pageState.pages.length - 1) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // }, [pageState.currentIndex, paginationState.totalPages, pageState.pages.length]);
-
-  // const currentIndex = useMemo(() => table.getState().pagination.pageIndex, [table]);
-  // const totalPages = useMemo(() => table.getPageCount(), [table]);
+  const selectedPage = useCallback((index: number) => {
+    return isLight 
+      ? index === table.getState().pagination.pageIndex 
+        ? 'bg-eerieBlack20' 
+        : '' 
+      : index === table.getState().pagination.pageIndex 
+        ? 'bg-ivory20' 
+        : '';
+  }, [isLight, table]);
 
   return (
     <main className={`flex-1 overflow-x-hidden min-w-full max-w-screen ${isLight ? 'bg-ivory' : 'bg-eerieBlack'}`}>
       <Container size='tablet'>
-        <h1 className='text-3xl font-bold text-ivory text-left w-full'>Previous searches</h1>
+        <h1 className={`text-2xl font-bold ${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left w-full`}>History</h1>
         <table className="w-full">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -199,7 +167,7 @@ export const HistoryScreen = (): ReactElement => {
                     }}
                   >
                     <button
-                      className={`flex gap-1 p-2 text-sm justify-start ${isLight ? 'text-eerieBlack70' : 'text-ivory70'} items-center min-w-full ${
+                      className={`flex gap-1 p-2 text-sm justify-start ${isLight ? 'text-eerieBlack' : 'text-ivory'} items-center min-w-full ${
                         header.column.getCanSort()
                           ? 'cursor-pointer select-none'
                           : ''
@@ -246,26 +214,30 @@ export const HistoryScreen = (): ReactElement => {
             ))}
           </tbody>
         </table>
-        <div className="flex justify-between items-center gap-4">
-          <select
-            className="rounded border px-3 py-1"
-            value={table.getState().pagination.pageSize}
-            onChange={e => {
-              table.setPageSize(Number(e.target.value));
-            }}
-          >
-            {[5, 10, 20, 50].map((number) => (
-              <option key={number} value={number}>
-                {number}
-              </option>
-            ))}
-          </select>
+        <div className="flex justify-between items-center gap-4 w-full">
+          <div className='flex justify-center items-center gap-2'>
+            <select
+              className="rounded border px-3 py-1"
+              value={table.getState().pagination.pageSize}
+              onChange={e => {
+                table.setPageSize(Number(e.target.value));
+              }}
+            >
+              {[5, 10, 20, 50].map((number) => (
+                <option key={number} value={number}>
+                  {number}
+                </option>
+              ))}
+            </select>
+            <span className={`w-min text-sm whitespace-nowrap ${isLight ? 'text-eerieBlack' : 'text-ivory'}`}>Items per page</span>
+          </div>
           <div className="flex justify-center items-center gap-2">
             <button
               data-testid="previous-page"
               type="button"
-              className={`flex justify-center items-center h-8 w-8 ${isLight ? 'hover:bg-eerieBlack20 rounded-full' : 'hover:bg-ivory20 rounded-full'}`}
+              className={`flex justify-center items-center h-8 w-8 ${isLight ? 'hover:bg-eerieBlack20 rounded-full' : 'hover:bg-ivory20 rounded-full'} disabled:opacity-40 disabled:cursor-not-allowed`}
               aria-label='go to previous page'
+              disabled={!table.getCanPreviousPage()}
               onClick={() => table.previousPage()}
             >
               <Icon icon='chevron' rotate={90} color={isLight ? 'rgba(38, 38, 38, 1)' : 'rgba(255, 254, 237, 1)'} />
@@ -273,11 +245,11 @@ export const HistoryScreen = (): ReactElement => {
 
             {/* first page, index 0 */}
             <button
-              className={`flex w-8 h-8 justify-center items-center ${isLight ? 'hover:bg-eerieBlack20 text-eerieBlack rounded-full' : 'hover:bg-ivory20 text-ivory rounded-full'} rounded-full text-brand`}
+              className={`flex w-8 h-8 justify-center items-center ${isLight ? 'hover:bg-eerieBlack20 text-eerieBlack rounded-full' : 'hover:bg-ivory20 text-ivory rounded-full'} ${selectedPage(0)} rounded-full text-brand`}
               type="button"
               data-testid="first-page-button"
               onClick={() => table.setPageIndex(0)}
-              // disabled={0 === table.getState().pagination.pageIndex}
+              disabled={0 === table.getState().pagination.pageIndex}
               aria-label='first page'
             >
               {1}
@@ -290,7 +262,7 @@ export const HistoryScreen = (): ReactElement => {
             {table.getState().pagination.pageIndex > 0 &&
               table.getState().pagination.pageIndex !== 1 && (
               <button
-                className={`flex w-8 h-8 justify-center items-center ${isLight ? 'hover:bg-eerieBlack20 text-eerieBlack rounded-full' : 'hover:bg-ivory20 text-ivory rounded-full'} rounded-full text-brand`}
+                className={`flex w-8 h-8 justify-center items-center ${isLight ? 'hover:bg-eerieBlack20 text-eerieBlack rounded-full' : 'hover:bg-ivory20 text-ivory rounded-full'} ${selectedPage(table.getState().pagination.pageIndex - 1)} rounded-full text-brand`}
                 type="button"
                 data-testid="previous-page-button"
                 onClick={() => table.previousPage()}
@@ -305,7 +277,7 @@ export const HistoryScreen = (): ReactElement => {
               table.getState().pagination.pageIndex + 1 <
               table.getPageCount() && (
               <button
-                className={`flex w-8 h-8 justify-center items-center ${isLight ? 'hover:bg-eerieBlack20 bg-eerieBlack20 text-eerieBlack rounded-full' : 'hover:bg-ivory20 bg-ivory20 text-ivory rounded-full'} rounded-full text-brand`}
+                className={`flex w-8 h-8 justify-center items-center ${isLight ? 'hover:bg-eerieBlack20 bg-eerieBlack20 text-eerieBlack rounded-full' : 'hover:bg-ivory20 bg-ivory20 text-ivory rounded-full'} ${selectedPage(table.getState().pagination.pageIndex)} rounded-full text-brand`}
                 type="button"
                 data-testid="current-page-button"
                 disabled
@@ -318,7 +290,7 @@ export const HistoryScreen = (): ReactElement => {
             {/* Next pages */}
             {table.getState().pagination.pageIndex + 2 < table.getPageCount() && (
               <button
-                className={`flex w-8 h-8 justify-center items-center ${isLight ? 'hover:bg-eerieBlack20 text-eerieBlack rounded-full' : 'hover:bg-ivory20 text-ivory rounded-full'} rounded-full text-brand`}
+                className={`flex w-8 h-8 justify-center items-center ${isLight ? 'hover:bg-eerieBlack20 text-eerieBlack rounded-full' : 'hover:bg-ivory20 text-ivory rounded-full'} ${selectedPage(table.getState().pagination.pageIndex + 1)} rounded-full text-brand`}
                 type="button"
                 data-testid="next-page-button"
                 onClick={() => table.nextPage()}
@@ -335,14 +307,14 @@ export const HistoryScreen = (): ReactElement => {
             {/* Last page */}
             {table.getPageCount() > 1 && (
               <button
-                className={`flex w-8 h-8 justify-center items-center ${isLight ? 'hover:bg-eerieBlack20 text-eerieBlack rounded-full' : 'hover:bg-ivory20 text-ivory rounded-full'} rounded-full text-brand`}
+                className={`flex w-8 h-8 justify-center items-center ${isLight ? 'hover:bg-eerieBlack20 text-eerieBlack rounded-full' : 'hover:bg-ivory20 text-ivory rounded-full'} ${selectedPage(table.getPageCount() - 1)} rounded-full text-brand`}
                 type="button"
                 data-testid="last-page-button"
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                // disabled={
-                //   table.getPageCount() - 1 ===
-                //   table.getState().pagination.pageIndex
-                // }
+                disabled={
+                  table.getPageCount() - 1 ===
+                  table.getState().pagination.pageIndex
+                }
                 aria-label='last page'
               >
                 {table.getPageCount()}
@@ -352,8 +324,9 @@ export const HistoryScreen = (): ReactElement => {
             <button
               data-testid="next-page"
               type="button"
-              className={`flex justify-center items-center h-8 w-8 ${isLight ? 'hover:bg-eerieBlack20 rounded-full' : 'hover:bg-ivory20 rounded-full'}`}
+              className={`flex justify-center items-center h-8 w-8 ${isLight ? 'hover:bg-eerieBlack20 rounded-full' : 'hover:bg-ivory20 rounded-full'} disabled:opacity-40 disabled:cursor-not-allowed`}
               aria-label='go to next page'
+              disabled={!table.getCanNextPage()}
               onClick={() => table.nextPage()}
             >
               <Icon icon='chevron' rotate={270} color={isLight ? 'rgba(38, 38, 38, 1)' : 'rgba(255, 254, 237, 1)'} />

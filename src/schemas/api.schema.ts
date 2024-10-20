@@ -14,7 +14,13 @@ export const searchInputSchema = z.object({
     artist: z.string().nullable(),
     url: z.string().nullable(),
   }),
-  user: geolocationInputSchema
+  user: z.object({
+    id: z.string().nullable(),
+    name: z.string().nullable(),
+    email: z.string().nullable(),
+    picture: z.string().nullable(),
+    geolocation: geolocationInputSchema
+  })
 });
 
 export const searchReturnSchema = z.object({
@@ -29,7 +35,13 @@ export const searchReturnSchema = z.object({
 
 export const albumInputSchema = z.object({
   artistId: z.string().nullable(),
-  user: geolocationInputSchema
+  user: z.object({
+    id: z.string().nullable(),
+    name: z.string().nullable(),
+    email: z.string().nullable(),
+    picture: z.string().nullable(),
+    geolocation: geolocationInputSchema
+  })
 });
 
 export const linkListReturnSchema = z.object({

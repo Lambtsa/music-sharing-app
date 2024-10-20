@@ -1,11 +1,12 @@
 import { type NextRequest } from 'next/server';
-import pino from 'pino';
 
-import { insert } from '@/core/db';
+import { insert, upsert } from '@/core/db';
 import { BadRequestError, globalApiErrorHandler } from '@/core/errors';
+import type { User } from '@/core/schema/db.types';
 import { albumInputSchema } from '@/schemas/api.schema';
 import { SpotifyWebApi } from '@/services/api/spotify';
 import type { AlbumInputType } from '@/types/api';
+import { logger } from '@/utils/logger';
 import { getUserAgentInfo } from '@/utils/userAgentInfo';
 
 export const dynamic = 'force-dynamic';
@@ -31,6 +32,20 @@ export const POST = async (req: NextRequest): Promise<Response> => {
     /* ############################## */
     const spotifyApi = new SpotifyWebApi();
     const albums = await spotifyApi.getAlbumList(body.artistId);
+
+    let user: User | null = null;
+
+    if (body.user.id && body.user.name && body.user.email) {
+      const userResponse = await upsert.user({
+        user_id: body.user.id,
+        name: body.user.name,
+        picture: body.user.picture,
+        email: body.user.email
+      });
+
+      user = userResponse.data?.[0] ?? null;
+    }
+
 
     await Promise.all([
       albums.map(async (album) => {
@@ -66,19 +81,20 @@ export const POST = async (req: NextRequest): Promise<Response> => {
             });
           });
         } catch (err) {
-          pino().error(err);
+          logger.error(err);
         }
       }),
       insert.search({
         artist: body.artistId,
         track: null,
         url: null,
+        user_id: user?.id || null,
         search_type: 'artist',
-        ip: body.user.ip ?? null,
-        city: body.user.geolocation?.city ?? null,
-        country: body.user.geolocation?.country ?? null,
-        coordinates: body.user.geolocation?.coordinates ?? null,
-        timezone: body.user.geolocation?.timezone ?? null,
+        ip: body.user.geolocation.ip ?? null,
+        city: body.user.geolocation?.location?.city ?? null,
+        country: body.user.geolocation?.location?.country ?? null,
+        coordinates: body.user.geolocation?.location?.coordinates ?? null,
+        timezone: body.user.geolocation?.location?.timezone ?? null,
         url_type: null,
       }),
     ]);

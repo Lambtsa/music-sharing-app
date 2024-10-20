@@ -35,6 +35,7 @@ export type Search = {
   country: string | null;
   coordinates: string | null;
   search_type: SearchType;
+  user_id: string | null;
   timezone: string | null;
   artist: string | null;
   track: string | null;
@@ -44,13 +45,24 @@ export type Search = {
   updated_at: string;
 };
 
-export type InsertType = 'artist' | 'album' | 'track' | 'search';
+export type User = {
+  id: string;
+  email: string;
+  name: string;
+  user_id: string;
+  picture: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type InsertType = 'artist' | 'album' | 'track' | 'search' | 'user';
 
 export type InsertTypeMapper = {
   artist: UpsertArtistInput | UpsertArtistInput[];
   album: InsertAlbumInput | InsertAlbumInput[];
   track: InsertTrackInput | InsertTrackInput[];
   search: InsertSearchInput | InsertSearchInput[];
+  user: InsertUserInput | InsertUserInput[];
 };
 
 export type InsertReturnTypeMapper = {
@@ -58,12 +70,14 @@ export type InsertReturnTypeMapper = {
   album: Album;
   track: Track;
   search: Search;
+  user: User;
 };
 
 export type UpsertArtistInput = Pick<Artist, 'name'>;
 export type InsertAlbumInput = Pick<Album, 'name' | 'cover' | 'artist_id'>;
 export type InsertTrackInput = Pick<Track, 'title' | 'artist_id' | 'album_id' | 'duration' | 'track_number'>;
-export type InsertSearchInput = Pick<Search, 'ip' | 'city' | 'country' | 'coordinates' | 'url' | 'artist' | 'track' | 'timezone' | 'search_type' | 'url_type'>;
+export type InsertSearchInput = Pick<Search, 'ip' | 'city' | 'user_id' | 'country' | 'coordinates' | 'url' | 'artist' | 'track' | 'timezone' | 'search_type' | 'url_type'>;
+export type InsertUserInput = Pick<User, 'user_id' | 'name' | 'email' | 'picture'>;
 
 export interface Database {
   public: {

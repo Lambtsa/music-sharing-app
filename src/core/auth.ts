@@ -3,6 +3,8 @@ import type { JWT } from 'next-auth/jwt';
 import GoogleProvider, { type GoogleProfile } from 'next-auth/providers/google';
 import SpotifyProvider, { type SpotifyProfile } from 'next-auth/providers/spotify';
 
+import { logger } from '@/utils/logger';
+
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
@@ -10,13 +12,13 @@ export const authOptions: NextAuthOptions = {
   },
   logger: {
     error(code, metadata) {
-      console.error(code, metadata);
+      logger.error(code, metadata);
     },
     warn(code) {
-      console.warn(code);
+      logger.warn(code);
     },
     debug(code, metadata) {
-      console.debug(code, metadata);
+      logger.debug(code, metadata);
     },
   },
   debug: process.env.NODE_ENV !== 'production',

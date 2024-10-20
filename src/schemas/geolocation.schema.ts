@@ -9,5 +9,5 @@ export const geolocationSchema = z.object({
 
 export const geolocationInputSchema = z.object({
   ip: z.string().optional(),
-  geolocation: geolocationSchema.optional(),
+  location: geolocationSchema.optional(),
 });

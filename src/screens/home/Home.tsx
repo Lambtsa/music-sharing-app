@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSession } from 'next-auth/react';
 import { type FormEvent, type ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
@@ -29,6 +30,8 @@ export const HomeScreen = (): ReactElement => {
   const { addToast } = useToast();
   const itemsRef = useRef<HTMLDivElement>(null);
 
+  const { data: session } = useSession();
+
   /* ################################################## */
   /* State */
   /* ################################################## */
@@ -42,6 +45,7 @@ export const HomeScreen = (): ReactElement => {
   const [details, setDetails] = useState<MusicDetails | undefined>(
     undefined,
   );
+  const user = useMemo(() => session?.user, [session]);
   
   const createErrorMessage = useCallback(
     (selected: SearchType): string => {
@@ -201,8 +205,14 @@ export const HomeScreen = (): ReactElement => {
                 url: formFields.url ?? null,
               },
               user: {
-                ip,
-                geolocation,
+                id: user?.sub ?? null,
+                name: user?.name ?? null,
+                email: user?.email ?? null,
+                picture: user?.picture ?? null,
+                geolocation: {
+                  ip,
+                  location: geolocation
+                }
               },
             };
             switch (selected) {
@@ -328,7 +338,7 @@ export const HomeScreen = (): ReactElement => {
         },
       )();
     },
-    [addToast, artist, defaultValues, geolocation, handleSubmit, ip, isLoading, reset, resetStates, scrollToTop, selected, track],
+    [addToast, artist, defaultValues, geolocation, handleSubmit, ip, isLoading, reset, resetStates, scrollToTop, selected, track, user?.email, user?.name, user?.picture, user?.sub],
   );
 
   const handleOnArtistClick = useCallback(
@@ -344,8 +354,14 @@ export const HomeScreen = (): ReactElement => {
         const body: AlbumInputType = {
           artistId,
           user: {
-            ip,
-            geolocation,
+            id: user?.sub ?? null,
+            name: user?.name ?? null,
+            email: user?.email ?? null,
+            picture: user?.picture ?? null,
+            geolocation: {
+              ip,
+              location: geolocation
+            }
           },
         };
 
@@ -395,7 +411,7 @@ export const HomeScreen = (): ReactElement => {
       } finally {
         setIsLoading(false);
       }
-    }, [addToast, defaultValues, geolocation, ip, isLoading, reset, resetStates, scrollToTop]);
+    }, [addToast, defaultValues, geolocation, ip, isLoading, reset, resetStates, scrollToTop, user?.email, user?.name, user?.picture, user?.sub]);
 
   const handleOnTrackClick = useCallback(
     async (url: string) => {
@@ -414,8 +430,14 @@ export const HomeScreen = (): ReactElement => {
             url,
           },
           user: {
-            ip,
-            geolocation,
+            id: user?.sub ?? null,
+            name: user?.name ?? null,
+            email: user?.email ?? null,
+            picture: user?.picture ?? null,
+            geolocation: {
+              ip,
+              location: geolocation
+            }
           },
         };
 
@@ -457,7 +479,7 @@ export const HomeScreen = (): ReactElement => {
         setIsLoading(false);
       }
     },
-    [addToast, defaultValues, details?.artist, details?.track, geolocation, ip, isLoading, reset, resetStates, scrollToTop],
+    [addToast, defaultValues, details?.artist, details?.track, geolocation, ip, isLoading, reset, resetStates, scrollToTop, user?.email, user?.name, user?.picture, user?.sub],
   );
 
   const hasTracks = useMemo(() => !!tracks.length, [tracks]);
