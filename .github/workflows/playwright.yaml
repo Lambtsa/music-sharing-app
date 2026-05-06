@@ -34,7 +34,7 @@ jobs:
       # E2E Tests
       ##############################
       # Get access to github repository
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         id: checkout
         with:
           fetch-depth: 0
