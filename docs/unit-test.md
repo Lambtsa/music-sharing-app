@@ -98,7 +98,7 @@ data-testid
   ```
 #### Coverage
 
-We must have a test coverage on new code of at least 80%. Coverage rat is measured by Sonar Cloud. 
+We must have a test coverage on new code of at least 80%. Coverage rat is measured by Snyk. 
 
 #### Unit testing examples
 
