@@ -1,6 +1,8 @@
-import { BadRequestError } from "@/constants/errors";
-import { isValidData, sanitiseData } from "./sanitise";
 import { z } from "zod";
+
+import { BadRequestError } from "@/constants/errors";
+
+import { isValidData, sanitiseData } from "./sanitise";
 
 describe("Sanity test", () => {
   test("1 should equal 1", () => {
@@ -15,33 +17,54 @@ describe("isValidData helper for object", () => {
   });
   test("Empty string for both artist and title should throw an error", () => {
     expect(() => {
-      isValidData({ artist: "", title: "" }, testSchema);
+      isValidData({
+        artist: "",
+        title: "" 
+      }, testSchema);
     }).toThrow(new BadRequestError());
   });
   test("Empty string for artist should throw an error", () => {
     expect(() => {
-      isValidData({ artist: "", title: "Fragile" }, testSchema);
+      isValidData({
+        artist: "",
+        title: "Fragile" 
+      }, testSchema);
     }).toThrow(new BadRequestError());
   });
   test("Empty string for title should throw an error", () => {
     expect(() => {
-      isValidData({ artist: "Last Train", title: "" }, testSchema);
+      isValidData({
+        artist: "Last Train",
+        title: "" 
+      }, testSchema);
     }).toThrow(new BadRequestError());
   });
 
   test("Input that has whitespace should be returned without", () => {
     expect(
-      isValidData({ artist: "Last Train    ", title: "Fragile" }, testSchema),
+      isValidData({
+        artist: "Last Train    ",
+        title: "Fragile" 
+      }, testSchema),
     ).toHaveProperty("artist", "Last Train");
     expect(
-      isValidData({ artist: "   Last Train", title: "Fragile" }, testSchema),
+      isValidData({
+        artist: "   Last Train",
+        title: "Fragile" 
+      }, testSchema),
     ).toHaveProperty("artist", "Last Train");
     expect(
-      isValidData({ artist: "Last Train", title: "    Fragile" }, testSchema),
+      isValidData({
+        artist: "Last Train",
+        title: "    Fragile" 
+      }, testSchema),
     ).toHaveProperty("title", "Fragile");
     expect(
       isValidData(
-        { artist: "   Last Train", title: "Fragile    " },
+        {
+          artist: "   Last Train",
+          title: "Fragile    " 
+        },
         testSchema,
       ),
     ).toHaveProperty("title", "Fragile");
@@ -49,7 +72,10 @@ describe("isValidData helper for object", () => {
 
   test("Input that has too much whitespace should be returned without only one", () => {
     expect(
-      isValidData({ artist: "Last  Train", title: "Fragile" }, testSchema),
+      isValidData({
+        artist: "Last  Train",
+        title: "Fragile" 
+      }, testSchema),
     ).toHaveProperty("artist", "Last Train");
   });
 });

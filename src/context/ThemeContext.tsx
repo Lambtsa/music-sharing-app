@@ -1,11 +1,15 @@
+"use client";
+
 import {
   createContext,
   type Dispatch,
   type ReactNode,
   type SetStateAction,
   useContext,
+  useEffect,
   useState
-} from 'react';
+} from "react";
+import { useCookie } from "react-use";
 
 interface ThemeContextShape {
   isLight: boolean;
@@ -16,31 +20,43 @@ interface ThemeProviderProps {
   children: ReactNode;
 }
 
-const LightOrDarkThemeContext = createContext<ThemeContextShape | undefined>(
+const ThemeContext = createContext<ThemeContextShape | undefined>(
   undefined,
 );
 
-const LightOrDarkThemeProvider = ({ children }: ThemeProviderProps) => {
+const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const [isLight, setIsLight] = useState(false);
+  const [cookie, updateCookie] = useCookie("theme");
 
   const toggle = {
     isLight,
     setIsLight,
   };
 
+  useEffect(() => {
+    if (cookie && cookie === `${isLight}`) {
+      return;
+    }
+    updateCookie(`${isLight}`, {
+      expires: 31536000,
+    });
+  }, [cookie, isLight, updateCookie]);
+
   return (
-    <LightOrDarkThemeContext.Provider value={toggle}>
-      {children}
-    </LightOrDarkThemeContext.Provider>
+    <ThemeContext.Provider value={toggle}>
+      <main className={`grid grid-rows-[60px_1fr_60px] h-full overflow-x-hidden min-w-full max-w-screen ${isLight ? "bg-ivory" : "bg-eerie-black"}`}>
+        {children}
+      </main>
+    </ThemeContext.Provider>
   );
 };
 
-export { LightOrDarkThemeContext, LightOrDarkThemeProvider };
+export { ThemeContext, ThemeProvider };
 
-export function useLightOrDarkTheme(): ThemeContextShape {
-  const context = useContext(LightOrDarkThemeContext);
+export function useTheme(): ThemeContextShape {
+  const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error('useLightOrDarkTheme must be used within a LightOrDarkThemeProvider');
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
 }

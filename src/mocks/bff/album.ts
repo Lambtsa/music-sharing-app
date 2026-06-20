@@ -1,7 +1,7 @@
-import { faker } from '@faker-js/faker';
-import { v4 as uuid } from 'uuid';
+import { faker } from "@faker-js/faker";
+import { v4 as uuid } from "uuid";
 
-import type { AlbumReturnType } from '@/types/api';
+import type { AlbumReturnType } from "@/types/api";
 
 export const mockAlbums = (): AlbumReturnType[] => {
 
@@ -10,20 +10,24 @@ export const mockAlbums = (): AlbumReturnType[] => {
     artist: faker.music.artist(),
     album: {
       name: faker.music.album(),
-      cover: '',
+      cover: "",
     },
-    imageUrl: '',
+    imageUrl: "",
     release_date: faker.date.recent().toISOString(),
-    tracks: Array.from(Array(faker.number.int({ max: 5 }))).map((_) => ({
+    tracks: Array.from(Array(faker.number.int({
+      max: 5 
+    }))).map((_) => ({
       id: uuid(),
       artist: faker.music.artist(),
       track: {
         name: faker.music.songName(),
-        url: '',
+        url: "",
         duration: faker.number.int(),
-        track_number: faker.number.int({ max: 20 }),
+        track_number: faker.number.int({
+          max: 20 
+        }),
       },
-      url: '',
+      url: "",
     })),
   }));
 };

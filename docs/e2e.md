@@ -9,13 +9,6 @@ This document describes the e2e testing process and setup.
 
 ## CI process
 
-### ⬆️ [Playwright](../.github/workflows/playwright.yaml)
-The setup for playwright in the CI process is pretty standard 
-- Checkout the repository, 
-- Install dependencies, 
-- Run tests 
-- Upload the results to the github artifacts
-
 ## Local
 In the local development environment, the e2e tests are run against a local server at `http://localhost:3000` so you might get an error if you are already running a dev server locally. 
 

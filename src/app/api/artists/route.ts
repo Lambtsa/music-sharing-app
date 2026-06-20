@@ -1,14 +1,14 @@
-import { type NextRequest } from 'next/server';
+import { type NextRequest } from "next/server";
 
 // import pino from 'pino';
 // import { insert } from '@/core/db';
-import { BadRequestError, globalApiErrorHandler } from '@/core/errors';
-import { searchInputSchema } from '@/schemas/api.schema';
-import { SpotifyWebApi } from '@/services/api/spotify';
-import type { SearchInputType } from '@/types/api';
-import { getUserAgentInfo } from '@/utils/userAgentInfo';
+import { BadRequestError, globalApiErrorHandler } from "@/core/errors";
+import { searchInputSchema } from "@/schemas/api.schema";
+import { SpotifyWebApi } from "@/services/api/spotify";
+import type { SearchInputType } from "@/types/api";
+import { getUserAgentInfo } from "@/utils/userAgentInfo";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export const POST = async (req: NextRequest): Promise<Response> => {
   try {
@@ -19,9 +19,9 @@ export const POST = async (req: NextRequest): Promise<Response> => {
 
     if (!albumSafeParse.success || !body.search.artist) {
       throw new BadRequestError({
-        message: 'Please provide valid input',
+        message: "Please provide valid input",
         statusCode: 400,
-        url: '/api/albums',
+        url: "/api/albums",
         userAgentInfo,
       });
     }

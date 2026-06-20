@@ -1,8 +1,8 @@
-import { type ReactElement, useMemo } from 'react';
+import { type ReactElement, useMemo } from "react";
 
-import type { TrackReturnType } from '@/types/api';
+import type { TrackReturnType } from "@/types/api";
 
-import { TrackBtn } from './track_button';
+import { TrackBtn } from "./track_button";
 
 type TracklistProps = {
   tracks: TrackReturnType[];

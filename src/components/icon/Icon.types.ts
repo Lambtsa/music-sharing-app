@@ -1,4 +1,4 @@
-import { type ReactNode, type SVGProps } from 'react';
+import { type ReactNode, type SVGProps } from "react";
 
 export interface IconProps extends SVGProps<SVGSVGElement> {
   height?: number;
@@ -14,22 +14,22 @@ export interface IconProps extends SVGProps<SVGSVGElement> {
   children: ReactNode;
 }
 export type IconType =
-  | 'burger'
-  | 'close'
-  | 'chevron'
-  | 'dark'
-  | 'deezer'
-  | 'info'
-  | 'light'
-  | 'link'
-  | 'moon'
-  | 'music'
-  | 'placeholder'
-  | 'search'
-  | 'share'
-  | 'spotify'
-  | 'sun'
-  | 'tick'
-  | 'valid'
-  | 'warning'
-  | 'youtube';
+  | "burger"
+  | "close"
+  | "chevron"
+  | "dark"
+  | "deezer"
+  | "info"
+  | "light"
+  | "link"
+  | "moon"
+  | "music"
+  | "placeholder"
+  | "search"
+  | "share"
+  | "spotify"
+  | "sun"
+  | "tick"
+  | "valid"
+  | "warning"
+  | "youtube";

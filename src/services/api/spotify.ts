@@ -1,14 +1,23 @@
-import { GatewayError } from '@/core/errors';
-import type { AlbumReturnType, ArtistReturnType, MusicDetails, SpotifyAlbumListApiResponseType, SpotifyArtistListApiResponseType, SpotifyTrackApiResponseType, SpotifyTrackListApiResponseType, TrackReturnType } from '@/types/api';
-import { albumMapper } from '@/utils/mappers/albumMapper';
-import { artistMapper } from '@/utils/mappers/artistMapper';
-import { trackMapper } from '@/utils/mappers/trackMapper';
+import { GatewayError } from "@/core/errors";
+import type {
+  AlbumReturnType,
+  ArtistReturnType,
+  MusicDetails,
+  SpotifyAlbumListApiResponseType,
+  SpotifyArtistListApiResponseType,
+  SpotifyTrackApiResponseType,
+  SpotifyTrackListApiResponseType,
+  TrackReturnType
+} from "@/types/api";
+import { albumMapper } from "@/utils/mappers/albumMapper";
+import { artistMapper } from "@/utils/mappers/artistMapper";
+import { trackMapper } from "@/utils/mappers/trackMapper";
 
-import type { AccessTokenBody, BuildSpotifySearchApiUrlInput } from './api.types';
+import type { AccessTokenBody, BuildSpotifySearchApiUrlInput } from "./api.types";
 
 export class SpotifyWebApi {
-  #baseUrl = 'https://api.spotify.com/v1';
-  #tokenUrl = 'https://accounts.spotify.com/api/token';
+  #baseUrl = "https://api.spotify.com/v1";
+  #tokenUrl = "https://accounts.spotify.com/api/token";
   #searchUrl = `${this.#baseUrl}/search`;
 
   // constructor() {}
@@ -19,7 +28,7 @@ export class SpotifyWebApi {
    */
   private encodeBearer(): string {
     const data = `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`;
-    const encodedString = Buffer.from(data).toString('base64');
+    const encodedString = Buffer.from(data).toString("base64");
     return `Basic ${encodedString}`;
   }
 
@@ -32,20 +41,20 @@ export class SpotifyWebApi {
     const auth = this.encodeBearer();
 
     const response = await fetch(this.#tokenUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: auth,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
       },
-      body: 'grant_type=client_credentials',
-      cache: 'no-store',
+      body: "grant_type=client_credentials",
+      cache: "no-store",
     });
 
     if (!response.ok) {
       throw new GatewayError({
-        message: 'Issue authenticating spotify API',
+        message: "Issue authenticating spotify API",
         statusCode: response.status,
-        type: 'spotify',
+        type: "spotify",
       });
     }
 
@@ -63,8 +72,8 @@ export class SpotifyWebApi {
     with: { artist, track, album },
   }: BuildSpotifySearchApiUrlInput): string {
     const url = new URL(this.#searchUrl);
-    url.searchParams.append('type', searchFor);
-    url.searchParams.append('market', 'FR');
+    url.searchParams.append("type", searchFor);
+    url.searchParams.append("market", "FR");
     const search: string[] = [];
 
     if (artist) {
@@ -76,7 +85,7 @@ export class SpotifyWebApi {
     if (album) {
       search.push(`album:${album}`);
     }
-    url.searchParams.append('q', search.join(' '));
+    url.searchParams.append("q", search.join(" "));
     return url.toString();
   }
 
@@ -86,8 +95,8 @@ export class SpotifyWebApi {
    */
   private buildSpotifyTracksByAlbumListApiUrl(id: string): string {
     const url = new URL(`${this.#baseUrl}/albums/${id}/tracks`);
-    url.searchParams.append('market', 'FR');
-    url.searchParams.append('limit', '30');
+    url.searchParams.append("market", "FR");
+    url.searchParams.append("limit", "30");
     return url.toString();
   }
 
@@ -97,9 +106,9 @@ export class SpotifyWebApi {
    */
   private buildSpotifyAlbumListByArtistApiUrl(artistId: string): string {
     const url = new URL(`${this.#baseUrl}/artists/${artistId}/albums`);
-    url.searchParams.append('include_groups', 'album,single');
-    url.searchParams.append('market', 'FR');
-    url.searchParams.append('limit', '50');
+    url.searchParams.append("include_groups", "album,single");
+    url.searchParams.append("market", "FR");
+    url.searchParams.append("limit", "50");
     return url.toString();
   }
 
@@ -112,14 +121,18 @@ export class SpotifyWebApi {
     const accessToken = await this.getAccessToken();
 
     const spotifyUrl = this.buildSpotifySearchApiUrl({
-      searchFor: 'track',
-      with: { track, artist, album: null },
+      searchFor: "track",
+      with: {
+        track,
+        artist,
+        album: null 
+      },
     });
 
     const response = await fetch(spotifyUrl, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -127,7 +140,7 @@ export class SpotifyWebApi {
       throw new GatewayError({
         message: response.statusText,
         statusCode: response.status,
-        type: 'spotify',
+        type: "spotify",
       });
     }
 
@@ -155,7 +168,7 @@ export class SpotifyWebApi {
     const response = await fetch(spotifyUrl.toString(), {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -163,7 +176,7 @@ export class SpotifyWebApi {
       throw new GatewayError({
         message: response.statusText,
         statusCode: response.status,
-        type: 'spotify',
+        type: "spotify",
       });
     }
 
@@ -180,7 +193,7 @@ export class SpotifyWebApi {
         const response = await fetch(spotifyUrl, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
 
@@ -188,10 +201,10 @@ export class SpotifyWebApi {
           throw new GatewayError({
             message: response.statusText,
             statusCode: response.status,
-            type: 'spotify',
+            type: "spotify",
           });
         }
-        const trackdata = (await response.json()) as SpotifyTrackListApiResponseType['tracks'];
+        const trackdata = (await response.json()) as SpotifyTrackListApiResponseType["tracks"];
 
         return albumMapper(album, trackdata);
       }),
@@ -212,14 +225,18 @@ export class SpotifyWebApi {
     const accessToken = await this.getAccessToken();
 
     const spotifyUrl = this.buildSpotifySearchApiUrl({
-      searchFor: 'artist',
-      with: { artist, track: null, album: null },
+      searchFor: "artist",
+      with: {
+        artist,
+        track: null,
+        album: null 
+      },
     });
 
     const response = await fetch(spotifyUrl.toString(), {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -227,7 +244,7 @@ export class SpotifyWebApi {
       throw new GatewayError({
         message: response.statusText,
         statusCode: response.status,
-        type: 'spotify',
+        type: "spotify",
       });
     }
 
@@ -252,7 +269,7 @@ export class SpotifyWebApi {
     const response = await fetch(spotifyUrl, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -260,14 +277,14 @@ export class SpotifyWebApi {
       throw new GatewayError({
         message: response.statusText,
         statusCode: response.status,
-        type: 'spotify',
+        type: "spotify",
       });
     }
 
     const data = (await response.json()) as SpotifyTrackApiResponseType;
 
     return {
-      artist: data.artists[0]?.name || 'No artist',
+      artist: data.artists[0]?.name || "No artist",
       track: data.name,
       album: data.album.name,
     };
@@ -286,14 +303,14 @@ export class SpotifyWebApi {
 
     /* Will return TrackResponse response */
     const spotifyUrl = this.buildSpotifySearchApiUrl({
-      searchFor: 'track',
+      searchFor: "track",
       with: input
     });
 
     const response = await fetch(spotifyUrl, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -301,7 +318,7 @@ export class SpotifyWebApi {
       throw new GatewayError({
         message: response.statusText,
         statusCode: response.status,
-        type: 'spotify',
+        type: "spotify",
       });
     }
 

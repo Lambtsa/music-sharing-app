@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import { Fragment, type PropsWithChildren, type ReactElement } from 'react';
-import { IntlProvider } from 'react-intl';
+import {
+  Fragment, type PropsWithChildren, type ReactElement 
+} from "react";
+import { IntlProvider } from "react-intl";
 
-import { LightOrDarkThemeProvider } from '@/context/ThemeContext';
-import { ToastProvider } from '@/context/ToastContext';
-import translations from '@/locales/en-UK.json';
+import { ThemeProvider } from "@/context/ThemeContext";
+import translations from "@/locales/en-UK.json";
 
 export const AppProviders = ({ children }: PropsWithChildren): ReactElement => {
   return (
@@ -14,11 +15,9 @@ export const AppProviders = ({ children }: PropsWithChildren): ReactElement => {
       messages={translations}
       textComponent={Fragment}
     >
-      <LightOrDarkThemeProvider>
-        <ToastProvider>
-          {children}
-        </ToastProvider>
-      </LightOrDarkThemeProvider>
+      <ThemeProvider>
+        {children}
+      </ThemeProvider>
     </IntlProvider>
   );
 };

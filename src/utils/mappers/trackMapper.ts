@@ -1,10 +1,10 @@
-import type { SpotifyTrackApiResponseType, TrackReturnType } from '@/types/api';
+import type { SpotifyTrackApiResponseType, TrackReturnType } from "@/types/api";
 
 export const trackMapper = (tracks: SpotifyTrackApiResponseType[]): TrackReturnType[] => {
   return tracks.map((item) => {
     return {
       id: item.id,
-      artist: item.album.artists[0]?.name || 'Artist unknown',
+      artist: item.album.artists[0]?.name || "Artist unknown",
       track: {
         name: item.name,
         url: item.external_urls.spotify,

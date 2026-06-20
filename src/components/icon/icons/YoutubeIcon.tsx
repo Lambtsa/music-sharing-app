@@ -1,8 +1,8 @@
-import type { IconProps } from '@/components/icon/Icon.types';
+import type { IconProps } from "@/components/icon/Icon.types";
 
-import { BaseIcon } from './BaseIcon';
+import { BaseIcon } from "./BaseIcon";
 
-export const YoutubeIcon = ({ ...props }: Omit<IconProps, 'children'>) => {
+export const YoutubeIcon = ({ ...props }: Omit<IconProps, "children">) => {
   return (
     <BaseIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 21" fill="none" {...props}>
       <rect x="7.49023" y="4.15527" width="16.2711" height="12.6657" fill="#FFFEED"/>

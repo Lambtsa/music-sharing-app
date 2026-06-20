@@ -1,6 +1,6 @@
-import type { z } from 'zod';
+import type { z } from "zod";
 
-import { BadRequestError } from '@/constants/errors';
+import { BadRequestError } from "@/constants/errors";
 
 /**
  * Small helper function to remove whitespace and trim
@@ -8,7 +8,7 @@ import { BadRequestError } from '@/constants/errors';
  */
 export const sanitiseData = <T extends string>(input: T): T => {
   const rmWhitespaceRegex = /\s\s+/g;
-  return input.trim().replace(rmWhitespaceRegex, ' ') as T;
+  return input.trim().replace(rmWhitespaceRegex, " ") as T;
 };
 
 /**

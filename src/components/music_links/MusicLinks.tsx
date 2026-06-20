@@ -1,17 +1,18 @@
-import { type ReactElement, useCallback, useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
+import {
+  type ReactElement, useCallback, useEffect, useState 
+} from "react";
+import { toast } from "sonner";
 
-import { Icon } from '@/components/icon';
-import { MusicLink } from '@/components/link';
-import { useToast } from '@/context/ToastContext';
-import { useTranslation } from '@/hooks/useTranslation';
-import type { LinkListReturnType, MusicDetails } from '@/types/api';
-import type { MusicProviders } from '@/types/music';
-import { delay } from '@/utils/time';
+import { Icon } from "@/components/icon";
+import { MusicLink } from "@/components/link";
+import { useTranslation } from "@/hooks/useTranslation";
+import type { LinkListReturnType, MusicDetails } from "@/types/api";
+import type { MusicProviders } from "@/types/music";
+import { delay } from "@/utils/time";
 
 interface MusicLinksProps {
   isLight: boolean;
-  links: LinkListReturnType['links'];
+  links: LinkListReturnType["links"];
   details: MusicDetails | undefined
 }
 
@@ -20,7 +21,6 @@ export const MusicLinks = ({
   links,
   details,
 }: MusicLinksProps): ReactElement => {
-  const { addToast } = useToast();
   const { t } = useTranslation();
   /* ############################## */
   /* State */
@@ -66,20 +66,17 @@ export const MusicLinks = ({
         const url = links[provider];
         
         if (!url) {
-          return 'No track available';
+          return "No track available";
         }
         return url;
       })
-      .join('\n \n');
+      .join("\n \n");
   }, [links, selectedProviders]);
 
   const handleCopyLink = useCallback(async () => {
     if (!navigator.share) {
-      addToast({
-        message: 'Unfortunately, your browser does not support sharing',
-        type: 'warning',
-        title: 'Cannot share',
-        id: uuid()
+      toast.warning("Cannot share", {
+        description: "Unfortunately, your browser does not support sharing"
       });
       return;
     }
@@ -88,29 +85,28 @@ export const MusicLinks = ({
       await navigator.share({
         text: createCopyString().trim()
       });
-      addToast({
-        message: `You have shared your link${selectedProviders.length > 1 ? 's' : ''}`,
-        type: 'success',
-        title: 'Copied',
-        id: uuid()
+      toast.success("Copied", {
+        description: `You have shared your link${selectedProviders.length > 1 ? "s" : ""}`,
       });
     } catch (err) {
-      addToast({
-        message: 'There has been an error sharing the link',
-        type: 'warning',
-        title: 'Not shared',
-        id: uuid()
+      toast.warning("Not shared", {
+        description: "There has been an error sharing the link",
       });
     }
-  }, [addToast, createCopyString, selectedProviders.length]);
+  }, [createCopyString, selectedProviders.length]);
 
   const hasProviders = !!selectedProviders.length;
   return (
     <>
-      <p className={`${isLight ? 'text-eerieBlack70' : 'text-ivory70'} font-normal text-left text-base leading-5 mb-4`}>
+      <p className={`${isLight ? "text-eerie-black-70" : "text-ivory-70"} font-normal text-left text-base leading-5 mb-4`}>
         {t(
-          { id: 'home.showingResults' },
-          { artist: details?.artist, track: details?.track },
+          {
+            id: "home.showingResults" 
+          },
+          {
+            artist: details?.artist,
+            track: details?.track 
+          },
         )}
       </p>
       {(Object.entries(links) as [MusicProviders, string | null][]).map(([ name, url ]) => (
@@ -130,7 +126,7 @@ export const MusicLinks = ({
         onClick={handleCopyLink}
       >
         <Icon icon='share' color='#FFFEED' height={20} />
-        {selectedProviders.length > 1 ? 'Share Links' : 'Share Link'}
+        {selectedProviders.length > 1 ? "Share Links" : "Share Link"}
       </button>
     </>
   );

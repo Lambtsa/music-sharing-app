@@ -1,8 +1,8 @@
-import type { IconProps } from '@/components/icon/Icon.types';
+import type { IconProps } from "@/components/icon/Icon.types";
 
-import { BaseIcon } from './BaseIcon';
+import { BaseIcon } from "./BaseIcon";
 
-export const LightIcon = ({ ...props }: Omit<IconProps, 'children'>) => {
+export const LightIcon = ({ ...props }: Omit<IconProps, "children">) => {
   return (
     <BaseIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" fill="none" {...props}>
       <path d="M14.4311 17.0742L7.26502 29.2086C7.04477 29.5816 7.04239 30.0443 7.25878 30.4193L8.94279 33.3382C9.40455 34.1386 10.5594 34.1381 11.021 33.3374L17.2417 22.5471C17.4539 22.179 17.8447 21.9505 18.2693 21.9463L31.2118 21.8181C32.1195 21.8091 32.6891 20.8336 32.251 20.0382L30.6352 17.105C30.4243 16.7221 30.0219 16.4843 29.5849 16.4843L15.4643 16.4843C15.0399 16.4843 14.647 16.7086 14.4311 17.0742Z" fill="#FFFEED"/>

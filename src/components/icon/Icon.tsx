@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { type ReactElement, useMemo } from 'react';
+import { type ReactElement, useMemo } from "react";
 
-import type { IconProps, IconType } from './Icon.types';
+import type { IconProps, IconType } from "./Icon.types";
 import {
   BurgerIcon,
   ChevronIcon,
@@ -23,9 +23,9 @@ import {
   ValidIcon,
   WarningIcon,
   YoutubeIcon,
-} from './icons';
+} from "./icons";
 
-export const icons: Record<IconType, (props: Omit<IconProps, 'children'>) => ReactElement> = {
+export const icons: Record<IconType, (props: Omit<IconProps, "children">) => ReactElement> = {
   burger: BurgerIcon,
   close: CloseIcon,
   chevron: ChevronIcon,
@@ -52,13 +52,13 @@ export const Icon = ({
   icon,
   height = 24,
   width = 24,
-  color = '#000000',
+  color = "#000000",
   onClick,
   className,
   disabled = false,
   rotate = 0,
   ...props
-}: Omit<IconProps, 'children'> & { icon: IconType }): ReactElement => {
+}: Omit<IconProps, "children"> & { icon: IconType }): ReactElement => {
   const IconComponent = useMemo(() => {
     return icons[icon];
   }, [icon]);
@@ -66,14 +66,14 @@ export const Icon = ({
   const { ...rest } = props;
 
   const buttonClassName = useMemo((): string => {
-    let btnClass = `${className ?? ''} p-1.5`;
+    let btnClass = `${className ?? ""} p-1.5`;
 
     if (onClick) {
-      btnClass = `${className ?? ''} p-1.5 hover:bg-blue50 rounded`;
+      btnClass = `${className ?? ""} p-1.5 hover:bg-blue50 rounded`;
     }
 
     if (disabled) {
-      btnClass = `${className ?? ''} p-1.5 cursor-not-allowed`;
+      btnClass = `${className ?? ""} p-1.5 cursor-not-allowed`;
     }
 
     return btnClass;
@@ -88,7 +88,7 @@ export const Icon = ({
           <IconComponent
             id={id}
             rotate={rotate}
-            color={disabled ? '#687787' : color}
+            color={disabled ? "#687787" : color}
             height={height}
             width={width}
             opacity={disabled ? 0.6 : 1}

@@ -1,8 +1,8 @@
-import type { IconProps } from '@/components/icon/Icon.types';
+import type { IconProps } from "@/components/icon/Icon.types";
 
-import { BaseIcon } from './BaseIcon';
+import { BaseIcon } from "./BaseIcon";
 
-export const DeezerIcon = ({ ...props }: Omit<IconProps, 'children'>) => {
+export const DeezerIcon = ({ ...props }: Omit<IconProps, "children">) => {
   return (
     <BaseIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 20" fill="none" {...props}>
       <path fillRule="evenodd" clipRule="evenodd" d="M23.5127 0H29.9997V3.77954H23.5127V0Z" fill="#40AB5D"/>

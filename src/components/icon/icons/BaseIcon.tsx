@@ -1,4 +1,4 @@
-import type { IconProps } from '@/components/icon/Icon.types';
+import type { IconProps } from "@/components/icon/Icon.types";
 
 export const BaseIcon = ({
   id,
@@ -8,8 +8,8 @@ export const BaseIcon = ({
   opacity,
   viewBox,
   children,
-  fill = 'none',
-  xmlns = 'http://www.w3.org/2000/svg',
+  fill = "none",
+  xmlns = "http://www.w3.org/2000/svg",
   ...rest
 }: IconProps) => {
   return (

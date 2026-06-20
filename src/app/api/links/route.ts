@@ -1,16 +1,17 @@
-import { type NextRequest } from 'next/server';
+import { type NextRequest } from "next/server";
 
-import { insert } from '@/core/db';
-import { BadRequestError, globalApiErrorHandler } from '@/core/errors';
-import { searchInputSchema } from '@/schemas/api.schema';
-import { DeezerWebApi } from '@/services/api/deezer';
-import { SpotifyWebApi } from '@/services/api/spotify';
-import { YoutubeWebApi } from '@/services/api/youtube';
-import type { LinkListReturnType, MusicDetails, SearchInputType } from '@/types/api';
-import { determineUrlType, getTrackId } from '@/utils/url';
-import { getUserAgentInfo } from '@/utils/userAgentInfo';
+import { BadRequestError, globalApiErrorHandler } from "@/core/errors";
+import { searchInputSchema } from "@/schemas/api.schema";
+import { DeezerWebApi } from "@/services/api/deezer";
+import { SpotifyWebApi } from "@/services/api/spotify";
+import { YoutubeWebApi } from "@/services/api/youtube";
+import type {
+  LinkListReturnType, MusicDetails, SearchInputType 
+} from "@/types/api";
+import { determineUrlType, getTrackId } from "@/utils/url";
+import { getUserAgentInfo } from "@/utils/userAgentInfo";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export const POST = async (req: NextRequest): Promise<Response> => {
   try {
@@ -22,29 +23,29 @@ export const POST = async (req: NextRequest): Promise<Response> => {
 
     if (!linkSafeParse.success || !body.search.url) {
       throw new BadRequestError({
-        message: 'Please provide valid input',
+        message: "Please provide valid input",
         statusCode: 400,
-        url: '/api/albums',
+        url: "/api/albums",
         userAgentInfo,
       });
     }
 
     const urlType = determineUrlType(body.search.url);
 
-    if (urlType === 'youtube') {
+    if (urlType === "youtube") {
       throw new BadRequestError({
-        message: 'Youtube links are not supported',
+        message: "Youtube links are not supported",
         statusCode: 400,
-        url: '/api/links',
+        url: "/api/links",
         userAgentInfo,
       });
     }
 
     if (!urlType) {
       throw new BadRequestError({
-        message: 'Please provide a valid URL',
+        message: "Please provide a valid URL",
         statusCode: 400,
-        url: '/api/links',
+        url: "/api/links",
         userAgentInfo,
       });
     }
@@ -65,18 +66,18 @@ export const POST = async (req: NextRequest): Promise<Response> => {
 
     let details: MusicDetails | undefined;
 
-    if (urlType === 'spotify') {
+    if (urlType === "spotify") {
       details = await spotifyApi.getTrackDetailsById(trackId);
     }
-    if (urlType === 'deezer') {
+    if (urlType === "deezer") {
       details = await deezerApi.getTrackDetailsByDeezerId(trackId);
     }
 
     if (!details) {
       throw new BadRequestError({
-        message: 'Track not found',
+        message: "Track not found",
         statusCode: 404,
-        url: '/api/links',
+        url: "/api/links",
         userAgentInfo,
       });
     }
@@ -93,17 +94,6 @@ export const POST = async (req: NextRequest): Promise<Response> => {
         youtube: youtubeUrl,
       }
     };
-
-    await insert.search({
-      search: body.search.url,
-      search_type: 'url',
-      ip: body.user.ip ?? null,
-      city: body.user.geolocation?.city ?? null,
-      country: body.user.geolocation?.country ?? null,
-      coordinates: body.user.geolocation?.coordinates ?? null,
-      timezone: body.user.geolocation?.timezone ?? null,
-      url_type: urlType,
-    });
     
     return new Response(JSON.stringify(response), {
       status: 200,

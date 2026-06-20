@@ -1,39 +1,39 @@
-import { memo, type ReactElement, useMemo } from 'react';
+import { type ReactElement, useMemo } from "react";
 
-import { CONTAINER } from '@/constants/layout';
+import { CONTAINER } from "@/constants/layout";
 
-import type { ContainerProps } from './Container.types';
+import type { ContainerProps } from "./Container.types";
 
-export const Container = memo(function Container({
+export const Container = ({
   children,
-  size = 'tablet',
-}: ContainerProps): ReactElement {
+  size = "tablet",
+}: ContainerProps): ReactElement => {
 
   const styles = useMemo(() => {
     switch (size) {
-      case 'mobile': {
+      case "mobile": {
         return {
           maxWidth: `${CONTAINER.MOBILE}px`,
         };
       }
-      case 'tablet': {
+      case "tablet": {
         return {
           maxWidth: `${CONTAINER.TABLET}px`,
         };
       }
-      case 'pc': {
+      case "pc": {
         return {
           maxWidth: `${CONTAINER.PC}px`,
         };
       }
-      case 'tv': {
+      case "tv": {
         return {
           maxWidth: `${CONTAINER.TV}px`,
         };
       }
-      case 'full': {
+      case "full": {
         return {
-          maxWidth: '100%',
+          maxWidth: "100%",
         };
       }
     }
@@ -47,4 +47,4 @@ export const Container = memo(function Container({
       {children}
     </div>
   );
-});
+};

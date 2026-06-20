@@ -1,15 +1,15 @@
-import styles from '@/components/icon/Icon.module.css';
-import type { IconProps } from '@/components/icon/Icon.types';
+import styles from "@/components/icon/Icon.module.css";
+import type { IconProps } from "@/components/icon/Icon.types";
 
-import { BaseIcon } from './BaseIcon';
+import { BaseIcon } from "./BaseIcon";
 
-export const ChevronIcon = ({ color, ...props }: Omit<IconProps, 'children'>) => {
+export const ChevronIcon = ({ color, ...props }: Omit<IconProps, "children">) => {
   return (
     <BaseIcon
       viewBox="0 0 16 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={styles['chevron']}
+      className={styles["chevron"]}
       {...props}
     >
       <path

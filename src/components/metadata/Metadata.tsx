@@ -1,7 +1,7 @@
-import Head from 'next/head';
-import type { ReactElement } from 'react';
+import Head from "next/head";
+import type { ReactElement } from "react";
 
-import type { MetaData as MetaDataProps } from '@/utils/metadata';
+import type { MetaData as MetaDataProps } from "@/utils/metadata";
 
 export const Metadata = ({
   title,

@@ -1,8 +1,8 @@
-import type { IconProps } from '@/components/icon/Icon.types';
+import type { IconProps } from "@/components/icon/Icon.types";
 
-import { BaseIcon } from './BaseIcon';
+import { BaseIcon } from "./BaseIcon";
 
-export const PlaceholderIcon = ({ ...props }: Omit<IconProps, 'children'>) => {
+export const PlaceholderIcon = ({ ...props }: Omit<IconProps, "children">) => {
   return (
     <BaseIcon viewBox="0 0 180.119 139.794" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <g transform="translate(-13.59 -66.639)" paint-order="fill markers stroke">

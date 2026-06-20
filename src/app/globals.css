@@ -8,6 +8,41 @@
 @import '@fontsource/montserrat/800.css';
 @import '@fontsource/montserrat/900.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+    /* --- Custom Color Palette --- */
+    --color-chelsea-cucumber: #75B068;
+    --color-eerie-black: #262626;
+    --color-eerie-black-20: rgba(38, 38, 38, 0.2);
+    --color-eerie-black-70: rgba(38, 38, 38, 0.7);
+    --color-ivory: #FFFEED;
+    --color-ivory-20: rgba(255, 254, 237, 0.2);
+    --color-ivory-70: rgba(255, 254, 237, 0.7);
+    --color-new-york-pink: #E08585;
+    --color-old-rose: #b68278;
+    --color-onyx: #38393D;
+    --color-pastel-pink: #DD9F93;
+    --color-pastel-pink-20: rgba(221, 159, 147, 0.2);
+    --color-tiffany-blue: #3CBBB1;
+    --color-tiffany-blue-20: rgba(60, 187, 177, 0.2);
+    --color-viridian-green: #329A91;
+
+    /* --- Custom Z-Indices --- */
+    --z-index-tooltip: 500;
+    --z-index-subheader: 800;
+    --z-index-header: 1000;
+    --z-index-drawer: 6666;
+    --z-index-modal: 7777;
+    --z-index-select: 8888;
+    --z-index-toast: 9999;
+}
+
+/* Base styles (Optional) */
+@layer base {
+    body {
+        font-family: var(--font-sans);
+        background-color: var(--color-eerie-black);
+        color: var(--color-ivory);
+    }
+}

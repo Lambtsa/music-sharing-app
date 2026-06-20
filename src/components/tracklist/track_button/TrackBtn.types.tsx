@@ -1,6 +1,6 @@
-import type { InputHTMLAttributes } from 'react';
+import type { InputHTMLAttributes } from "react";
 
-import type { TrackReturnType } from '@/types/api';
+import type { TrackReturnType } from "@/types/api";
 
 export interface TrackBtnProps extends InputHTMLAttributes<HTMLButtonElement> {
   track: TrackReturnType;

@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 
 export const youtubeVideoApiResponseSchema = z.object({
-  kind: z.literal('youtube#searchResult'),
+  kind: z.literal("youtube#searchResult"),
   etag: z.string(),
   id: z.object({
-    kind: z.literal('youtube#video'),
+    kind: z.literal("youtube#video"),
     videoId: z.string(),
   }),
   snippet: z.object({
@@ -37,7 +37,7 @@ export const youtubeVideoApiResponseSchema = z.object({
 });
 
 export const youtubeSearchApiResponseSchema = z.object({
-  kind: z.literal('youtube#searchListResponse'),
+  kind: z.literal("youtube#searchListResponse"),
   etag: z.string(),
   /* ISO country codes */
   regionCode: z.string(),

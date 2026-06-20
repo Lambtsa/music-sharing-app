@@ -1,8 +1,8 @@
-import type { IconProps } from '@/components/icon/Icon.types';
+import type { IconProps } from "@/components/icon/Icon.types";
 
-import { BaseIcon } from './BaseIcon';
+import { BaseIcon } from "./BaseIcon";
 
-export const ShareIcon = ({ color, ...props }: Omit<IconProps, 'children'>) => {
+export const ShareIcon = ({ color, ...props }: Omit<IconProps, "children">) => {
   return (
     <BaseIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 41" fill="none" {...props}>
       <path d="M12.8569 4.28592C12.8569 3.10247 13.8163 2.14307 14.9998 2.14307C16.1833 2.14307 17.1426 3.10247 17.1426 4.28592V26.7859C17.1426 27.9694 16.1833 28.9288 14.9998 28.9288C13.8163 28.9288 12.8569 27.9694 12.8569 26.7859V4.28592Z" fill={color}/>

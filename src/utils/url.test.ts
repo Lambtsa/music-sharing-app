@@ -1,4 +1,6 @@
-import { isValidInput, determineUrlType, getTrackId } from "./url";
+import {
+  determineUrlType, getTrackId, isValidInput 
+} from "./url";
 
 describe("isValidInput helper input", () => {
   test("A correct spotify link should return true", () => {

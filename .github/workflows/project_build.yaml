@@ -71,9 +71,6 @@ jobs:
           GTAG: ${{ secrets.GTAG }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ENVIRONMENT: ${{ inputs.deploy-env }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
         run: pnpm build
         shell: bash

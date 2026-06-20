@@ -1,9 +1,9 @@
-import type { InputHTMLAttributes, ReactElement } from 'react';
+import type { InputHTMLAttributes, ReactElement } from "react";
 
-import { Icon } from '@/components/icon';
+import { Icon } from "@/components/icon";
 
 interface InputCheckboxProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
   label?: string | undefined;
   isLight: boolean;
   isSelected: boolean;
@@ -20,7 +20,7 @@ export const InputCheckbox = ({
   return (
     <div className='relative flex justify-center items-center'>
       <label
-        className={`flex absolute justify-center items-center gap-1 w-5 h-5 ${isSelected ? '[&>svg]:block border-2 border-tiffanyBlue bg-tiffanyBlue' : isLight ? 'bg-ivory [&>svg]:none' : 'bg-ivory20 [&>svg]:none'} rounded-[4px]`}
+        className={`flex absolute justify-center items-center gap-1 w-5 h-5 ${isSelected ? "[&>svg]:block border-2 border-tiffanyBlue bg-tiffanyBlue" : isLight ? "bg-ivory [&>svg]:none" : "bg-ivory20 [&>svg]:none"} rounded-[4px]`}
       >
         {isSelected && <Icon icon='tick' height={16} width={16} color='#FFFEED' />}
       </label>

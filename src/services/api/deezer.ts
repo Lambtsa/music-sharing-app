@@ -1,8 +1,10 @@
-import { GatewayError } from '@/core/errors';
-import type { DeezerSearchApiResponseType, DeezerTrackApiResponseType, MusicDetails } from '@/types/api';
+import { GatewayError } from "@/core/errors";
+import type {
+  DeezerSearchApiResponseType, DeezerTrackApiResponseType, MusicDetails 
+} from "@/types/api";
 
 export class DeezerWebApi {
-  #baseUrl = 'https://api.deezer.com';
+  #baseUrl = "https://api.deezer.com";
   #searchUrl = `${this.#baseUrl}/search`;
 
   // constructor() {}
@@ -27,7 +29,7 @@ export class DeezerWebApi {
     if (album) {
       search.push(`album:"${album}"`);
     }
-    url.searchParams.append('q', search.join(' '));
+    url.searchParams.append("q", search.join(" "));
     return url.toString();
   }
 
@@ -40,7 +42,7 @@ export class DeezerWebApi {
 
     const response = await fetch(deezerUri, {
       headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
+        "Content-Type": "application/json; charset=UTF-8",
       },
     });
 
@@ -48,7 +50,7 @@ export class DeezerWebApi {
       throw new GatewayError({
         message: response.statusText,
         statusCode: response.status,
-        type: 'spotify',
+        type: "spotify",
       });
     }
 
@@ -72,7 +74,7 @@ export class DeezerWebApi {
 
     const response = await fetch(deezerUri, {
       headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
+        "Content-Type": "application/json; charset=UTF-8",
       },
     });
 
@@ -80,7 +82,7 @@ export class DeezerWebApi {
       throw new GatewayError({
         message: response.statusText,
         statusCode: response.status,
-        type: 'spotify',
+        type: "spotify",
       });
     }
 

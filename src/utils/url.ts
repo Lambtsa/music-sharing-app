@@ -1,11 +1,11 @@
-import path from 'path';
+import path from "path";
 
 import {
   deezerUrlRegex,
   spotifyUrlRegex,
   youtubeUrlRegex,
-} from '@/constants/regex';
-import type { MusicProviders, SearchType } from '@/types/music';
+} from "@/constants/regex";
+import type { MusicProviders, SearchType } from "@/types/music";
 
 /**
  * Will determine whether the url is one of the accepted types
@@ -38,12 +38,12 @@ export const isValidInput = (
   }
   /* Optional */
   switch (selected) {
-    case 'artist':
-    case 'track': {
+    case "artist":
+    case "track": {
       // TODO: valid string to avoid urls, js,...
       return true;
     }
-    case 'url': {
+    case "url": {
       /* If one of these is a correct url then it will return true otherwise false */
       return (
         spotifyUrlRegex.test(input) ||
@@ -61,13 +61,13 @@ export const isValidInput = (
 export const determineUrlType = (url: string): MusicProviders | null => {
   switch (true) {
     case spotifyUrlRegex.test(url): {
-      return 'spotify';
+      return "spotify";
     }
     case deezerUrlRegex.test(url): {
-      return 'deezer';
+      return "deezer";
     }
     case youtubeUrlRegex.test(url): {
-      return 'youtube';
+      return "youtube";
     }
     default: {
       return null;
@@ -82,16 +82,16 @@ export const determineUrlType = (url: string): MusicProviders | null => {
 export const getTrackId = (url: string, type: MusicProviders): string | null => {
   const urlObj = new URL(url);
   switch (type) {
-    case 'spotify': {
-      const pathnameArray = urlObj.pathname.split('/');
+    case "spotify": {
+      const pathnameArray = urlObj.pathname.split("/");
       return pathnameArray[2] || null;
     }
-    case 'deezer': {
-      const pathnameArray = urlObj.pathname.split('/');
+    case "deezer": {
+      const pathnameArray = urlObj.pathname.split("/");
       return pathnameArray[2] || null;
     }
-    case 'youtube': {
-      return urlObj.searchParams.get('v');
+    case "youtube": {
+      return urlObj.searchParams.get("v");
     }
   }
 };
@@ -105,7 +105,7 @@ export const buildUrl = (
   baseUrl: string
 ): string => {
   if (!baseUrl) {
-    throw Error('Internal Server Error');
+    throw Error("Internal Server Error");
   }
   const { pathname: initialPathnames } = new URL(baseUrl);
 

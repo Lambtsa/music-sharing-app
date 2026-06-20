@@ -1,4 +1,4 @@
-import type { SearchType } from '@/types/music';
+import type { SearchType } from "@/types/music";
 
 
 type Artist = {
@@ -42,7 +42,7 @@ type Search = {
   updated_at: string;
 };
 
-export type InsertType = 'artist' | 'album' | 'track' | 'search';
+export type InsertType = "artist" | "album" | "track" | "search";
 
 export type InsertTypeMapper = {
   artist: UpsertArtistInput | UpsertArtistInput[];
@@ -58,10 +58,10 @@ export type InsertReturnTypeMapper = {
   search: Search;
 };
 
-export type UpsertArtistInput = Pick<Artist, 'name'>;
-export type InsertAlbumInput = Pick<Album, 'name' | 'cover' | 'artist_id'>;
-export type InsertTrackInput = Pick<Track, 'title' | 'artist_id' | 'album_id' | 'duration' | 'track_number'>;
-export type InsertSearchInput = Pick<Search, 'ip' | 'city' | 'country' | 'coordinates' | 'search' | 'timezone' | 'search_type' | 'url_type'>;
+export type UpsertArtistInput = Pick<Artist, "name">;
+export type InsertAlbumInput = Pick<Album, "name" | "cover" | "artist_id">;
+export type InsertTrackInput = Pick<Track, "title" | "artist_id" | "album_id" | "duration" | "track_number">;
+export type InsertSearchInput = Pick<Search, "ip" | "city" | "country" | "coordinates" | "search" | "timezone" | "search_type" | "url_type">;
 
 export interface Database {
   public: {
