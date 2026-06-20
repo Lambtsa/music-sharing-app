@@ -39,7 +39,7 @@ jobs:
       # Build & deploy
       ##############################
       # Get access to github repository
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         id: checkout
         with:
           fetch-depth: 0
