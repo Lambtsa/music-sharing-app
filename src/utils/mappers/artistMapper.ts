@@ -1,4 +1,4 @@
-import type { ArtistReturnType, SpotifyArtistApiResponseType } from '@/types/api';
+import type { ArtistReturnType, SpotifyArtistApiResponseType } from "@/types/api";
 
 export const artistMapper = (artist: SpotifyArtistApiResponseType): ArtistReturnType => {
   return {

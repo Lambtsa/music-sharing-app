@@ -1,8 +1,8 @@
-import type { IconProps } from '@/components/icon/Icon.types';
+import type { IconProps } from "@/components/icon/Icon.types";
 
-import { BaseIcon } from './BaseIcon';
+import { BaseIcon } from "./BaseIcon";
 
-export const SunIcon = ({ color, ...props }: Omit<IconProps, 'children'>) => {
+export const SunIcon = ({ color, ...props }: Omit<IconProps, "children">) => {
   return (
     <BaseIcon viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path fillRule="evenodd" clipRule="evenodd" d="M10.625 8C10.625 9.44975 9.44975 10.625 8 10.625C6.55025 10.625 5.375 9.44975 5.375 8C5.375 6.55025 6.55025 5.375 8 5.375C9.44975 5.375 10.625 6.55025 10.625 8Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

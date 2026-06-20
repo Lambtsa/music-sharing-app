@@ -1,8 +1,8 @@
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
 
-import { routes } from '@/utils/routes';
+import { routes } from "@/utils/routes";
 
-import { buildUrl } from './url';
+import { buildUrl } from "./url";
 
 export interface MetaData {
   title: string;
@@ -11,21 +11,21 @@ export interface MetaData {
   production: boolean;
 }
 interface Pages {
-  default: Omit<MetaData, 'production'>;
-  index: Omit<MetaData, 'production'>;
+  default: Omit<MetaData, "production">;
+  index: Omit<MetaData, "production">;
 }
 
 export const pageData: Pages = {
   default: {
-    title: 'Audiolinx | Share your music discoveries with all your friends!',
+    title: "Audiolinx | Share your music discoveries with all your friends!",
     description:
-      'You have Spotify but all your friends have Youtube or Deezer? Want to make sharing your new discoveries as easy as a copy/ paste? Search by artist, track or simply paste a music streaming service url and get links to the favourite streaming services. Start sharing today!',
+      "You have Spotify but all your friends have Youtube or Deezer? Want to make sharing your new discoveries as easy as a copy/ paste? Search by artist, track or simply paste a music streaming service url and get links to the favourite streaming services. Start sharing today!",
     url: buildUrl(routes.index(), process.env.NEXT_PUBLIC_BASE_URL),
   },
   index: {
-    title: 'Audiolinx | Share your music discoveries with all your friends!',
+    title: "Audiolinx | Share your music discoveries with all your friends!",
     description:
-      'You have Spotify but all your friends have Youtube or Deezer? Want to make sharing your new discoveries as easy as a copy/ paste? Search by artist, track or simply paste a music streaming service url and get links to the favourite streaming services. Start sharing today!',
+      "You have Spotify but all your friends have Youtube or Deezer? Want to make sharing your new discoveries as easy as a copy/ paste? Search by artist, track or simply paste a music streaming service url and get links to the favourite streaming services. Start sharing today!",
     url: buildUrl(routes.index(), process.env.NEXT_PUBLIC_BASE_URL),
   },
 };
@@ -36,7 +36,7 @@ type CreateMetadataInput = {
   url: string;
 };
 
-const isDevelopment = process.env.NODE_ENV === 'development';
+const isDevelopment = process.env.NODE_ENV === "development";
 
 /**
  *
@@ -54,7 +54,7 @@ export const createMetadata = ({
       title,
       description,
       url,
-      siteName: 'Duty',
+      siteName: "Duty",
       // images: [
       //   {
       //     url: '',
@@ -62,8 +62,8 @@ export const createMetadata = ({
       //     height: 1306,
       //   },
       // ],
-      locale: 'fr-FR',
-      type: 'website',
+      locale: "fr-FR",
+      type: "website",
     },
     robots: {
       index: !isDevelopment,
@@ -71,13 +71,13 @@ export const createMetadata = ({
       googleBot: {
         index: !isDevelopment,
         follow: !isDevelopment,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
       },
     },
     icons: {
-      icon: ['/favicon.svg'],
+      icon: ["/favicon.svg"],
     },
   };
 };

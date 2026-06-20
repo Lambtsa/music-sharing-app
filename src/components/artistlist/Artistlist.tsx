@@ -1,8 +1,8 @@
-import { type ReactElement, useMemo } from 'react';
+import { type ReactElement, useMemo } from "react";
 
-import type { ArtistReturnType } from '@/types/api';
+import type { ArtistReturnType } from "@/types/api";
 
-import { ArtistBtn } from './artist_button';
+import { ArtistBtn } from "./artist_button";
 
 type ArtistlistProps = {
   artists: ArtistReturnType[];

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /* ############################## */
 /* Artists */
@@ -13,7 +13,7 @@ export const deezerArtistApiResponseSchema = z.object({
   picture_big: z.string(),
   picture_xl: z.string(),
   tracklist: z.string(),
-  type: z.literal('artist'),
+  type: z.literal("artist"),
 });
 
 /* ############################## */
@@ -29,7 +29,7 @@ export const deezerAlbumApiResponseSchema = z.object({
   cover_xl: z.string(),
   md5_image: z.string(),
   tracklist: z.string(),
-  type: z.literal('album'),
+  type: z.literal("album"),
 });
 
 /* ############################## */
@@ -49,7 +49,7 @@ export const deezerTrackApiResponseSchema = z.object({
   explicit_content_cover: z.boolean(),
   preview: z.string(),
   md5_image: z.string(),
-  type: z.literal('track'),
+  type: z.literal("track"),
   artist: deezerArtistApiResponseSchema,
   album: deezerAlbumApiResponseSchema,
 });

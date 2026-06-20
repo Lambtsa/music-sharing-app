@@ -1,8 +1,8 @@
-import type { IconProps } from '@/components/icon/Icon.types';
+import type { IconProps } from "@/components/icon/Icon.types";
 
-import { BaseIcon } from './BaseIcon';
+import { BaseIcon } from "./BaseIcon";
 
-export const BurgerIcon = ({ color, ...props }: Omit<IconProps, 'children'>) => {
+export const BurgerIcon = ({ color, ...props }: Omit<IconProps, "children">) => {
   return (
     <BaseIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" {...props}>
       <g clipPath="url(#clip0_2917_7296)">

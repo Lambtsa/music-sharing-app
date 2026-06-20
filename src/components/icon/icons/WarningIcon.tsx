@@ -1,8 +1,8 @@
-import type { IconProps } from '@/components/icon/Icon.types';
+import type { IconProps } from "@/components/icon/Icon.types";
 
-import { BaseIcon } from './BaseIcon';
+import { BaseIcon } from "./BaseIcon";
 
-export const WarningIcon = ({ color, ...props }: Omit<IconProps, 'children'>) => {
+export const WarningIcon = ({ color, ...props }: Omit<IconProps, "children">) => {
   return (
     <BaseIcon viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <g id="Size=24px, Fill=False">

@@ -1,8 +1,8 @@
-import type { Metadata } from 'next';
-import type { ReactElement } from 'react';
+import type { Metadata } from "next";
+import type { ReactElement } from "react";
 
-import { FourOhFour } from '@/screens/fourOhFour';
-import { createMetadata, pageData } from '@/utils/metadata';
+import { FourOhFour } from "@/screens/fourOhFour";
+import { createMetadata, pageData } from "@/utils/metadata";
 
 const { index } = pageData;
 

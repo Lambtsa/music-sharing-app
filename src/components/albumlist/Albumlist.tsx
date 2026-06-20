@@ -1,8 +1,8 @@
-import { type ReactElement, useMemo } from 'react';
+import { type ReactElement, useMemo } from "react";
 
-import type { AlbumReturnType } from '@/types/api';
+import type { AlbumReturnType } from "@/types/api";
 
-import { AlbumBtn } from './album_button';
+import { AlbumBtn } from "./album_button";
 
 type AlbumListProps = {
   albums: AlbumReturnType[];

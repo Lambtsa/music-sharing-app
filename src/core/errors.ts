@@ -1,15 +1,16 @@
-import { type userAgent } from 'next/server';
-import pino, { type Logger } from 'pino';
-import { z } from 'zod';
+import { type userAgent } from "next/server";
+import pino, { type Logger } from "pino";
+import { z } from "zod";
 
-import type { MusicProviders } from '@/types/music';
+import type { MusicProviders } from "@/types/music";
+import { logger } from "@/utils/logger";
 
 export enum ErrorMessages {
-  AuthenticationError = 'Authentication failed',
-  ApiServerError = 'Api error',
-  InternalServer = 'Internal Server Error',
-  ApiResponseTypeError = 'Issue with the format of the response from Api',
-  Unauthorized = 'No authorised session',
+  AuthenticationError = "Authentication failed",
+  ApiServerError = "Api error",
+  InternalServer = "Internal Server Error",
+  ApiResponseTypeError = "Issue with the format of the response from Api",
+  Unauthorized = "No authorised session",
 }
 
 type ErrorDetails = {
@@ -26,7 +27,7 @@ export class BaseError extends Error {
   constructor(message: string) {
     super(message);
     this.message = message;
-    this.name = 'BaseError';
+    this.name = "BaseError";
     this.timestamp = new Date();
 
     Object.setPrototypeOf(this, BaseError.prototype);
@@ -45,10 +46,10 @@ export class GatewayError extends BaseError {
     message,
     statusCode,
     type,
-  }: Pick<ErrorDetails, 'message' | 'statusCode'> & { type: MusicProviders }) {
+  }: Pick<ErrorDetails, "message" | "statusCode"> & { type: MusicProviders }) {
     super(message);
     this.message = message;
-    this.name = 'InternalServerError';
+    this.name = "InternalServerError";
     this.statusCode = statusCode;
     this.type = type;
     this.log({
@@ -76,7 +77,7 @@ export class InternalServerError extends BaseError {
   }: ErrorDetails) {
     super(message);
     this.message = message;
-    this.name = 'InternalServerError';
+    this.name = "InternalServerError";
     this.statusCode = statusCode;
     this.url = url;
     this.userAgentInfo = userAgentInfo;
@@ -106,7 +107,7 @@ export class BadRequestError extends BaseError {
   }: ErrorDetails) {
     super(message);
     this.message = message;
-    this.name = 'BadRequestError';
+    this.name = "BadRequestError";
     this.statusCode = statusCode;
     this.url = url;
     this.userAgentInfo = userAgentInfo;
@@ -144,9 +145,9 @@ export const globalApiErrorHandler = (err: unknown): Response => {
       });
     }
     default: {
-      console.error({
+      logger.error("", {
         status: 500,
-        err,
+        err: err as Error,
       });
       return new Response(ErrorMessages.InternalServer, {
         status: 500,

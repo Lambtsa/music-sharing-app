@@ -1,6 +1,6 @@
-import type { InputHTMLAttributes } from 'react';
+import type { InputHTMLAttributes } from "react";
 
-import type { AlbumReturnType } from '@/types/api';
+import type { AlbumReturnType } from "@/types/api";
 
 export interface TrackBtnProps extends InputHTMLAttributes<HTMLButtonElement> {
   album: AlbumReturnType;

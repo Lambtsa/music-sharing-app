@@ -1,10 +1,10 @@
-import Image from 'next/image';
-import type { ReactElement } from 'react';
+import Image from "next/image";
+import type { ReactElement } from "react";
 
-import { Icon } from '@/components/icon';
-import { useTranslation } from '@/hooks/useTranslation';
+import { Icon } from "@/components/icon";
+import { useTranslation } from "@/hooks/useTranslation";
 
-import type { TrackBtnProps } from './TrackBtn.types';
+import type { TrackBtnProps } from "./TrackBtn.types";
 
 export const TrackBtn = ({
   track,
@@ -15,7 +15,7 @@ export const TrackBtn = ({
 
   return (
     <div 
-      className={`grid grid-cols-[50px_1fr_80px] justify-center items-center gap-4 ${isLight ? 'bg-tiffanyBlue20' : 'bg-onyx'} rounded-[10px] w-full px-3 py-4`}
+      className={`grid grid-cols-[50px_1fr_80px] justify-center items-center gap-4 ${isLight ? "bg-tiffany-blue-20" : "bg-onyx"} rounded-[10px] w-full px-4 py-3`}
     >
       {track.imageUrl ? (
         <div className='relative h-[50px] w-[50px] overflow-hidden rounded-[7px]'>
@@ -36,19 +36,21 @@ export const TrackBtn = ({
       }
       <div className="flex flex-auto flex-col justify-center items-start gap-1/2 w-full overflow-hidden whitespace-nowrap"
       >
-        <h3 className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-bold text-sm overflow-hidden whitespace-nowrap text-ellipsis`}
+        <h3 className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-bold text-sm overflow-hidden whitespace-nowrap text-ellipsis`}
         >
           {track.track.name}
         </h3>
-        <p className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>{track.artist}</p>
-        <p className={`${isLight ? 'text-eerieBlack' : 'text-ivory'} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>{track.album.name}</p>
+        <p className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>{track.artist}</p>
+        <p className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>{track.album.name}</p>
       </div>
       <button 
-        className = 'px-4 py-2 rounded-[7px] bg-pastelPink text-ivory font-bold hover:text-ivory hover:bg-oldRose text-sm'
+        className = 'px-4 py-2 rounded-[7px] bg-pastel-pink text-ivory font-bold hover:text-ivory hover:bg-old-rose text-sm'
         type="button" 
         onClick={() => handleOnClick(track.url)}
       >
-        {t({ id: 'label.select' })}
+        {t({
+          id: "label.select" 
+        })}
       </button>
     </div>
   );

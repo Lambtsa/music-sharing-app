@@ -1,11 +1,11 @@
-import { type ReactElement, useMemo } from 'react';
+import { type ReactElement, useMemo } from "react";
 
-import { Icon } from '@/components/icon';
+import { Icon } from "@/components/icon";
 
-import type { IconProps } from '../icon/Icon.types';
+import type { IconProps } from "../icon/Icon.types";
 
 
-interface LogoProps extends Omit<IconProps, 'children'> {
+interface LogoProps extends Omit<IconProps, "children"> {
   isLight: boolean;
 }
 

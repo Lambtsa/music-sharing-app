@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /* ############################## */
 /* Artists */
@@ -11,7 +11,7 @@ export const spotifySimplifiedArtistApiResponseSchema = z.object({
   href: z.string(),
   id: z.string(),
   name: z.string(),
-  type: z.literal('artist'),
+  type: z.literal("artist"),
   /* Opens application */
   uri: z.string(),
 });
@@ -35,7 +35,7 @@ export const spotifyArtistApiResponseSchema = z.object({
   })),
   name: z.string(),
   popularity: z.number(),
-  type: z.literal('artist'),
+  type: z.literal("artist"),
   uri: z.string(),
 });
 
@@ -55,7 +55,7 @@ export const spotifyArtistListApiResponseSchema = z.object({
 /* Albums */
 /* ############################## */
 export const spotifyAlbumApiResponseSchema = z.object({
-  album_type: z.literal('album'),
+  album_type: z.literal("album"),
   total_tracks: z.number(),
   available_markets: z.array(z.string()),
   external_urls: z.object({
@@ -72,26 +72,26 @@ export const spotifyAlbumApiResponseSchema = z.object({
   name: z.string(),
   release_date: z.string(),
   release_date_precision: z.union([
-    z.literal('year'), 
-    z.literal('month'), 
-    z.literal('day')
+    z.literal("year"), 
+    z.literal("month"), 
+    z.literal("day")
   ]),
   restrictions: z.object({
     reason: z.union([
-      z.literal('market'), 
-      z.literal('product'), 
-      z.literal('explicit')
+      z.literal("market"), 
+      z.literal("product"), 
+      z.literal("explicit")
     ])
   }),
-  type: z.literal('album'),
+  type: z.literal("album"),
   /* Opens application */
   uri: z.string(),
   artists: z.array(spotifySimplifiedArtistApiResponseSchema),
   album_group: z.union([
-    z.literal('album'), 
-    z.literal('single'), 
-    z.literal('compilation'),
-    z.literal('appears_on'),
+    z.literal("album"), 
+    z.literal("single"), 
+    z.literal("compilation"),
+    z.literal("appears_on"),
   ]),
 });
 
@@ -132,7 +132,7 @@ export const spotifyTrackApiResponseSchema = z.object({
   popularity: z.number(),
   preview_url: z.string().nullable(),
   track_number: z.number(),
-  type: z.literal('track'),
+  type: z.literal("track"),
   /* Opens application */
   uri: z.string(),
   is_local: z.boolean(),

@@ -1,8 +1,8 @@
-import { GatewayError } from '@/core/errors';
-import type { MusicDetails, YoutubeSearchApiResponseType } from '@/types/api';
+import { GatewayError } from "@/core/errors";
+import type { MusicDetails, YoutubeSearchApiResponseType } from "@/types/api";
 
 export class YoutubeWebApi {
-  #baseUrl = 'https://www.googleapis.com/youtube/v3';
+  #baseUrl = "https://www.googleapis.com/youtube/v3";
   #searchUrl = `${this.#baseUrl}/search`;
 
   // constructor() {}
@@ -14,12 +14,12 @@ export class YoutubeWebApi {
   private buildYoutubeApiUrl({
     artist,
     track,
-  }: Pick<MusicDetails, 'artist' | 'track'>): string {
+  }: Pick<MusicDetails, "artist" | "track">): string {
     const url = new URL(this.#searchUrl);
-    url.searchParams.append('key', process.env.YOUTUBE_API_KEY);
-    url.searchParams.append('type', 'video');
-    url.searchParams.append('videoCategory', '10');
-    url.searchParams.append('q', `${artist}|${track}`);
+    url.searchParams.append("key", process.env.YOUTUBE_API_KEY);
+    url.searchParams.append("type", "video");
+    url.searchParams.append("videoCategory", "10");
+    url.searchParams.append("q", `${artist}|${track}`);
     return url.toString();
   }
 
@@ -29,8 +29,8 @@ export class YoutubeWebApi {
    * @example https://www.youtube.com/watch?v=8rNuzOUjtE8
    */
   private buildYoutubeVideoUrl(videoId: string): string {
-    const youtubeUrl = new URL('https://www.youtube.com/watch');
-    youtubeUrl.searchParams.append('v', videoId);
+    const youtubeUrl = new URL("https://www.youtube.com/watch");
+    youtubeUrl.searchParams.append("v", videoId);
     return youtubeUrl.toString();
   }
 
@@ -44,7 +44,7 @@ export class YoutubeWebApi {
 
     const response = await fetch(youtubeUri, {
       headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
+        "Content-Type": "application/json; charset=UTF-8",
       },
     });
 
@@ -52,7 +52,7 @@ export class YoutubeWebApi {
       throw new GatewayError({
         message: response.statusText,
         statusCode: response.status,
-        type: 'spotify',
+        type: "youtube",
       });
     }
 

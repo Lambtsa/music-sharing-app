@@ -39,15 +39,9 @@ localhost.pem
 *.tsbuildinfo
 next-env.d.ts
 
-# Sentry
-.sentryclirc
-
 .env
 
-# Sentry Config File
-.env.sentry-build-plugin
 node_modules/
 /test-results/
-/playwright-report/
 /blob-report/
-/playwright/.cache/
+/.idea/

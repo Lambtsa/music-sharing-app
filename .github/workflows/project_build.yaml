@@ -69,20 +69,9 @@ jobs:
       - name: Run build
         env: 
           GTAG: ${{ secrets.GTAG }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ENVIRONMENT: ${{ inputs.deploy-env }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
         run: pnpm build
         shell: bash
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Deploy to VPS
         if: ${{ inputs.publish == true }}
