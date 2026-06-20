@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   build_for_prod:
-    name: Build - Test for PROD
+    name: Build for PROD
     uses: ./.github/workflows/project_build.yaml
     with:
       deploy-env: prod
