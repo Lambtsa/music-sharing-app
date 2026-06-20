@@ -2,6 +2,7 @@ import { GatewayError } from "@/core/errors";
 import type {
   DeezerSearchApiResponseType, DeezerTrackApiResponseType, MusicDetails 
 } from "@/types/api";
+import { cleanString } from "@/utils/string";
 
 export class DeezerWebApi {
   #baseUrl = "https://api.deezer.com";
@@ -71,7 +72,7 @@ export class DeezerWebApi {
    */
   async searchDeezer(input: MusicDetails): Promise<string | null> {
     const deezerUri = this.buildDeezerApiUrl(input);
-
+    
     const response = await fetch(deezerUri, {
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
@@ -88,11 +89,10 @@ export class DeezerWebApi {
 
     const { data } = (await response.json()) as DeezerSearchApiResponseType;
 
-    /* TODO: This will need optimising because currently only returns the first element found + need better searching */
     const track = data.find((item) => {
-      return item.artist.name.toLowerCase().includes(input.artist.toLowerCase()) &&
-        item.title.toLowerCase().includes(input.track.toLowerCase()) &&
-        item.album.title.toLowerCase().includes(input.album.toLowerCase());
+      return cleanString(item.artist.name).includes(cleanString(input.artist)) &&
+        cleanString(item.title).includes(cleanString(input.track)) &&
+        cleanString(item.album.title).includes(cleanString(input.album));
     });
 
     if (!track) {

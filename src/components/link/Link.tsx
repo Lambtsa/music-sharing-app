@@ -57,7 +57,7 @@ export const MusicLink = ({
   }, [service, serviceUrl, t]);
 
   return (
-    <div className={`flex justify-center items-center gap-[10px] ${isLight ? "bg-tiffanyBlue20" : "bg-onyx"} rounded-[10px] w-full px-3 py-4 ${isDisabled ? "opacity-40" : ""}`}>
+    <div className={`flex justify-center items-center gap-[10px] ${isLight ? "bg-tiffanyBlue20" : "bg-onyx"} rounded-[10px] w-full px-4 py-2 ${isDisabled ? "opacity-40" : ""}`}>
       <InputCheckbox
         disabled={isDisabled}
         isSelected={isSelected}

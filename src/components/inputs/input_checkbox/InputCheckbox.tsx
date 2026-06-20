@@ -20,7 +20,7 @@ export const InputCheckbox = ({
   return (
     <div className='relative flex justify-center items-center'>
       <label
-        className={`flex absolute justify-center items-center gap-1 w-5 h-5 ${isSelected ? "[&>svg]:block border-2 border-tiffanyBlue bg-tiffanyBlue" : isLight ? "bg-ivory [&>svg]:none" : "bg-ivory20 [&>svg]:none"} rounded-[4px]`}
+        className={`flex absolute justify-center items-center gap-1 w-5 h-5 ${isSelected ? "[&>svg]:block border-2 border-tiffany-blue bg-tiffany-blue" : isLight ? "bg-ivory [&>svg]:none" : "bg-ivory-20 [&>svg]:none"} rounded-[4px]`}
       >
         {isSelected && <Icon icon='tick' height={16} width={16} color='#FFFEED' />}
       </label>

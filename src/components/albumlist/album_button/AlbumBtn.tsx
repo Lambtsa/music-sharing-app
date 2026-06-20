@@ -28,7 +28,7 @@ export const AlbumBtn = ({
 
   return (
     <>
-      <div className={`grid grid-cols-[50px_1fr_40px] justify-center items-center gap-4 [&>svg]:min-w-[30px] ${isLight ? "bg-tiffany-blue-20 [&>svg>path]:stroke-eerie-black" : "bg-onyx [&>svg>path]:stroke-ivory"} rounded-[10px] w-full px-3 py-4`}>
+      <div className={`grid grid-cols-[50px_1fr_40px] justify-center items-center gap-4 [&>svg]:min-w-[30px] ${isLight ? "bg-tiffany-blue-20 [&>svg>path]:stroke-eerie-black" : "bg-onyx [&>svg>path]:stroke-ivory"} rounded-[10px] w-full px-4 py-3`}>
         {album.imageUrl ? (
           <div className='relative h-[50px] w-[50px] overflow-hidden rounded-[7px]'>
             <Image

@@ -15,7 +15,7 @@ export const ArtistBtn = ({
 
   return (
     <div 
-      className={`grid grid-cols-[50px_1fr_80px] justify-center items-center gap-4 ${isLight ? "bg-tiffany-blue-20" : "bg-onyx"} rounded-[10px] w-full px-3 py-4`}
+      className={`grid grid-cols-[50px_1fr_80px] justify-center items-center gap-4 ${isLight ? "bg-tiffany-blue-20" : "bg-onyx"} rounded-[10px] w-full px-4 py-3`}
     >
       {artist.imageUrl ? (
         <div className='relative h-[50px] w-[50px] overflow-hidden rounded-[7px]'>

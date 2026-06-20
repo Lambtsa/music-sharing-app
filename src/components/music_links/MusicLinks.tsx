@@ -120,7 +120,7 @@ export const MusicLinks = ({
         />
       ))}
       <button
-        className='flex justify-center gap-2 items-center rounded-[10px] bg-tiffanyBlue hover:bg-viridianGreen px-4 py-2 text-ivory w-fit mt-4 disabled:opacity-40 disabled:bg-tiffanyBlue disabled:cursor-not-allowed'
+        className='flex cursor-pointer justify-center gap-2 items-center rounded-[10px] bg-tiffany-blue hover:bg-viridian-green px-4 py-2 text-ivory w-fit mt-4 disabled:opacity-40 disabled:bg-tiffany-blue disabled:cursor-not-allowed'
         type='button'
         disabled={!hasProviders}
         onClick={handleCopyLink}
