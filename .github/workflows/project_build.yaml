@@ -84,12 +84,12 @@ jobs:
           scp -o StrictHostKeyChecking=yes -r ./.next/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}:/home/${{ secrets.SSH_USER }}/${{ inputs.deploy-env }}/.next
         shell: bash
 
-      - name: Restart the audiolinx-${{ inputs.deploy-env }} process on server
-        if: ${{ inputs.publish == true }}
-        run: |
-          echo "Restarting the audiolinx-${{ inputs.deploy-env }} process on server..."
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "source ~/.nvm/nvm.sh; cd ${{ inputs.deploy-env }}; git pull; pnpm i; pm2 restart audiolinx-${{ inputs.deploy-env }}; exit"
-        shell: bash
+#      - name: Restart the audiolinx-${{ inputs.deploy-env }} process on server
+#        if: ${{ inputs.publish == true }}
+#        run: |
+#          echo "Restarting the audiolinx-${{ inputs.deploy-env }} process on server..."
+#          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "source ~/.nvm/nvm.sh; cd ${{ inputs.deploy-env }}; git pull; pnpm i; pm2 restart audiolinx-${{ inputs.deploy-env }}; exit"
+#        shell: bash
 
 
           
