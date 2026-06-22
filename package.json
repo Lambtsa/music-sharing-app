@@ -38,7 +38,7 @@
     "@commitlint/cli": "20.5.3",
     "@commitlint/config-conventional": "20.5.3",
     "@faker-js/faker": "^10.2.0",
-    "@next/eslint-plugin-next": "16.2.6",
+    "@next/eslint-plugin-next": "16.2.9",
     "@stylistic/eslint-plugin": "5.10.0",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "4.2.4",
