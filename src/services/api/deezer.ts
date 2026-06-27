@@ -2,6 +2,7 @@ import { GatewayError } from "@/core/errors";
 import type {
   DeezerSearchApiResponseType, DeezerTrackApiResponseType, MusicDetails 
 } from "@/types/api";
+import { logger } from "@/utils/logger";
 import { cleanString } from "@/utils/string";
 
 export class DeezerWebApi {
@@ -83,16 +84,27 @@ export class DeezerWebApi {
       throw new GatewayError({
         message: response.statusText,
         statusCode: response.status,
-        type: "spotify",
+        type: "deezer",
       });
     }
 
     const { data } = (await response.json()) as DeezerSearchApiResponseType;
 
+    logger.info("found deezer tracks", {
+      data
+    });
+
     const track = data.find((item) => {
       return cleanString(item.artist.name).includes(cleanString(input.artist)) &&
         cleanString(item.title).includes(cleanString(input.track)) &&
         cleanString(item.album.title).includes(cleanString(input.album));
+    });
+
+    logger.info("found deezer tracks", {
+      track,
+      artist: cleanString(input.artist),
+      title: cleanString(input.track),
+      album: cleanString(input.album)
     });
 
     if (!track) {
