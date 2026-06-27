@@ -109,6 +109,13 @@ jobs:
           
             cd /home/${{ secrets.SSH_USER }}/audiolinx
           
+            export PORT=8080
+            export APP_LOG_LEVEL=\"debug\"
+            export SPOTIFY_CLIENT_ID=\"${{ secrets.SPOTIFY_CLIENT_ID }}\"
+            export SPOTIFY_CLIENT_SECRET=\"${{ secrets.SPOTIFY_CLIENT_SECRET }}\"
+            export YOUTUBE_API_KEY=\"${{ secrets.YOUTUBE_API_KEY }}\"
+            export IP_INFO_TOKEN=\"${{ secrets.IP_INFO_TOKEN }}\"
+          
             # Zero-downtime restart via PM2 for audiolinx
             pm2 describe audiolinx > /dev/null 2>&1
             if [ \$? -eq 0 ]; then
@@ -116,7 +123,7 @@ jobs:
               pm2 reload audiolinx --update-env
             else
               echo 'App is not running. Starting...'
-              PORT=8080 pm2 start server.js --name 'audiolinx'
+              pm2 start server.js --name 'audiolinx'
             fi
             pm2 save
           "
