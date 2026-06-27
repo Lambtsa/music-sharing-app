@@ -88,11 +88,11 @@ export class DeezerWebApi {
       });
     }
 
-    const { data } = (await response.json()) as DeezerSearchApiResponseType;
-
     logger.info("found deezer tracks", {
       response
     });
+
+    const { data } = (await response.json()) as DeezerSearchApiResponseType;
 
     const track = data.find((item) => {
       return cleanString(item.artist.name).includes(cleanString(input.artist)) &&
