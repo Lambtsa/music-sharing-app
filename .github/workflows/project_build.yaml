@@ -120,7 +120,7 @@ jobs:
             pm2 describe audiolinx > /dev/null 2>&1
             if [ \$? -eq 0 ]; then
               echo 'App is running. Reloading...'
-              pm2 reload audiolinx --update-env
+              pm2 restart audiolinx --update-env
             else
               echo 'App is not running. Starting...'
               pm2 start server.js --name 'audiolinx'
