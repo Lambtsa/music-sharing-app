@@ -126,18 +126,11 @@ jobs:
               pm2 reload audiolinx-${{ inputs.deploy-env }} --update-env
             else
               echo 'App is not running. Starting...'
-              PORT=3000 pm2 start server.js --name 'audiolinx-${{ inputs.deploy-env }}'
+              PORT=8080 pm2 start server.js --name 'audiolinx-${{ inputs.deploy-env }}'
             fi
             pm2 save
           "
         shell: bash
-
-#      - name: Restart the audiolinx-${{ inputs.deploy-env }} process on server
-#        if: ${{ inputs.publish == true }}
-#        run: |
-#          echo "Restarting the audiolinx-${{ inputs.deploy-env }} process on server..."
-#          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "source ~/.nvm/nvm.sh; git pull; pnpm i; pm2 restart audiolinx; exit"
-#        shell: bash
 
 
           
