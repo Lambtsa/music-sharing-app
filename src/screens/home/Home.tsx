@@ -454,7 +454,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
   const hasArtists = useMemo(() => !!artists.length, [artists]);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-[40px] max-w-xl m-auto">
+    <div className="flex flex-col items-center justify-center gap-[40px] max-w-xl m-auto px-4">
       <div className='flex flex-col items-center justify-center gap-4 mb-4'>
         <h1 data-testid='home-title' className={`${isLight ? "text-eerie-black" : "text-ivory"} font-bold text-center text-5xl leading-12`}>
           {t({
