@@ -58,7 +58,7 @@ export const AlbumBtn = ({
           </p>
         </div>
         <button
-          className={`flex justify-center transition transform duration-[300ms] ease-out items-center px-2 py-4 rounded-[7px] text-sm text-ivory ${isExpanded ? "transform rotate-90" : ""}`}
+          className={`flex justify-center transition hover:cursor-pointer transform duration-[300ms] ease-out items-center px-2 py-4 rounded-[7px] text-sm text-ivory ${isExpanded ? "transform rotate-90" : ""}`}
           type="button"
           onClick={handleExpandOnClick}
         >
@@ -83,7 +83,7 @@ export const AlbumBtn = ({
                   </p>
                 </div>
                 <button
-                  className = 'px-4 py-2 rounded-[7px] bg-pastel-pink text-ivory font-bold hover:text-ivory hover:bg-old-rose text-sm'
+                  className = 'px-4 py-2 rounded-[7px] bg-pastel-pink text-ivory font-bold hover:cursor-pointer hover:text-ivory hover:bg-old-rose text-sm'
                   type="button"
                   onClick={() => handleOnClick(track.url)}
                 >

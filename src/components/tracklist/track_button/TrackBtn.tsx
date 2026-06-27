@@ -44,7 +44,7 @@ export const TrackBtn = ({
         <p className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>{track.album.name}</p>
       </div>
       <button 
-        className = 'px-4 py-2 rounded-[7px] bg-pastel-pink text-ivory font-bold hover:text-ivory hover:bg-old-rose text-sm'
+        className = 'px-4 py-2 rounded-[7px] hover:cursor-pointer bg-pastel-pink text-ivory font-bold hover:text-ivory hover:bg-old-rose text-sm'
         type="button" 
         onClick={() => handleOnClick(track.url)}
       >
