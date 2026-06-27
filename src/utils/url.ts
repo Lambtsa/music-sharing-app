@@ -1,9 +1,5 @@
-import path from "path";
-
 import {
-  deezerUrlRegex,
-  spotifyUrlRegex,
-  youtubeUrlRegex,
+  deezerUrlRegex, spotifyUrlRegex, youtubeUrlRegex, 
 } from "@/constants/regex";
 import type { MusicProviders, SearchType } from "@/types/music";
 
@@ -94,23 +90,4 @@ export const getTrackId = (url: string, type: MusicProviders): string | null => 
       return urlObj.searchParams.get("v");
     }
   }
-};
-
-/**
- * Helper function to create a url from a base url and a pathname
- * @returns string
- */
-export const buildUrl = (
-  pathname: string,
-  baseUrl: string
-): string => {
-  if (!baseUrl) {
-    throw Error("Internal Server Error");
-  }
-  const { pathname: initialPathnames } = new URL(baseUrl);
-
-  return new URL(
-    path.join(initialPathnames, pathname.trim()),
-    baseUrl
-  ).toString();
 };

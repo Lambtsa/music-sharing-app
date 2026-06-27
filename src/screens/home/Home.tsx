@@ -29,9 +29,7 @@ import type {
 } from "@/types/api";
 import type { SearchType } from "@/types/music";
 import { logger } from "@/utils/logger";
-import {
-  buildUrl, isValidInput, isValidMusicStreamingUrl 
-} from "@/utils/url";
+import { isValidInput, isValidMusicStreamingUrl } from "@/utils/url";
 
 
 export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactElement => {
@@ -222,7 +220,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
           /* Artist will return a list of tracks sorted by album. User can then select a track */
           case "artist": {
             const response = await fetch(
-              buildUrl("/api/artists", process.env.NEXT_PUBLIC_BASE_URL),
+              "/api/artists",
               {
                 method: "POST",
                 headers: {
@@ -258,7 +256,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
           /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
           case "track": {
             const response = await fetch(
-              buildUrl("/api/tracks", process.env.NEXT_PUBLIC_BASE_URL),
+              "/api/tracks",
               {
                 method: "POST",
                 headers: {
@@ -294,7 +292,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
           /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
           case "url": {
             const response = await fetch(
-              buildUrl("/api/links", process.env.NEXT_PUBLIC_BASE_URL),
+              "/api/links",
               {
                 method: "POST",
                 headers: {
@@ -351,7 +349,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
         };
 
         const response = await fetch(
-          buildUrl("/api/albums", process.env.NEXT_PUBLIC_BASE_URL),
+          "/api/albums",
           {
             method: "POST",
             headers: {
@@ -413,7 +411,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
         };
 
         const response = await fetch(
-          buildUrl("/api/links", process.env.NEXT_PUBLIC_BASE_URL),
+          "/api/links",
           {
             method: "POST",
             headers: {
