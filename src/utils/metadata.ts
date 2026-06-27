@@ -18,13 +18,13 @@ export const pageData: Pages = {
     title: "Audiolinx | Share your music discoveries with all your friends!",
     description:
       "You have Spotify but all your friends have Youtube or Deezer? Want to make sharing your new discoveries as easy as a copy/ paste? Search by artist, track or simply paste a music streaming service url and get links to the favourite streaming services. Start sharing today!",
-    url: new URL(routes.index(), window.origin).toString(),
+    url: routes.index(),
   },
   index: {
     title: "Audiolinx | Share your music discoveries with all your friends!",
     description:
       "You have Spotify but all your friends have Youtube or Deezer? Want to make sharing your new discoveries as easy as a copy/ paste? Search by artist, track or simply paste a music streaming service url and get links to the favourite streaming services. Start sharing today!",
-    url: new URL(routes.index(), window.origin).toString(),
+    url: routes.index(),
   },
 };
 
