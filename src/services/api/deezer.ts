@@ -89,7 +89,9 @@ export class DeezerWebApi {
     }
 
     logger.info("found deezer tracks", {
-      response
+      statusText: response.statusText,
+      status: response.status,
+      headers: response.headers
     });
 
     const { data } = (await response.json()) as DeezerSearchApiResponseType;
