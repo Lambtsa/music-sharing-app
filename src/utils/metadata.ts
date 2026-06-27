@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 
 import { routes } from "@/utils/routes";
 
-import { buildUrl } from "./url";
-
 export interface MetaData {
   title: string;
   description: string;
@@ -20,13 +18,13 @@ export const pageData: Pages = {
     title: "Audiolinx | Share your music discoveries with all your friends!",
     description:
       "You have Spotify but all your friends have Youtube or Deezer? Want to make sharing your new discoveries as easy as a copy/ paste? Search by artist, track or simply paste a music streaming service url and get links to the favourite streaming services. Start sharing today!",
-    url: buildUrl(routes.index(), process.env.NEXT_PUBLIC_BASE_URL),
+    url: new URL(routes.index(), window.origin).toString(),
   },
   index: {
     title: "Audiolinx | Share your music discoveries with all your friends!",
     description:
       "You have Spotify but all your friends have Youtube or Deezer? Want to make sharing your new discoveries as easy as a copy/ paste? Search by artist, track or simply paste a music streaming service url and get links to the favourite streaming services. Start sharing today!",
-    url: buildUrl(routes.index(), process.env.NEXT_PUBLIC_BASE_URL),
+    url: new URL(routes.index(), window.origin).toString(),
   },
 };
 
