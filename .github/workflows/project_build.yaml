@@ -7,10 +7,6 @@ on:
         required: false
         type: number
         default: 60
-      deploy-env:
-        required: true
-        type: string
-        default: qual
       publish:
         required: true
         type: boolean
@@ -20,7 +16,6 @@ jobs:
   project_build:
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
-    environment: ${{ inputs.deploy-env }}
     permissions:
       id-token: write
       contents: read
@@ -33,41 +28,37 @@ jobs:
       repository-projects: write
       security-events: write
       statuses: write
-    
+
     steps:
-      ##############################
-      # Build & deploy
-      ##############################
-      # Get access to github repository
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v4
         id: checkout
         with:
           fetch-depth: 0
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v6.4.0
+        uses: actions/setup-node@v4
         with:
           node-version: 24.14.0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v6.0.9
+        uses: pnpm/action-setup@v4
         with:
           version: 11
-    
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         shell: bash
-  
+
       - name: Run Unit Tests
         run: pnpm test
         shell: bash
-  
+
       - name: Run linter
         run: pnpm lint
         shell: bash
-  
+
       - name: Run build
-        env: 
+        env:
           GTAG: ${{ secrets.GTAG }}
           NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
         run: pnpm build
@@ -101,13 +92,12 @@ jobs:
         if: ${{ inputs.publish == true }}
         run: |
           # Create target directory on VPS if it doesn't exist
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "mkdir -p /home/${{ secrets.SSH_USER }}/audiolinx-${{ inputs.deploy-env }}"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "mkdir -p /home/${{ secrets.SSH_USER }}/audiolinx"
           
-          # Sync everything securely inside .next/standalone/ directly into the target app folder
-          # --delete ensures deleted files in repo don't accumulate on server
+          # Sync everything inside .next/standalone/ directly into the target app folder
           rsync -atv --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
-            .next/standalone/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}:/home/${{ secrets.SSH_USER }}/audiolinx-${{ inputs.deploy-env }}/
+            .next/standalone/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}:/home/${{ secrets.SSH_USER }}/audiolinx/
         shell: bash
 
       - name: Restart PM2 Process on VPS
@@ -117,20 +107,17 @@ jobs:
             # Load NVM or global node environment if needed
             [ -s \"\$HOME/.nvm/nvm.sh\" ] && \. \"\$HOME/.nvm/nvm.sh\"
           
-            cd /home/${{ secrets.SSH_USER }}/audiolinx-${{ inputs.deploy-env }}
+            cd /home/${{ secrets.SSH_USER }}/audiolinx
           
-            # Zero-downtime restart via PM2
-            pm2 describe audiolinx-${{ inputs.deploy-env }} > /dev/null 2>&1
+            # Zero-downtime restart via PM2 for audiolinx
+            pm2 describe audiolinx > /dev/null 2>&1
             if [ \$? -eq 0 ]; then
               echo 'App is running. Reloading...'
-              pm2 reload audiolinx-${{ inputs.deploy-env }} --update-env
+              pm2 reload audiolinx --update-env
             else
               echo 'App is not running. Starting...'
-              PORT=8080 pm2 start server.js --name 'audiolinx-${{ inputs.deploy-env }}'
+              PORT=8080 pm2 start server.js --name 'audiolinx'
             fi
             pm2 save
           "
         shell: bash
-
-
-          
