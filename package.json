@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 8080 | pino-pretty",
-    "build": "next build",
+    "build": "ANALYZE=true next build",
     "start": "next start -p 8080",
     "lint": "eslint .",
     "lint:tsc": "tsc --noEmit --project tsconfig.json",

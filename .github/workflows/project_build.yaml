@@ -73,16 +73,63 @@ jobs:
         run: pnpm build
         shell: bash
 
-      - name: Deploy to VPS
+      # --- START OF THE ROBUST DEPLOYMENT LOGIC ---
+
+      - name: Inject Static and Public Assets into Standalone Folder
         if: ${{ inputs.publish == true }}
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 700 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_IP }} >> ~/.ssh/known_hosts
-          echo "Pushing the build app to the remote server"
-          scp -o StrictHostKeyChecking=yes -r ./.next/standalone/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}:/home/${{ secrets.SSH_USER }}/
-          scp -o StrictHostKeyChecking=yes -r ./public/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}:/home/${{ secrets.SSH_USER }}/public/
+          # 1. Copy the client-side compiled files into the standalone folder
+          mkdir -p .next/standalone/.next/static
+          cp -r .next/static/. .next/standalone/.next/static/
+          
+          # 2. Copy public assets into the standalone folder
+          if [ -d "public" ]; then
+            mkdir -p .next/standalone/public
+            cp -r public/. .next/standalone/public/
+          fi
+        shell: bash
+
+      - name: Setup SSH Private Key
+        if: ${{ inputs.publish == true }}
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: 'unnecessary'
+          if_key_exists: replace
+
+      - name: Deploy Standalone App via Rsync
+        if: ${{ inputs.publish == true }}
+        run: |
+          # Create target directory on VPS if it doesn't exist
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "mkdir -p /home/${{ secrets.SSH_USER }}/audiolinx-${{ inputs.deploy-env }}"
+          
+          # Sync everything securely inside .next/standalone/ directly into the target app folder
+          # --delete ensures deleted files in repo don't accumulate on server
+          rsync -atv --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            .next/standalone/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}:/home/${{ secrets.SSH_USER }}/audiolinx-${{ inputs.deploy-env }}/
+        shell: bash
+
+      - name: Restart PM2 Process on VPS
+        if: ${{ inputs.publish == true }}
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} "
+            # Load NVM or global node environment if needed
+            [ -s \"\$HOME/.nvm/nvm.sh\" ] && \. \"\$HOME/.nvm/nvm.sh\"
+          
+            cd /home/${{ secrets.SSH_USER }}/audiolinx-${{ inputs.deploy-env }}
+          
+            # Zero-downtime restart via PM2
+            pm2 describe audiolinx-${{ inputs.deploy-env }} > /dev/null 2>&1
+            if [ \$? -eq 0 ]; then
+              echo 'App is running. Reloading...'
+              pm2 reload audiolinx-${{ inputs.deploy-env }} --update-env
+            else
+              echo 'App is not running. Starting...'
+              PORT=3000 pm2 start server.js --name 'audiolinx-${{ inputs.deploy-env }}'
+            fi
+            pm2 save
+          "
         shell: bash
 
 #      - name: Restart the audiolinx-${{ inputs.deploy-env }} process on server
