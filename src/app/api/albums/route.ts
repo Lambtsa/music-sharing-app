@@ -4,7 +4,6 @@ import { BadRequestError, globalApiErrorHandler } from "@/core/errors";
 import { albumInputSchema } from "@/schemas/api.schema";
 import { SpotifyWebApi } from "@/services/api/spotify";
 import type { AlbumInputType } from "@/types/api";
-import { logger } from "@/utils/logger";
 import { getUserAgentInfo } from "@/utils/userAgentInfo";
 
 export const dynamic = "force-dynamic";
@@ -12,9 +11,6 @@ export const dynamic = "force-dynamic";
 export const POST = async (req: NextRequest): Promise<Response> => {
   try {
     const body: AlbumInputType = await req.json();
-    logger.info("POST /albums: ", {
-      body 
-    });
     const userAgentInfo = getUserAgentInfo(req);
 
     const albumSafeParse = albumInputSchema.safeParse(body);

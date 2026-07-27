@@ -8,7 +8,6 @@ import { YoutubeWebApi } from "@/services/api/youtube";
 import type {
   LinkListReturnType, MusicDetails, SearchInputType 
 } from "@/types/api";
-import { logger } from "@/utils/logger";
 import { determineUrlType, getTrackId } from "@/utils/url";
 import { getUserAgentInfo } from "@/utils/userAgentInfo";
 
@@ -33,10 +32,6 @@ export const POST = async (req: NextRequest): Promise<Response> => {
 
     const urlType = determineUrlType(body.search.url);
 
-    logger.info("Type of url", {
-      urlType
-    });
-
     if (urlType === "youtube") {
       throw new BadRequestError({
         message: "Youtube links are not supported",
@@ -55,10 +50,6 @@ export const POST = async (req: NextRequest): Promise<Response> => {
       });
     }
     const trackId = getTrackId(body.search.url, urlType);
-
-    logger.info("TrackId", {
-      trackId
-    });
 
     if (!trackId) {
       return new Response(JSON.stringify([]), {

@@ -2,15 +2,12 @@ import { GatewayError } from "@/core/errors";
 import type {
   DeezerSearchApiResponseType, DeezerTrackApiResponseType, MusicDetails 
 } from "@/types/api";
-import { logger } from "@/utils/logger";
 import { cleanString } from "@/utils/string";
 
 export class DeezerWebApi {
   #baseUrl = "https://api.deezer.com";
   #searchUrl = `${this.#baseUrl}/search`;
-
-  // constructor() {}
-
+  
   /**
    * Builds spotify URL using base, artist and track
    * @returns Deezer API URL
@@ -88,25 +85,12 @@ export class DeezerWebApi {
       });
     }
 
-    logger.info("found deezer tracks", {
-      statusText: response.statusText,
-      status: response.status,
-      headers: response.headers
-    });
-
     const { data } = (await response.json()) as DeezerSearchApiResponseType;
 
     const track = data.find((item) => {
       return cleanString(item.artist.name).includes(cleanString(input.artist)) &&
         cleanString(item.title).includes(cleanString(input.track)) &&
         cleanString(item.album.title).includes(cleanString(input.album));
-    });
-
-    logger.info("found deezer tracks", {
-      track,
-      artist: cleanString(input.artist),
-      title: cleanString(input.track),
-      album: cleanString(input.album)
     });
 
     if (!track) {
