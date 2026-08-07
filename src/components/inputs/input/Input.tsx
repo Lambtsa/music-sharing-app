@@ -11,8 +11,12 @@ export const Input = ({
   return (
     <div className='flex flex-col items-start'>
       <input 
-        {...rest} 
-        className={`block w-full px-3 py-4 border-none outline-none mx-auto rounded-[10px] ${isLight ? "bg-eerie-black-20 text-eerie-black [&::placeholder]:text-eerie-black-70" : "bg-ivory-20 text-ivory [&::placeholder]:text-ivory-70"} [&::placeholder]:text-base`}
+        {...rest}
+        className={`block w-full mx-auto rounded-[10px] px-4 py-4 text-base outline-none transition-all duration-200 backdrop-blur-md ${
+          isLight
+            ? "bg-white/60 text-slate-900 border border-slate-300 placeholder:text-slate-500 focus:border-slate-500 focus:ring-2 focus:ring-slate-400/20"
+            : "bg-white/10 text-white border border-white/15 placeholder:text-white/50 focus:border-white/40 focus:ring-2 focus:ring-white/10"
+        }`}
         type={type}
       />
       <div className='flex justify-between items-center w-full h-4 gap-1'>
