@@ -507,7 +507,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
             error={formErrors.url}
           />
         </div>
-        <Button data-testid='home-form-submit-button' type="submit">
+        <Button isLoading={isLoading} data-testid='home-form-submit-button' type="submit">
           {t({
             id: "home.cta"
           })}

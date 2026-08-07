@@ -4,4 +4,5 @@ export interface ButtonProps
   extends Omit<InputHTMLAttributes<HTMLButtonElement>, "width"> {
   children: ReactNode;
   width?: number;
+  isLoading?: boolean
 }
