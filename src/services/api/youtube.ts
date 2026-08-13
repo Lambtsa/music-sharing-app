@@ -52,10 +52,10 @@ export class YoutubeWebApi {
 
     if (!response.ok) {
       logger.error("", {
-        message: response.statusText,
+        message: rawData.error.message,
         statusCode: response.status,
         type: "youtube",
-        err: rawData.err
+        err: rawData.error
       });
       return null;
     }

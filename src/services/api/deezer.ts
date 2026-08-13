@@ -82,10 +82,10 @@ export class DeezerWebApi {
 
     if (!response.ok) {
       logger.error("", {
-        message: response.statusText,
+        message: rawData.error.message,
         statusCode: response.status,
         type: "deezer",
-        err: rawData.err
+        err: rawData.error
       });
       return null;
     }
