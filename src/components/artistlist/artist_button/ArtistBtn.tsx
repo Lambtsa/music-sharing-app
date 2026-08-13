@@ -15,7 +15,7 @@ export const ArtistBtn = ({
 
   return (
     <div 
-      className={`grid grid-cols-[50px_1fr_80px] justify-center items-center gap-4 ${isLight ? "bg-tiffany-blue-20" : "bg-onyx"} rounded-[10px] w-full px-4 py-3`}
+      className={`grid grid-cols-[50px_minmax(0,1fr)_80px] justify-center items-center gap-4 ${isLight ? "bg-tiffany-blue-20" : "bg-onyx"} rounded-[10px] w-full px-4 py-3`}
     >
       {artist.imageUrl ? (
         <div className='relative h-[50px] w-[50px] overflow-hidden rounded-[7px]'>
@@ -33,13 +33,19 @@ export const ArtistBtn = ({
         <Icon icon='placeholder' height={50} width={50} />
       )
       }
-      <div className="flex flex-auto flex-col justify-center items-start gap-1/2 w-full overflow-hidden whitespace-nowrap"
+      <div className="flex flex-auto flex-col justify-center items-start gap-1/2 w-full min-w-0"
       >
-        <h3 className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-bold text-sm overflow-hidden whitespace-nowrap text-ellipsis`}
+        <h3
+          title={artist.name}
+          className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-bold text-sm overflow-hidden whitespace-nowrap text-ellipsis w-full`}
         >
           {artist.name}
         </h3>
-        <p className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>{artist.followers} followers</p>
+        <p
+          title={`${artist.followers} followers`}
+          className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis w-full`}>
+          {artist.followers} followers
+        </p>
       </div>
       <button 
         className = 'px-4 py-2 rounded-[7px] hover:cursor-pointer bg-pastel-pink text-ivory font-bold hover:text-ivory hover:bg-old-rose text-sm'

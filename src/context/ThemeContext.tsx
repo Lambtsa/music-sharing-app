@@ -44,7 +44,7 @@ const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
   return (
     <ThemeContext.Provider value={toggle}>
-      <main className={`grid grid-rows-[60px_1fr_60px] h-full overflow-x-hidden min-w-full max-w-screen ${isLight ? "bg-ivory" : "bg-eerie-black"}`}>
+      <main className={`grid grid-cols-1 grid-rows-[60px_1fr_60px] h-full overflow-x-hidden min-w-full max-w-screen ${isLight ? "bg-ivory" : "bg-eerie-black"}`}>
         {children}
       </main>
     </ThemeContext.Provider>

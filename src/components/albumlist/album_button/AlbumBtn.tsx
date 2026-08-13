@@ -28,7 +28,7 @@ export const AlbumBtn = ({
 
   return (
     <>
-      <div className={`grid grid-cols-[50px_1fr_40px] justify-center items-center gap-4 [&>svg]:min-w-[30px] ${isLight ? "bg-tiffany-blue-20 [&>svg>path]:stroke-eerie-black" : "bg-onyx [&>svg>path]:stroke-ivory"} rounded-[10px] w-full px-4 py-3`}>
+      <div className={`grid grid-cols-[50px_minmax(0,1fr)_40px] justify-center items-center gap-4 [&>svg]:min-w-[30px] ${isLight ? "bg-tiffany-blue-20 [&>svg>path]:stroke-eerie-black" : "bg-onyx [&>svg>path]:stroke-ivory"} rounded-[10px] w-full px-4 py-3`}>
         {album.imageUrl ? (
           <div className='relative h-[50px] w-[50px] overflow-hidden rounded-[7px]'>
             <Image
@@ -46,14 +46,20 @@ export const AlbumBtn = ({
           <Icon icon='placeholder' width={50} height={50} />
         )
         }
-        <div className = 'flex flex-auto flex-col justify-center items-start gap-1/2 w-full overflow-hidden whitespace-nowrap'>
-          <h3 className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-bold text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
+        <div className='flex flex-auto flex-col justify-center items-start gap-1/2 w-full min-w-0'>
+          <h3
+            title={album.artist}
+            className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-bold text-sm truncate w-full`}>
             {album.artist}
           </h3>
-          <p className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
+          <p
+            title={album.album.name}
+            className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-normal text-sm truncate w-full`}>
             {album.album.name}
           </p>
-          <p className={`${isLight ? "text-eerie-black-70" : "text-ivory-70"} text-left font-normal text-xs overflow-hidden whitespace-nowrap text-ellipsis`}>
+          <p
+            title={album.release_date}
+            className={`${isLight ? "text-eerie-black-70" : "text-ivory-70"} text-left font-normal text-xs truncate w-full`}>
             {album.release_date}
           </p>
         </div>
@@ -66,7 +72,7 @@ export const AlbumBtn = ({
         </button>
       </div>
       {isExpanded && (
-        <div className='flex flex-col gap-1 py-2'>
+        <div className='flex flex-col gap-1 py-2 w-full'>
           {hasTracks &&
             tracks.map((track) => (
               <div 
@@ -74,16 +80,20 @@ export const AlbumBtn = ({
                 className={`flex justify-between items-center gap-4 ${isLight ? "bg-tiffany-blue-20" : "bg-onyx"} rounded-[10px] w-full px-3 py-4`}
               >
                 <Icon icon='music' width={30} height={30} color={isLight ? "#262626" : "#FFFEED"} />
-                <div className='flex flex-auto flex-col justify-center items-start gap-1/2 w-full overflow-hidden whitespace-nowrap'>
-                  <h3 className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-bold text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
+                <div className='flex flex-auto flex-col justify-center items-start gap-1/2 w-full min-w-0'>
+                  <h3
+                    title={track.track.name}
+                    className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-bold text-sm truncate w-full`}>
                     {track.track.name}
                   </h3>
-                  <p className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-normal text-sm overflow-hidden whitespace-nowrap text-ellipsis`}>
+                  <p 
+                    title={track.artist}
+                    className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-normal text-sm truncate w-full`}>
                     {track.artist}
                   </p>
                 </div>
                 <button
-                  className = 'px-4 py-2 rounded-[7px] bg-pastel-pink text-ivory font-bold hover:cursor-pointer hover:text-ivory hover:bg-old-rose text-sm'
+                  className='px-4 py-2 rounded-[7px] bg-pastel-pink text-ivory font-bold hover:cursor-pointer hover:text-ivory hover:bg-old-rose text-sm'
                   type="button"
                   onClick={() => handleOnClick(track.url)}
                 >

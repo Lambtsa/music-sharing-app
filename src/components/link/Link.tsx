@@ -64,9 +64,9 @@ export const MusicLink = ({
         handleOnChange={() => handleOnChange(service)}
         isLight={isLight}
       />
-      <div className='flex flex-auto'>
+      <div className='flex flex-auto min-w-0'>
         <input 
-          className={`flex-auto rounded-[7px] px-2 py-[10px] ${isLight ? "bg-ivory text-eerieBlack" : "bg-ivory20 text-ivory"} overflow-hidden text-ellipsis`}
+          className={`w-full min-w-0 flex-auto rounded-[7px] px-2 py-[10px] ${isLight ? "bg-ivory text-eerieBlack" : "bg-ivory20 text-ivory"} overflow-hidden text-ellipsis`}
           readOnly
           value={contentUrl} 
         />

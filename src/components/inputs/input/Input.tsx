@@ -9,7 +9,7 @@ export const Input = ({
   ...rest
 }: InputProps): ReactElement => {
   return (
-    <div className='flex flex-col items-start'>
+    <div className='flex flex-col items-start w-full'>
       <input 
         {...rest}
         className={`block w-full mx-auto rounded-[10px] px-4 py-4 text-base outline-none transition-all duration-200 backdrop-blur-md ${
