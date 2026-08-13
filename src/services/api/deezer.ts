@@ -2,6 +2,7 @@ import { GatewayError } from "@/core/errors";
 import type {
   DeezerSearchApiResponseType, DeezerTrackApiResponseType, MusicDetails 
 } from "@/types/api";
+import { logger } from "@/utils/logger";
 import { cleanString } from "@/utils/string";
 
 export class DeezerWebApi {
@@ -49,7 +50,7 @@ export class DeezerWebApi {
       throw new GatewayError({
         message: response.statusText,
         statusCode: response.status,
-        type: "spotify",
+        type: "deezer",
       });
     }
 
@@ -66,7 +67,7 @@ export class DeezerWebApi {
    * Deezer - Given an artist and title, this helper will return the deezer uri.
    * Deezer struggles currently to find titles that are not exact.
    * @see https://developers.deezer.com/api/search
-   * @example 'https://api.deezer.com/search?q=artist:"aloe blacc" track:"i need a dollar"'
+   * @example 'https://api.deezer.com/search?q=artist:"aloe blacc" track:"I need a dollar"'
    */
   async searchDeezer(input: MusicDetails): Promise<string | null> {
     const deezerUri = this.buildDeezerApiUrl(input);
@@ -77,15 +78,19 @@ export class DeezerWebApi {
       },
     });
 
+    const rawData = await response.json();
+
     if (!response.ok) {
-      throw new GatewayError({
+      logger.error("", {
         message: response.statusText,
         statusCode: response.status,
         type: "deezer",
+        err: rawData.err
       });
+      return null;
     }
 
-    const { data } = (await response.json()) as DeezerSearchApiResponseType;
+    const { data } = rawData as DeezerSearchApiResponseType;
 
     const track = data.find((item) => {
       return cleanString(item.artist.name).includes(cleanString(input.artist)) &&

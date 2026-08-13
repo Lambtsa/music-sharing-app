@@ -1,5 +1,5 @@
-import { GatewayError } from "@/core/errors";
 import type { MusicDetails, YoutubeSearchApiResponseType } from "@/types/api";
+import { logger } from "@/utils/logger";
 
 export class YoutubeWebApi {
   #baseUrl = "https://www.googleapis.com/youtube/v3";
@@ -8,7 +8,7 @@ export class YoutubeWebApi {
   // constructor() {}
 
   /**
-   * Builds youtube URL using base, artist and track
+   * Builds YouTube URL using base, artist and track
    * @returns Youtube API URL
    */
   private buildYoutubeApiUrl({
@@ -35,7 +35,7 @@ export class YoutubeWebApi {
   }
 
   /**
-   * Youtube - Given an artist and title, this helper will return the youtube uri
+   * YouTube - Given an artist and title, this helper will return the YouTube uri
    * @see https://developers.google.com/youtube/v3/docs
    * @example 'https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=artist:"aloe blacc" track:"i need a dollar"'
    */
@@ -48,15 +48,19 @@ export class YoutubeWebApi {
       },
     });
 
+    const rawData = await response.json();
+
     if (!response.ok) {
-      throw new GatewayError({
+      logger.error("", {
         message: response.statusText,
         statusCode: response.status,
         type: "youtube",
+        err: rawData.err
       });
+      return null;
     }
 
-    const data = (await response.json()) as YoutubeSearchApiResponseType;
+    const data = rawData as YoutubeSearchApiResponseType;
 
     /* TODO: This will need optimising because currently only returns the first element found + need better searching */
     const track = data.items[0]?.id.videoId;
