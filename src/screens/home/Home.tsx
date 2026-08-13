@@ -11,6 +11,7 @@ import z from "zod";
 import { Albumlist } from "@/components/albumlist";
 import { ArtistList } from "@/components/artistlist";
 import { Button } from "@/components/button";
+import { Icon } from "@/components/icon";
 import { InputText } from "@/components/inputs/input_text";
 import { Loader } from "@/components/loader";
 import { MusicLinks } from "@/components/music_links";
@@ -455,7 +456,12 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
 
   return (
     <div className="flex flex-col items-center justify-center gap-[30px] max-w-xl m-auto px-4">
-      <div className='flex flex-col items-center justify-center gap-1'>
+      <div className='flex flex-col items-center justify-center gap-2'>
+        <div className='flex gap-2 justify-center items-center'>
+          <Icon icon='spotify' />
+          <Icon icon='deezer' />
+          <Icon icon='youtube' />
+        </div>
         <h1 data-testid='home-title' className={`${isLight ? "text-eerie-black" : "text-ivory"} font-bold text-center text-4xl leading-12`}>
           {t({
             id: "home.title"

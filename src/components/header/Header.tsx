@@ -21,7 +21,8 @@ export const Header = (): ReactElement => {
 
   return (
     <div data-testid='header--wrapper-div' className={`flex justify-between items-center top-0 left-0 w-full px-4 ${isLight ? "bg-ivory" : "bg-eerie-black"}`}>
-      <button 
+      <button
+        className='cursor-pointer'
         data-testid='header-logo-button'
         type='button' 
         onClick={handleOnClick}
