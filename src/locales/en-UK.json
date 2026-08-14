@@ -4,6 +4,7 @@
   "error.message.requiredArtist": "Please provide an artists' name",
   "error.message.requiredTitle": "Please provide at least a song title",
   "error.message.requiredUrl": "Please provide a valid url",
+  "error.message.requiredSearchTerm": "Please provide a search query",
   "error.message.generic": "There has been an error",
 
   "footer.copyright": "© {date} AudioLinx. All rights reserved",
@@ -16,10 +17,11 @@
   "home.title": "Find\u00A0it · Share\u00A0it · Play\u00A0it",
   "home.subtitle": "Get Spotify, Deezer, and YouTube links so everyone can listen",
   "home.showingResults": "Showing results for {artist} - {track}",
+  "home.or": "or",
 
   "label.artist": "Artist",
   "label.copyLink": "Copy Link",
-  "label.search": "Artist, title or streaming url",
+  "label.search": "Find artists, songs, or paste a streaming link...",
   "label.select": "Select",
   "label.track": "Track",
   "label.url": "Song URL",

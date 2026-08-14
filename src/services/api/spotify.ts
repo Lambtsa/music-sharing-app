@@ -1,10 +1,12 @@
 import { GatewayError } from "@/core/errors";
-import type {
+import {
   AlbumReturnType,
   ArtistReturnType,
   MusicDetails,
+  SearchReturnType,
   SpotifyAlbumListApiResponseType,
   SpotifyArtistListApiResponseType,
+  SpotifySearchAllApiResponseType,
   SpotifyTrackApiResponseType,
   SpotifyTrackListApiResponseType,
   TrackReturnType
@@ -113,6 +115,18 @@ export class SpotifyWebApi {
   }
 
   /**
+   * Builds spotify URL for querying all tracks, artists and albums by search term
+   * @returns Spotify API URL
+   */
+  private buildSpotifySearchAllApiUrl(searchTerm: string): string {
+    const url = new URL(this.#searchUrl);
+    url.searchParams.append("type", "album,track,artist");
+    url.searchParams.append("market", "FR");
+    url.searchParams.append("q", searchTerm);
+    return url.toString();
+  }
+
+  /**
    * Given an artist or a track this helper will return a list of the songs
    * @returns spotify uri and input
    * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/search
@@ -150,7 +164,7 @@ export class SpotifyWebApi {
       return [];
     }
 
-    return trackMapper(data.tracks.items);
+    return data.tracks.items.map(track => trackMapper(track));
   }
 
   /**
@@ -296,7 +310,7 @@ export class SpotifyWebApi {
    * @returns spotify uri and input
    * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/search
    */
-  async searchSpotify(
+  async getSpotifyUri(
     input: MusicDetails,
   ): Promise<string | null> {
     const accessToken = await this.getAccessToken();
@@ -337,5 +351,79 @@ export class SpotifyWebApi {
     }
 
     return track.external_urls.spotify;
+  }
+
+  /**
+   * Given a search term this helper function will give a list of tracks, artists albums
+   * @returns tracks, artists and albums
+   * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/search
+   */
+  async searchSpotify(
+    searchTerm: string,
+  ): Promise<SearchReturnType> {
+    const accessToken = await this.getAccessToken();
+
+    const spotifyUrl = this.buildSpotifySearchAllApiUrl(searchTerm);
+
+    const response = await fetch(spotifyUrl.toString(), {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const rawData = await response.json();
+
+    if (!response.ok) {
+      throw new GatewayError({
+        message: rawData.error,
+        statusCode: response.status,
+        type: "spotify",
+      });
+    }
+
+    const {
+      artists: { items: artistData },
+      albums: { items: albumData },
+      tracks: { items: trackData }
+    } = rawData as SpotifySearchAllApiResponseType;
+
+    const artists = artistData
+      .splice(0, 3)
+      .map((artist) => artistMapper(artist));
+
+    const tracks = trackData.map(track => trackMapper(track));
+
+    const albums = await Promise.all(
+      albumData.map(async (album) => {
+        const spotifyUrl = this.buildSpotifyTracksByAlbumListApiUrl(album.id);
+
+        const response = await fetch(spotifyUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new GatewayError({
+            message: response.statusText,
+            statusCode: response.status,
+            type: "spotify",
+          });
+        }
+        const trackdata = (await response.json()) as SpotifyTrackListApiResponseType["tracks"];
+
+        return albumMapper(album, trackdata);
+      }),
+    );
+
+    const sortedAlbums = albums.sort((a, b) => b.release_date.localeCompare(a.release_date));
+
+    return {
+      artists,
+      tracks,
+      albums: sortedAlbums
+    };
   }
 }

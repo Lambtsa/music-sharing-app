@@ -1,27 +1,25 @@
 import { type NextRequest } from "next/server";
 
-// import pino from 'pino';
-// import { insert } from '@/core/db';
 import { BadRequestError, globalApiErrorHandler } from "@/core/errors";
-import { searchLegacyInputSchema } from "@/schemas/api.schema";
+import { searchInputSchema } from "@/schemas/api.schema";
 import { SpotifyWebApi } from "@/services/api/spotify";
-import { SearchLegacyInputType } from "@/types/api";
+import { SearchInputType } from "@/types/api";
 import { getUserAgentInfo } from "@/utils/userAgentInfo";
 
 export const dynamic = "force-dynamic";
 
 export const POST = async (req: NextRequest): Promise<Response> => {
   try {
-    const body: SearchLegacyInputType = await req.json();
+    const body: SearchInputType = await req.json();
     const userAgentInfo = getUserAgentInfo(req);
 
-    const albumSafeParse = searchLegacyInputSchema.safeParse(body);
+    const searchSafeParse = searchInputSchema.safeParse(body);
 
-    if (!albumSafeParse.success || !body.search.artist) {
+    if (!searchSafeParse.success || !body.search) {
       throw new BadRequestError({
         message: "Please provide valid input",
         statusCode: 400,
-        url: "/api/albums",
+        url: "/api/search",
         userAgentInfo,
       });
     }
@@ -30,9 +28,10 @@ export const POST = async (req: NextRequest): Promise<Response> => {
     /* FETCH DATA */
     /* ############################## */
     const spotifyApi = new SpotifyWebApi();
-    const artists = await spotifyApi.getArtistList(body.search.artist);
 
-    return new Response(JSON.stringify(artists), {
+    const searchData = await spotifyApi.searchSpotify(body.search);
+
+    return new Response(JSON.stringify(searchData), {
       status: 200,
     });
   } catch (err) {

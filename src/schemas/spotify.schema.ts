@@ -149,3 +149,33 @@ export const spotifyTrackListApiResponseSchema = z.object({
     items: z.array(spotifyTrackApiResponseSchema),
   })
 });
+
+export const spotifySearchAllApiResponseSchema = z.object({
+  tracks: z.object({
+    href: z.string(),
+    limit: z.number(),
+    next: z.string().nullable(),
+    offset: z.number(),
+    previous: z.string().nullable(),
+    total: z.number(),
+    items: z.array(spotifyTrackApiResponseSchema),
+  }),
+  artists: z.object({
+    href: z.string(),
+    limit: z.number(),
+    next: z.string().nullable(),
+    offset: z.number(),
+    previous: z.string().nullable(),
+    total: z.number(),
+    items: z.array(spotifyArtistApiResponseSchema)
+  }),
+  albums: z.object({
+    href: z.string(),
+    limit: z.number(),
+    next: z.string().nullable(),
+    offset: z.number(),
+    previous: z.string().nullable(),
+    total: z.number(),
+    items: z.array(spotifyAlbumApiResponseSchema),
+  })
+});
