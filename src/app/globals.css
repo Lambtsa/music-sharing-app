@@ -48,10 +48,25 @@
 }
 
 @layer utility {
-    /* Force WebKit autofill background to stay transparent */
-    input:autofill,
-    input:-webkit-autofill {
-        -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    /* Fix Chrome/WebKit autofill background and text colors */
+
+    /* Dark Mode Inputs (Default body background) */
+    input.autofill-dark:-webkit-autofill,
+    input.autofill-dark:-webkit-autofill:hover,
+    input.autofill-dark:-webkit-autofill:focus,
+    input.autofill-dark:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0px 1000px #262626 inset !important; /* Matches --color-eerie-black */
+        -webkit-text-fill-color: #FFFEED !important; /* Matches --color-ivory */
+        transition: background-color 50000s ease-in-out 0s !important;
+    }
+
+    /* Light Mode Inputs */
+    input.autofill-light:-webkit-autofill,
+    input.autofill-light:-webkit-autofill:hover,
+    input.autofill-light:-webkit-autofill:focus,
+    input.autofill-light:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+        -webkit-text-fill-color: #262626 !important;
         transition: background-color 50000s ease-in-out 0s !important;
     }
 }

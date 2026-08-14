@@ -17,13 +17,13 @@ export const InputSearch = <
   error,
   ...rest
 }: ControlledInputProps<TFieldValues, TName>): ReactElement => {
-  const { field: { ref: _ref, ...fieldRest }, } = useController({
+  const { field: { ref, ...fieldRest }, } = useController({
     control,
     name
   });
 
   return (
-    <div className='flex flex-col items-start w-full'>
+    <div className="flex flex-col items-start w-full">
       <div
         className={`flex gap-3 justify-start items-center w-full mx-auto rounded-[10px] px-4 py-4 text-base transition-all duration-200 backdrop-blur-md border ${
           isLight
@@ -35,16 +35,22 @@ export const InputSearch = <
         <input
           {...rest}
           {...fieldRest}
+          ref={ref}
           type={type}
-          className={`w-full bg-transparent outline-none autofill:bg-transparent autofill:transition-colors border-none p-0 focus:ring-0 focus:outline-none ${
-            isLight 
-              ? "text-slate-900 placeholder:text-slate-500 [:-webkit-autofill&]:[-webkit-text-fill-color:#0f172a]" 
-              : "text-white placeholder:text-white/50 [:-webkit-autofill&]:[-webkit-text-fill-color:#ffffff]"
+          autoComplete="off"
+          className={`w-full bg-transparent border-none p-0 focus:ring-0 focus:outline-none focus:bg-transparent ${
+            isLight
+              ? "text-slate-900 placeholder:text-slate-500 autofill-light"
+              : "text-white placeholder:text-white/50 autofill-dark"
           }`}
         />
       </div>
-      <div className='flex justify-between items-center w-full h-4 gap-1'>
-        {error && <p className='flex-auto m-0 text-xs leading-4 pl-2 text-new-york-pink'>{error.message}</p>}
+      <div className="flex justify-between items-center w-full h-4 gap-1">
+        {error && (
+          <p className="flex-auto m-0 text-xs leading-4 pl-2 text-new-york-pink">
+            {error.message}
+          </p>
+        )}
       </div>
     </div>
   );
