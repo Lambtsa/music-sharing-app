@@ -4,18 +4,24 @@
   "error.message.requiredArtist": "Please provide an artists' name",
   "error.message.requiredTitle": "Please provide a song title",
   "error.message.requiredUrl": "Please provide a valid url",
+  "error.message.requiredSearchTerm": "Please provide a search query",
   "error.message.generic": "There has been an error",
+
   "footer.copyright": "© {date} AudioLinx. All rights reserved",
+
   "fourOhFour.cta": "Back home",
   "fourOhFour.title": "404",
   "fourOhFour.subtitle": "🎶 Hello! Is it me you're looking for? 🎶",
+
   "home.cta": "Get your links!",
   "home.title": "Share it!",
   "home.subtitle": "Enter details on any song and generate links for the most popular music streaming platforms. Give it a go!",
   "home.showingResults": "Showing results for {artist} - {track}",
+  "home.or": "ou",
+
   "label.artist": "Artist",
   "label.copyLink": "Copy Link",
-  "label.search": "Artist, title or streaming url",
+  "label.search": "Find artists, songs, or paste a streaming link...",
   "label.select": "Select",
   "label.track": "Track",
   "label.url": "Url",

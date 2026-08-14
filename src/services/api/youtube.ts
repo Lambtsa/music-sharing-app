@@ -39,7 +39,7 @@ export class YoutubeWebApi {
    * @see https://developers.google.com/youtube/v3/docs
    * @example 'https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=artist:"aloe blacc" track:"i need a dollar"'
    */
-  async searchYoutube(input: MusicDetails): Promise<string | null> {
+  async getYoutubeUri(input: MusicDetails): Promise<string | null> {
     const youtubeUri = this.buildYoutubeApiUrl(input);
 
     const response = await fetch(youtubeUri, {

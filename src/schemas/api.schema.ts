@@ -8,12 +8,17 @@ export const musicDetails = z.object({
   album: z.string()
 });
 
-export const searchInputSchema = z.object({
+export const searchLegacyInputSchema = z.object({
   search: z.object({
     track: z.string().nullable(),
     artist: z.string().nullable(),
     url: z.string().nullable(),
   }),
+  user: geolocationInputSchema
+});
+
+export const searchInputSchema = z.object({
+  search: z.string().nullable(),
   user: geolocationInputSchema
 });
 

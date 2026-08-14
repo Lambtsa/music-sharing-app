@@ -47,3 +47,9 @@ export const albumReturnSchema = z.object({
     url: z.string(),
   })),
 });
+
+export const searchAllReturnSchema = z.object({
+  tracks: z.array(trackReturnSchema),
+  albums: z.array(albumReturnSchema),
+  artists: z.array(artistReturnSchema)
+});

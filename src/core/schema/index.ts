@@ -1,3 +1,0 @@
-export type {
-  InsertAlbumInput, InsertSearchInput, InsertTrackInput, UpsertArtistInput 
-} from "./db.types";

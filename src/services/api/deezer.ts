@@ -69,7 +69,7 @@ export class DeezerWebApi {
    * @see https://developers.deezer.com/api/search
    * @example 'https://api.deezer.com/search?q=artist:"aloe blacc" track:"I need a dollar"'
    */
-  async searchDeezer(input: MusicDetails): Promise<string | null> {
+  async getDeezerUri(input: MusicDetails): Promise<string | null> {
     const deezerUri = this.buildDeezerApiUrl(input);
     
     const response = await fetch(deezerUri, {

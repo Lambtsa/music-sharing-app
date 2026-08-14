@@ -10,11 +10,11 @@ import z from "zod";
 
 import { Albumlist } from "@/components/albumlist";
 import { ArtistList } from "@/components/artistlist";
-import { Button } from "@/components/button";
 import { Icon } from "@/components/icon";
-import { InputText } from "@/components/inputs/input_text";
+import { InputSearch } from "@/components/inputs/input_search";
 import { Loader } from "@/components/loader";
 import { MusicLinks } from "@/components/music_links";
+import { Separator } from "@/components/separator/Separator";
 import { Tracklist } from "@/components/tracklist";
 import { useTheme } from "@/context/ThemeContext";
 import { GeolocationType } from "@/hooks/user-data/userData.types";
@@ -26,12 +26,12 @@ import type {
   LinkListReturnType,
   MusicDetails,
   SearchInputType,
+  SearchLegacyInputType,
+  SearchReturnType,
   TrackReturnType
 } from "@/types/api";
-import type { SearchType } from "@/types/music";
 import { logger } from "@/utils/logger";
-import { isValidInput, isValidMusicStreamingUrl } from "@/utils/url";
-
+import { isSupportedMediaUrl, sanitiseSearchQuery } from "@/utils/url";
 
 export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactElement => {
   const { t } = useTranslation();
@@ -46,34 +46,10 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
   const [albums, setAlbums] = useState<AlbumReturnType[]>([]);
   const [artists, setArtists] = useState<ArtistReturnType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selected, setSelected] = useState<SearchType>("url");
   const [details, setDetails] = useState<MusicDetails | undefined>(
     undefined,
   );
 
-  const createErrorMessage = useCallback(
-    (selected: SearchType): string => {
-      switch (selected) {
-        case "artist": {
-          return t({
-            id: "error.message.requiredArtist"
-          });
-        }
-        case "track": {
-          return t({
-            id: "error.message.requiredTitle"
-          });
-        }
-        case "url": {
-          return t({
-            id: "error.message.requiredUrl"
-          });
-        }
-      }
-    },
-    [t],
-  );
-  
   const scrollToTop = useCallback(() => {
     if (typeof window === "undefined") {
       return;
@@ -89,49 +65,18 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
   /* Forms */
   /* ################################################## */
   const validationSchema = z.object({
-    track: z
+    search: z
       .string()
       .trim()
       .optional()
-      .refine((val) => isValidInput(val, "track"), {
-        message: createErrorMessage("track"),
-      }),
-    artist: z
-      .string()
-      .trim()
-      .optional()
-      .refine((val) => isValidInput(val, "artist"), {
-        message: createErrorMessage("artist"),
-      }),
-    url: z
-      .string()
-      .trim()
-      .optional()
-      .refine((val) => isValidInput(val, "url"), {
-        message: createErrorMessage("url"),
-      }),
-  }).refine((schema) => {
-    return !(!schema.track && !schema.artist && !schema.url);
-  }, {
-    message: t({
-      id: "error.message.requiredTitle"
-    }),
-    path: ["track"]
   });
 
   type FormFields = z.TypeOf<typeof validationSchema>;
 
-  const defaultValues: FormFields = useMemo(
-    () => ({
-      track: "",
-      artist: "",
-      url: "",
-    }),
-    [],
-  );
-
-  const { control, formState, reset, watch, handleSubmit } = useForm({
-    defaultValues,
+  const { control, formState, reset, handleSubmit } = useForm({
+    defaultValues: {
+      search: "",
+    },
     mode: "onSubmit",
     shouldFocusError: true,
     /* All errors from each field will be gathered */
@@ -139,22 +84,22 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
     resolver: zodResolver(validationSchema),
   });
 
-  const url = useWatch({
+  const searchQuery = useWatch({
     control,
-    name: "url",
+    name: "search",
   });
-  const artist = watch("artist");
-  const track = watch("track");
 
   const formErrors = useMemo(() => {
     return formState.errors;
   }, [formState.errors]);
   
   useEffect(() => {
-    reset(defaultValues, {
+    reset({
+      search: "" 
+    }, {
       keepDefaultValues: true
     });
-  }, [reset, defaultValues]);
+  }, [reset]);
 
   useEffect(() => {
     if ((tracks.length || albums.length || links) && itemsRef.current) {
@@ -163,27 +108,6 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
       });
     }
   }, [albums.length, links, tracks.length]);
-
-  useEffect(() => {
-    if (artist && !track && !url) {
-      setSelected("artist");
-    } else if (track && !url) {
-      setSelected("track");
-    }
-  }, [artist, track, url]);
-
-  useEffect(() => {
-    /* Will automatically change the selected input to url if a valid url is passed into the field */
-    if (isValidMusicStreamingUrl(url)) {
-      setSelected("url");
-    }
-  }, [url]);
-
-  useEffect(() => {
-    setAlbums([]);
-    setTracks([]);
-    setLinks(undefined);
-  }, [selected]);
 
   /* ################################################## */
   /* Actions */
@@ -200,8 +124,8 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
       if (isLoading) {
         return;
       }
-      if (!formFields.track && !formFields.artist && !formFields.url) {
-        toast.warning("Please provide a url, title or track");
+      if (!formFields.search) {
+        toast.warning("Please provide a url, artist, album or track");
         return;
       }
 
@@ -209,118 +133,84 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
       resetStates();
       setIsLoading(true);
       try {
-        const body: SearchInputType = {
-          search: {
-            artist: formFields.artist ?? null,
-            track: formFields.track ?? null,
-            url: formFields.url ?? null,
-          },
-          user: userData,
-        };
-        switch (selected) {
-          /* Artist will return a list of tracks sorted by album. User can then select a track */
-          case "artist": {
-            const response = await fetch(
-              "/api/artists",
-              {
-                method: "POST",
-                headers: {
-                  "Content-type": "application/json",
-                },
-                body: JSON.stringify(body),
+        const isUrl = isSupportedMediaUrl(formFields.search);
+
+        if (!isUrl) {
+          const body: SearchInputType = {
+            search: sanitiseSearchQuery(formFields.search),
+            user: userData,
+          };
+          const response = await fetch(
+            "/api/search",
+            {
+              method: "POST",
+              headers: {
+                "Content-type": "application/json",
               },
-            );
+              body: JSON.stringify(body),
+            },
+          );
 
-            if (!response.ok) {
-              toast.warning("Issue getting artists", {
-                description: response.statusText
-              });
-              break;
-            }
-
-            const data: ArtistReturnType[] = await response.json();
-
-            if (!data.length) {
-              toast.warning("Search returned no artists", {
-                description: artist ? `There were no results for "${artist}"` : "There were no results for this artist",
-              });
-              break;
-            }
-            setArtists(data);
-            reset(defaultValues, {
-              keepDefaultValues: true
+          if (!response.ok) {
+            toast.warning("Issue with search", {
+              description: response.statusText
             });
-            scrollToTop();
-
-            break;
           }
-          /* Tracks will return a list of tracks that correspond to the typed search input. User can then select a track */
-          case "track": {
-            const response = await fetch(
-              "/api/tracks",
-              {
-                method: "POST",
-                headers: {
-                  "Content-type": "application/json",
-                },
-                body: JSON.stringify(body),
+
+          const data: SearchReturnType = await response.json();
+
+          if (!data.albums.length && !data.tracks.length && !data.artists.length) {
+            toast.warning("Search returned no results", {
+              description: searchQuery ? `There were no results for "${searchQuery}"` : "There were no results for this query",
+            });
+          }
+
+          setArtists(data.artists);
+          setAlbums(data.albums);
+          setTracks(data.tracks);
+          
+          reset({
+            search: "",
+          }, {
+            keepDefaultValues: true
+          });
+          scrollToTop();
+        } else {
+          const body: SearchLegacyInputType = {
+            search: {
+              url: formFields.search ?? null,
+              track: null,
+              artist: null
+            },
+            user: userData,
+          };
+          const response = await fetch(
+            "/api/links",
+            {
+              method: "POST",
+              headers: {
+                "Content-type": "application/json",
               },
-            );
+              body: JSON.stringify(body),
+            },
+          );
 
-            if (!response.ok) {
-              toast.warning("Issue getting tracks", {
-                description: response.statusText
-              });
-              break;
-            }
-
-            const data: TrackReturnType[] = await response.json();
-
-            if (!data.length) {
-              toast.warning("Search returned no tracks", {
-                description: track ? `There were no results for "${track}"` : "There were no results for this track",
-              });
-              break;
-            }
-            setTracks(data);
-            reset(defaultValues, {
-              keepDefaultValues: true
+          if (!response.ok) {
+            toast.warning("Issue getting links", {
+              description: response.statusText
             });
-            scrollToTop();
-
-            break;
           }
-          /* Url will directly return a list of links if the url is valid and if the songs exist on other platforms */
-          case "url": {
-            const response = await fetch(
-              "/api/links",
-              {
-                method: "POST",
-                headers: {
-                  "Content-type": "application/json",
-                },
-                body: JSON.stringify(body),
-              },
-            );
 
-            if (!response.ok) {
-              toast.warning("Issue getting tracks", {
-                description: response.statusText
-              });
-              break;
-            }
+          const data: LinkListReturnType = await response.json();
 
-            const data: LinkListReturnType = await response.json();
-
-            setLinks(data.links);
-            setDetails(data.details);
-            reset(defaultValues, {
-              keepDefaultValues: true
-            });
-            scrollToTop();
-
-            break;
-          }
+          setLinks(data.links);
+          setDetails(data.details);
+          reset({
+            search: "",
+          }, {
+            keepDefaultValues: true
+          });
+          scrollToTop();
         }
       } catch (err) {
         // setErrorMessage('error.message.generic');
@@ -331,7 +221,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
         setIsLoading(false);
       }
     },
-    [artist, defaultValues, userData, isLoading, reset, resetStates, scrollToTop, selected, track],
+    [isLoading, resetStates, userData, reset, scrollToTop, searchQuery],
   );
 
   const handleOnArtistClick = useCallback(
@@ -375,7 +265,9 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
           }
 
           setAlbums(data);
-          reset(defaultValues, {
+          reset({
+            search: "",
+          }, {
             keepDefaultValues: true
           });
           scrollToTop();
@@ -390,7 +282,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
       } finally {
         setIsLoading(false);
       }
-    }, [defaultValues, userData, isLoading, reset, resetStates, scrollToTop]);
+    }, [userData, isLoading, reset, resetStates, scrollToTop]);
 
   const handleOnTrackClick = useCallback(
     async (url: string) => {
@@ -402,7 +294,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
       resetStates();
 
       try {
-        const body: SearchInputType = {
+        const body: SearchLegacyInputType = {
           search: {
             artist: details?.artist ?? null,
             track: details?.track ?? null,
@@ -431,7 +323,9 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
 
           setLinks(data.links);
           setDetails(data.details);
-          reset(defaultValues, {
+          reset({
+            search: "",
+          }, {
             keepDefaultValues: true
           });
           scrollToTop();
@@ -447,7 +341,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
         setIsLoading(false);
       }
     },
-    [defaultValues, details?.artist, details?.track, userData, isLoading, reset, resetStates, scrollToTop],
+    [details, isLoading, reset, resetStates, scrollToTop, userData],
   );
 
   const hasTracks = useMemo(() => !!tracks.length, [tracks]);
@@ -475,49 +369,22 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
       </div>
       <form
         data-testid='home-form'
-        className="flex flex-col justify-center w-full max-w-lg gap-4"
+        className="flex flex-col justify-center w-full gap-4"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className='flex flex-col justify-center w-full gap-1'>
-          <InputText
+          <InputSearch
             data-testid='home-input-track'
             isLight={isLight}
             type="text"
             control={control}
-            name="track"
+            name="search"
             placeholder={t({
-              id: "label.track"
+              id: "label.search"
             })}
-            error={formErrors.track}
-          />
-          <InputText
-            data-testid='home-input-artist'
-            isLight={isLight}
-            type="text"
-            control={control}
-            name="artist"
-            placeholder={t({
-              id: "label.artist"
-            })}
-            error={formErrors.artist}
-          />
-          <InputText
-            data-testid='home-input-url'
-            isLight={isLight}
-            type="text"
-            control={control}
-            name="url"
-            placeholder={t({
-              id: "label.url"
-            })}
-            error={formErrors.url}
+            error={formErrors.search}
           />
         </div>
-        <Button isLoading={isLoading} data-testid='home-form-submit-button' type="submit">
-          {t({
-            id: "home.cta"
-          })}
-        </Button>
       </form>
       <div ref={itemsRef} className='flex flex-col gap-2 w-full my-0 pb-[40px]'>
         {isLoading && <Loader isLight={isLight} />}
@@ -527,19 +394,28 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
           <MusicLinks details={details} isLight={isLight} links={links} />
         )}
 
-        {/* Tracklist */}
-        {!isLoading && hasTracks && (
-          <Tracklist tracks={tracks} handleOnClick={handleOnTrackClick} isLight={isLight} />
-        )}
-
         {/* Artistlist */}
         {!isLoading && hasArtists && (
-          <ArtistList artists={artists} handleOnClick={handleOnArtistClick} isLight={isLight} />
+          <>
+            <Separator isLight={isLight} type="artist"/>
+            <ArtistList artists={artists} handleOnClick={handleOnArtistClick} isLight={isLight} />
+          </>
+        )}
+
+        {/* Tracklist */}
+        {!isLoading && hasTracks && (
+          <>
+            <Separator isLight={isLight} type='track' />
+            <Tracklist tracks={tracks} handleOnClick={handleOnTrackClick} isLight={isLight} />
+          </>
         )}
 
         {/* Albumlist */}
         {!isLoading && hasAlbums && (
-          <Albumlist albums={albums} handleOnClick={handleOnTrackClick} isLight={isLight} />
+          <>
+            <Separator isLight={isLight} type="album" />
+            <Albumlist albums={albums} handleOnClick={handleOnTrackClick} isLight={isLight} />
+          </>
         )}
       </div>
     </div>

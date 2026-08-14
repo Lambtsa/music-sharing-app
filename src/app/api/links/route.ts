@@ -1,12 +1,12 @@
 import { type NextRequest } from "next/server";
 
 import { BadRequestError, globalApiErrorHandler } from "@/core/errors";
-import { searchInputSchema } from "@/schemas/api.schema";
+import { searchLegacyInputSchema } from "@/schemas/api.schema";
 import { DeezerWebApi } from "@/services/api/deezer";
 import { SpotifyWebApi } from "@/services/api/spotify";
 import { YoutubeWebApi } from "@/services/api/youtube";
-import type {
-  LinkListReturnType, MusicDetails, SearchInputType 
+import {
+  LinkListReturnType, MusicDetails, SearchLegacyInputType 
 } from "@/types/api";
 import { determineUrlType, getTrackId } from "@/utils/url";
 import { getUserAgentInfo } from "@/utils/userAgentInfo";
@@ -15,17 +15,20 @@ export const dynamic = "force-dynamic";
 
 export const POST = async (req: NextRequest): Promise<Response> => {
   try {
-    const body: SearchInputType = await req.json();
+    const body: SearchLegacyInputType = await req.json();
     const userAgentInfo = getUserAgentInfo(req);
 
-    const linkSafeParse = searchInputSchema.safeParse(body);
+    console.log({
+      body 
+    });
 
-
+    const linkSafeParse = searchLegacyInputSchema.safeParse(body);
+    
     if (!linkSafeParse.success || !body.search.url) {
       throw new BadRequestError({
         message: "Please provide valid input",
         statusCode: 400,
-        url: "/api/albums",
+        url: "/api/links",
         userAgentInfo,
       });
     }
@@ -82,9 +85,9 @@ export const POST = async (req: NextRequest): Promise<Response> => {
       });
     }
 
-    const spotifyUrl = await spotifyApi.searchSpotify(details);
-    const deezerUrl = await deezerApi.searchDeezer(details);
-    const youtubeUrl = await youtubeApi.searchYoutube(details);
+    const spotifyUrl = await spotifyApi.getSpotifyUri(details);
+    const deezerUrl = await deezerApi.getDeezerUri(details);
+    const youtubeUrl = await youtubeApi.getYoutubeUri(details);
 
     const response: LinkListReturnType = {
       details, 
