@@ -2,6 +2,7 @@
 
 import type { ReactElement } from "react";
 
+import { version } from "@/../package.json";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
 
@@ -15,7 +16,8 @@ export const Footer = (): ReactElement => {
         {t({
           id: "footer.copyright" 
         }, {
-          date: new Date().getFullYear() 
+          date: new Date().getFullYear(),
+          version
         })}
       </p>
     </div>

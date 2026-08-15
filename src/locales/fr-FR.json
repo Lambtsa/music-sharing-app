@@ -7,7 +7,7 @@
   "error.message.requiredSearchTerm": "Please provide a search query",
   "error.message.generic": "There has been an error",
 
-  "footer.copyright": "© {date} AudioLinx. All rights reserved",
+  "footer.copyright": "© {date} AudioLinx • All rights reserved • v{version}",
 
   "fourOhFour.cta": "Back home",
   "fourOhFour.title": "404",
