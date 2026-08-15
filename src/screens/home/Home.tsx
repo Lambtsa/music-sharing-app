@@ -349,7 +349,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
   const hasArtists = useMemo(() => !!artists.length, [artists]);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-[30px] w-full max-w-xl m-auto px-4">
+    <main className="flex flex-col items-center justify-center gap-[30px] w-full h-full max-w-xl m-auto p-4">
       <div className='flex flex-col items-center justify-center gap-2'>
         <div className='flex gap-2 justify-center items-center'>
           <Icon icon='spotify' />
@@ -386,7 +386,7 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
           />
         </div>
       </form>
-      <div ref={itemsRef} className='flex flex-col gap-2 w-full my-0 pb-[40px]'>
+      <div ref={itemsRef} className='flex flex-col gap-2 w-full my-0'>
         {isLoading && <Loader isLight={isLight} />}
 
         {/* Music Links */}
@@ -418,6 +418,6 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
           </>
         )}
       </div>
-    </div>
+    </main>
   );
 };

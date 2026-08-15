@@ -32,7 +32,7 @@ const RootLayout = ({ children }: LayoutProps) => (
         `}
       </Script>
     </head>
-    <body suppressHydrationWarning className="h-screen overflow-hidden">
+    <body suppressHydrationWarning className="h-dvh">
       <AppProviders>
         <Header />
         {children}
