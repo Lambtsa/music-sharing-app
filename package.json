@@ -35,7 +35,7 @@
     "zustand": "^5.0.9"
   },
   "devDependencies": {
-    "@commitlint/cli": "20.5.3",
+    "@commitlint/cli": "21.0.2",
     "@commitlint/config-conventional": "20.5.3",
     "@faker-js/faker": "^10.2.0",
     "@next/eslint-plugin-next": "16.2.6",
