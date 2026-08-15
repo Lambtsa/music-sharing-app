@@ -6,13 +6,11 @@ import { TrackBtn } from "./track_button";
 
 type TracklistProps = {
   tracks: TrackReturnType[];
-  isLight: boolean;
   handleOnClick: (url: string) => Promise<void>
 };
 
 export const Tracklist = ({
   tracks,
-  isLight,
   handleOnClick,
 }: TracklistProps): ReactElement => {
 
@@ -24,7 +22,6 @@ export const Tracklist = ({
           key={track.id}
           track={track}
           handleOnClick={handleOnClick}
-          isLight={isLight}
         />
       ))}
     </>

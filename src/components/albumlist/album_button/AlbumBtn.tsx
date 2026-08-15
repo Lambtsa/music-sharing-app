@@ -5,14 +5,15 @@ import {
 
 import { Icon } from "@/components/icon";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useTheme } from "@/stores/theme.store";
 
 import type { TrackBtnProps } from "./AlbumBtn.types";
 
 export const AlbumBtn = ({
   album,
-  isLight,
   handleOnClick,
 }: TrackBtnProps): ReactElement => {
+  const { isLight } = useTheme();
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -28,7 +29,7 @@ export const AlbumBtn = ({
 
   return (
     <>
-      <div className={`grid grid-cols-[50px_minmax(0,1fr)_40px] justify-center items-center gap-4 [&>svg]:min-w-[30px] ${isLight ? "bg-tiffany-blue-20 [&>svg>path]:stroke-eerie-black" : "bg-onyx [&>svg>path]:stroke-ivory"} rounded-[10px] w-full px-4 py-3`}>
+      <div className={`grid grid-cols-[50px_minmax(0,1fr)_40px] justify-center border border-eerie-black-20 items-center gap-4 [&>svg]:min-w-[30px] ${isLight ? "bg-[#FFFFFF] [&>svg>path]:stroke-eerie-black" : "bg-onyx [&>svg>path]:stroke-ivory"} rounded-[10px] w-full px-4 py-3`}>
         {album.imageUrl ? (
           <div className='relative h-[50px] w-[50px] overflow-hidden rounded-[7px]'>
             <Image
@@ -54,7 +55,7 @@ export const AlbumBtn = ({
           </h3>
           <p
             title={album.album.name}
-            className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-normal text-sm truncate w-full`}>
+            className={`${isLight ? "text-eerie-black-70" : "text-ivory-70"} text-left font-normal text-sm truncate w-full`}>
             {album.album.name}
           </p>
           <p
@@ -75,9 +76,9 @@ export const AlbumBtn = ({
         <div className='flex flex-col gap-1 py-2 w-full'>
           {hasTracks &&
             tracks.map((track) => (
-              <div 
+              <div
                 key={track.id}
-                className={`flex justify-between items-center gap-4 ${isLight ? "bg-tiffany-blue-20" : "bg-onyx"} rounded-[10px] w-full px-3 py-4`}
+                className={`flex justify-between border border-eerie-black-20 items-center gap-4 ${isLight ? "bg-[#FFFFFF]" : "bg-onyx"} rounded-[10px] w-full px-3 py-4`}
               >
                 <Icon icon='music' width={30} height={30} color={isLight ? "#262626" : "#FFFEED"} />
                 <div className='flex flex-auto flex-col justify-center items-start gap-1/2 w-full min-w-0'>
@@ -86,9 +87,9 @@ export const AlbumBtn = ({
                     className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-bold text-sm truncate w-full`}>
                     {track.track.name}
                   </h3>
-                  <p 
+                  <p
                     title={track.artist}
-                    className={`${isLight ? "text-eerie-black" : "text-ivory"} text-left font-normal text-sm truncate w-full`}>
+                    className={`${isLight ? "text-eerie-black-70" : "text-ivory-70"} text-left font-normal text-sm truncate w-full`}>
                     {track.artist}
                   </p>
                 </div>
@@ -98,7 +99,7 @@ export const AlbumBtn = ({
                   onClick={() => handleOnClick(track.url)}
                 >
                   {t({
-                    id: "label.select" 
+                    id: "label.select"
                   })}
                 </button>
               </div>

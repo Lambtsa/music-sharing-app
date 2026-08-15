@@ -6,13 +6,11 @@ import { ArtistBtn } from "./artist_button";
 
 type ArtistlistProps = {
   artists: ArtistReturnType[];
-  isLight: boolean;
   handleOnClick: (url: string) => Promise<void>
 };
 
 export const ArtistList = ({
   artists,
-  isLight,
   handleOnClick,
 }: ArtistlistProps): ReactElement => {
 
@@ -24,7 +22,6 @@ export const ArtistList = ({
           key={artist.id}
           artist={artist}
           handleOnClick={handleOnClick}
-          isLight={isLight}
         />
       ))}
     </>

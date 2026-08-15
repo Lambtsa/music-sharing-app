@@ -5,19 +5,21 @@ import {
 } from "react";
 import { IntlProvider } from "react-intl";
 
-import { ThemeProvider } from "@/context/ThemeContext";
 import translations from "@/locales/en-UK.json";
+import { useTheme } from "@/stores/theme.store";
 
 export const AppProviders = ({ children }: PropsWithChildren): ReactElement => {
+  const { isLight } = useTheme();
+  
   return (
     <IntlProvider
       locale="en-UK"
       messages={translations}
       textComponent={Fragment}
     >
-      <ThemeProvider>
+      <main className={`grid grid-cols-1 grid-rows-[60px_1fr_60px] h-full overflow-x-hidden min-w-full max-w-screen ${isLight ? "bg-ivory" : "bg-eerie-black"}`}>
         {children}
-      </ThemeProvider>
+      </main>
     </IntlProvider>
   );
 };

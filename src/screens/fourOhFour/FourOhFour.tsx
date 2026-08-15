@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { type ReactElement, useCallback } from "react";
 
 import { Button } from "@/components/button";
-import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useTheme } from "@/stores/theme.store";
 import { routes } from "@/utils/routes";
 
 export const FourOhFour = (): ReactElement => {

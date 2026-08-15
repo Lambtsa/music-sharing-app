@@ -6,13 +6,11 @@ import { AlbumBtn } from "./album_button";
 
 type AlbumListProps = {
   albums: AlbumReturnType[];
-  isLight: boolean;
   handleOnClick: (url: string) => Promise<void>
 };
 
 export const Albumlist = ({
   albums,
-  isLight,
   handleOnClick,
 }: AlbumListProps): ReactElement => {
 
@@ -24,7 +22,6 @@ export const Albumlist = ({
           handleOnClick={handleOnClick}
           key={album.id}
           album={album}
-          isLight={isLight}
         />
       ))}
     </>

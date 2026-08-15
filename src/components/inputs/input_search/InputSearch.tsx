@@ -5,6 +5,7 @@ import {
 
 import { Icon } from "@/components/icon";
 import type { ControlledInputProps } from "@/components/inputs/input/Input.types";
+import { useTheme } from "@/stores/theme.store";
 
 export const InputSearch = <
   TFieldValues extends FieldValues = FieldValues,
@@ -13,10 +14,10 @@ export const InputSearch = <
   control,
   name,
   type,
-  isLight,
   error,
   ...rest
 }: ControlledInputProps<TFieldValues, TName>): ReactElement => {
+  const { isLight } = useTheme();
   const { field: { ref, ...fieldRest }, } = useController({
     control,
     name

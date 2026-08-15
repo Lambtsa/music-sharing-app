@@ -6,21 +6,21 @@ import { toast } from "sonner";
 import { Icon } from "@/components/icon";
 import { MusicLink } from "@/components/link";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useTheme } from "@/stores/theme.store";
 import type { LinkListReturnType, MusicDetails } from "@/types/api";
 import type { MusicProviders } from "@/types/music";
 import { delay } from "@/utils/time";
 
 interface MusicLinksProps {
-  isLight: boolean;
   links: LinkListReturnType["links"];
   details: MusicDetails | undefined
 }
 
 export const MusicLinks = ({
-  isLight,
   links,
   details,
 }: MusicLinksProps): ReactElement => {
+  const { isLight } = useTheme();
   const { t } = useTranslation();
   /* ############################## */
   /* State */
@@ -116,7 +116,6 @@ export const MusicLinks = ({
           handleOnChange={handleOnChange}
           service={name}
           serviceUrl={url}
-          isLight={isLight}
         />
       ))}
       <button

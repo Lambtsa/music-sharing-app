@@ -1,14 +1,14 @@
 import { type ReactElement, useCallback } from "react";
 
 import { Icon } from "@/components/icon";
-import { useTheme } from "@/context/ThemeContext";
+import { useTheme } from "@/stores/theme.store";
 
 export const Toggle = (): ReactElement => {
-  const { isLight, setIsLight } = useTheme();
+  const { isLight, toggleIsLight } = useTheme();
 
   const handleChange = useCallback(() => {
-    setIsLight(!isLight);
-  }, [isLight, setIsLight]);
+    toggleIsLight();
+  }, [toggleIsLight]);
 
   return (
     <form data-testid='theme-toggle-form' className='relative w-[60px] inline-block p-0'>

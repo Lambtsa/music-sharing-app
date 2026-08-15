@@ -16,9 +16,9 @@ import { Loader } from "@/components/loader";
 import { MusicLinks } from "@/components/music_links";
 import { Separator } from "@/components/separator/Separator";
 import { Tracklist } from "@/components/tracklist";
-import { useTheme } from "@/context/ThemeContext";
 import { GeolocationType } from "@/hooks/user-data/userData.types";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useTheme } from "@/stores/theme.store";
 import type {
   AlbumInputType,
   AlbumReturnType,
@@ -375,7 +375,6 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
         <div className='flex flex-col justify-center w-full gap-1'>
           <InputSearch
             data-testid='home-input-track'
-            isLight={isLight}
             type="text"
             control={control}
             name="search"
@@ -391,30 +390,30 @@ export const HomeScreen = ({ userData }: { userData: GeolocationType }): ReactEl
 
         {/* Music Links */}
         {!isLoading && links && (
-          <MusicLinks details={details} isLight={isLight} links={links} />
+          <MusicLinks details={details} links={links} />
         )}
 
         {/* Artistlist */}
         {!isLoading && hasArtists && (
           <>
-            <Separator isLight={isLight} type="artist"/>
-            <ArtistList artists={artists} handleOnClick={handleOnArtistClick} isLight={isLight} />
+            <Separator type="artist"/>
+            <ArtistList artists={artists} handleOnClick={handleOnArtistClick} />
           </>
         )}
 
         {/* Tracklist */}
         {!isLoading && hasTracks && (
           <>
-            <Separator isLight={isLight} type='track' />
-            <Tracklist tracks={tracks} handleOnClick={handleOnTrackClick} isLight={isLight} />
+            <Separator type='track' />
+            <Tracklist tracks={tracks} handleOnClick={handleOnTrackClick} />
           </>
         )}
 
         {/* Albumlist */}
         {!isLoading && hasAlbums && (
           <>
-            <Separator isLight={isLight} type="album" />
-            <Albumlist albums={albums} handleOnClick={handleOnTrackClick} isLight={isLight} />
+            <Separator type="album" />
+            <Albumlist albums={albums} handleOnClick={handleOnTrackClick} />
           </>
         )}
       </div>

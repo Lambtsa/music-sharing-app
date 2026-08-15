@@ -3,8 +3,8 @@
 import type { ReactElement } from "react";
 
 import { version } from "@/../package.json";
-import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useTheme } from "@/stores/theme.store";
 
 export const Footer = (): ReactElement => {
   const { isLight } = useTheme();

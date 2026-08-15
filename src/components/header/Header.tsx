@@ -5,7 +5,7 @@ import { type ReactElement, useCallback } from "react";
 
 import { Logo } from "@/components/logo";
 import { Toggle } from "@/components/toggle";
-import { useTheme } from "@/context/ThemeContext";
+import { useTheme } from "@/stores/theme.store";
 import { routes } from "@/utils/routes";
 
 export const Header = (): ReactElement => {

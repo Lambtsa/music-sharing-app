@@ -1,13 +1,15 @@
 import type { ReactElement } from "react";
 
+import { useTheme } from "@/stores/theme.store";
+
 import type { InputProps } from "./Input.types";
 
 export const Input = ({
   type = "text",
   error,
-  isLight,
   ...rest
 }: InputProps): ReactElement => {
+  const { isLight } = useTheme();
   return (
     <div className='flex flex-col items-start w-full'>
       <input 

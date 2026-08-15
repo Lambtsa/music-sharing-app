@@ -1,13 +1,12 @@
 import { useMemo } from "react";
 
-export const Separator = ({
-  type,
-  isLight 
-}: {
-  type: "artist" | "album" | "track",
-  isLight: boolean
-}) => {
+import { useTheme } from "@/stores/theme.store";
 
+export const Separator = ({ type, }: {
+  type: "artist" | "album" | "track",
+}) => {
+  const { isLight } = useTheme();
+  
   const separatorTitle = useMemo(() => {
     switch (type) {
       case "artist": {
