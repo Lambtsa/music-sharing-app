@@ -18,10 +18,6 @@ export const POST = async (req: NextRequest): Promise<Response> => {
     const body: SearchLegacyInputType = await req.json();
     const userAgentInfo = getUserAgentInfo(req);
 
-    console.log({
-      body 
-    });
-
     const linkSafeParse = searchLegacyInputSchema.safeParse(body);
     
     if (!linkSafeParse.success || !body.search.url) {
